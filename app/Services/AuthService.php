@@ -1,0 +1,57 @@
+<?php
+
+namespace App\Services;
+
+use App\Models\User;
+use App\Services\RoleService;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Resources\Api\UserResource;
+
+class AuthService extends BaseService
+{
+  protected $model;
+  protected $role;
+  protected $resourceClass = UserResource::class;
+  public $request;
+
+  public function __construct(User $user, RoleService $role_service)
+  {
+    $this->model = $user;
+    $this->role = $role_service;
+  }
+
+  public function login()
+  {
+    $credentials = $this->request->only('email', 'password');
+    $token = Auth::attempt($credentials);
+    return $token;
+  }
+
+  public function register(Array $user)
+  {
+    $user_model = $this->create($user);
+    // $user_model = $this->role->assign_role($user_model);
+    $user_model->assignRole($this->role->getRoleEnumValue($user['role']));
+    return $user_model;
+  }
+
+  public function logout()
+  {
+    Auth::logout();
+  }
+
+  public function refresh()
+  {
+    return Auth::refresh();
+  }
+
+  public function auth_user()
+  {
+    return Auth::user();
+  }
+
+  public function get_token(User $user)
+  {
+    return Auth::login($user);
+  }
+}

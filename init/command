@@ -1,0 +1,11 @@
+composer create-project laravel/laravel upload_image_backend
+php artisan migrate
+
+#install
+composer_install.sh
+
+#remove
+composer remove laravel/sanctum
+
+#migration
+php artisan make:migration create_role_user_table --create=role_user
