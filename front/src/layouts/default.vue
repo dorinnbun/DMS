@@ -2,7 +2,7 @@
 
   <v-app>
     <v-card>
-      <v-layout style="height: 100vh">
+      <v-layout v-if="isLoggedIn" style="height: 100vh">
         
         <AsideMenu />
 
@@ -11,6 +11,15 @@
         </v-main>
         
       </v-layout>
+
+      <v-layout v-else>
+
+        <v-main style="min-height: 100vh">
+            <router-view />
+        </v-main>
+        
+      </v-layout>
+      
     </v-card>
     
   </v-app>
@@ -18,5 +27,19 @@
 </template>
 
 <script setup>
-  //
+  
+  import { useAuthStore } from '../stores/auth.js'
+  import { storeToRefs } from 'pinia'
+  import { useRouter, useRoute } from 'vue-router'
+
+  const router = useRouter()
+  const route = useRoute()
+  
+  const authStore = useAuthStore()
+  const { isLoggedIn } = storeToRefs(authStore)
+
+  if (!isLoggedIn.value) {
+    router.push({ path: '/login' })
+  }
+  
 </script>

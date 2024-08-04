@@ -18,6 +18,7 @@
           <input
             type="text"
             placeholder="ស្វែករកឯកសារ..."
+            v-model="search"
           />
 
           <v-spacer></v-spacer>
