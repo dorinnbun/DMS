@@ -98,23 +98,19 @@
         </v-toolbar>
       </template>
 
-      <!-- Table's action menu -->
-      <template v-slot:item.actions="{ item }">
-        <v-icon
-          class="me-2"
-          size="small"
-          @click="editItem(item)"
-          color="blue"
-        >
-          mdi-pencil
-        </v-icon>
-        <v-icon
-          size="small"
-          @click="deleteItem(item)"
-          color="red"
-        >
-          mdi-delete
-        </v-icon>
+      <template v-slot:item="{ item, index }">
+        <tr @click="viewRecord(item)" style="cursor: pointer;">
+
+          <td v-for="key in Object.keys(item)">
+            {{ item[key] }}
+          </td>
+
+          <td>
+            <v-icon small color="blue" @click.stop="editItem(item)">mdi-pencil</v-icon>
+            <v-icon small color="red" @click.stop="deleteItem(item)">mdi-delete</v-icon>
+          </td>
+
+        </tr>
       </template>
   
     </v-data-table-server>
@@ -314,6 +310,11 @@
           this.editedItem = Object.assign({}, this.defaultItem)
           this.editedIndex = -1
         })
+      },
+
+      viewRecord (item) {
+        const id = item.id;
+        console.log("id", id);
       },
 
       save () {
