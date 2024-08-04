@@ -17,9 +17,8 @@
     <v-divider></v-divider>
     
     <v-list color="transparent">
-
       <v-list-item prepend-icon="mdi-account-multiple">
-        <RouterLink to="/users">អ្នកប្រេីប្រាស់</RouterLink>
+        <RouterLink to="/">អ្នកប្រេីប្រាស់</RouterLink>
       </v-list-item>
 
       <v-list-item prepend-icon="mdi-text-box-multiple">

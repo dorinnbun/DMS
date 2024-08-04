@@ -6,7 +6,7 @@
         
         <AsideMenu />
 
-        <v-main style="min-height: 100vh">
+        <v-main style="min-height: 100vh; margin-top: 75px;">
             <router-view />
         </v-main>
         
