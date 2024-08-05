@@ -103,7 +103,7 @@
                     </v-col>
                     
                     <v-col cols="12" sm="12" style="text-align: center;">
-                      <h4>Upload files</h4>
+                      <h4>បង្ហោះរូបភាព</h4>
                     </v-col>
                     
                     <!-- files input -->
@@ -117,9 +117,10 @@
   
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="blue-darken-1" variant="text" @click="close">
+                
+                <button class="cancel-btn" @click="close">
                   បោះបង់
-                </v-btn>
+                </button>
 
                 <v-btn color="blue-darken-1" variant="text" @click="save">
                   រក្សាទុក

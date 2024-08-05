@@ -1,12 +1,23 @@
 .column-5 {
 
   @media (min-width: 576px ) {
-    flex-basis: 25%;
-    max-width: 25%;
+    flex-basis: 50%;
+    max-width: 50%;
+  }
+  
+  @media (min-width: 768px ) {
+    flex-basis: 33%;
+    max-width: 33%;
   }
 
-  @media (min-width: 768px ) {
+  @media (min-width: 1200px ) {
     flex-basis: 20%;
     max-width: 20%;
   }
+}
+
+.cancel-btn {
+  background-color: #D32F2F !important; 
+  padding: 6px 25px; 
+  border-radius: 4px;
 }
