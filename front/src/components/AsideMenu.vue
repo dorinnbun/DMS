@@ -32,15 +32,31 @@
 
     <template v-slot:append>
       <div class="pa-2">
-        <v-btn block style="background-color: #1867C0">
-          <RouterLink to="/" style="color: white !important;">
-            ចាកចេញ
-          </RouterLink>
+        <v-btn block style="background-color: #1867C0; font-weight: bold;" @click="logout">
+          ចេញពីគណនី
         </v-btn>
       </div>
     </template>
   </v-navigation-drawer>
 </template>
+
+
+<script setup>
+  import { ref } from 'vue'
+  import { useRouter } from 'vue-router'
+  import { useAuthStore } from '@/stores/auth'
+
+  const router = useRouter()
+  const authStore = useAuthStore()
+
+  const logout = () => {
+    authStore.$patch({
+      isLoggedIn: false
+    })
+    router.push({ path: '/login' })
+  }
+
+</script>
 
 
 <style>
