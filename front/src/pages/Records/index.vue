@@ -15,20 +15,12 @@
       <template v-slot:top>
         <v-toolbar flat >
 
-          <input
-            type="text"
-            placeholder="ស្វែករកឯកសារ..."
-            v-model="search"
-          />
+          <input type="text" placeholder="ស្វែករកឯកសារ..." v-model="search"/>
 
           <v-spacer></v-spacer>
 
           <!-- adding new record ==> a custom form dialog -->
-
-          <!-- <v-dialog
-            v-model="dialog"
-            max-width="500px"
-          >
+          <v-dialog v-model="dialog" max-width="90%">
             <template v-slot:activator="{ props }">
               <v-btn
                 class="mb-2"
@@ -36,51 +28,97 @@
                 v-bind="props"
                 prepend-icon="mdi-plus-circle"
               >
-                បញ្ចូលថ្មី
+                បង្កេីតឯកសារថ្មី
               </v-btn>
             </template>
 
             <v-card>
-              <v-card-title>
-                <span class="text-h5">{{ formTitle }}</span>
+              <v-card-title style="text-align: center; margin: auto;">
+                <v-text-field
+                  v-model="formName"
+                  style="text-align: center; width: 250px; font-size: 20px; font-weight: bold; margin: auto;"
+                ></v-text-field>
               </v-card-title>
   
               <v-card-text>
-                <v-container>
+                <v-container style="margin: 0;">
                   <v-row>
-                    <template v-for="key in headers.slice(1, headers.length-1)">
-                      <v-col cols="12" md="4" sm="6">
+
+                    <!-- form detail -->
+                    <v-col cols="12" sm="2">
+                      <v-text-field
+                        v-for="field in inputFields"
+                        v-model="field.id"
+                        :label="field.label"
+                      ></v-text-field>
+                    </v-col>
+
+
+                    <!-- personal information -->
+                    <v-col cols="12" sm="10">
+                      <v-row>
+                        <template v-for="field in personalInfoInputFields.slice(1, 21)" >
+                          <v-col cols="12" :sm="field.col">
+
+                            <v-select
+                              v-if="field.type === 'select'"
+                              v-model="field.id"
+                              :label="field.label"
+                              :items="field.options"
+                            ></v-select>
+
+                            <v-text-field
+                              v-else
+                              v-model="field.id"
+                              :label="field.label"
+                              :type="field.type"
+                            ></v-text-field>
+
+                          </v-col>
+                        </template>
+                      </v-row>
+                    </v-col>
+
+
+                    <!-- parents info -->
+                    <v-col cols="12" sm="6">
+                      <template v-for="field in personalInfoInputFields.slice(21, 25)">
+                          <v-text-field
+                            v-model="field.id"
+                            :label="field.label"
+                            :type="field.type"
+                          ></v-text-field>
+                      </template>
+                    </v-col>
+
+
+                    <!-- officers in charge -->
+                    <v-col cols="12" sm="6">
+                      <template v-for="field in personalInfoInputFields.slice(25, 30)" >
                         <v-text-field
-                          v-model="editedItem[key.key]"
-                          :label="key.title"
+                          v-model="field.id"
+                          :label="field.label"
                         ></v-text-field>
-                      </v-col>
-                    </template>
+                      </template>
+                    </v-col>
+
                   </v-row>
                 </v-container>
               </v-card-text>
   
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn
-                  color="blue-darken-1"
-                  variant="text"
-                  @click="close"
-                >
+                <v-btn color="blue-darken-1" variant="text" @click="close">
                   បោះបង់
                 </v-btn>
 
-                <v-btn
-                  color="blue-darken-1"
-                  variant="text"
-                  @click="save"
-                >
+                <v-btn color="blue-darken-1" variant="text" @click="save">
                   រក្សាទុក
                 </v-btn>
               </v-card-actions>
 
             </v-card>
-          </v-dialog> -->
+          </v-dialog>
 
           <!-- Delete record confirmation modal -->
           <v-dialog v-model="dialogDelete" max-width="500px">
@@ -101,8 +139,8 @@
       <template v-slot:item="{ item, index }">
         <tr @click="viewRecord(item)" style="cursor: pointer;">
 
-          <td v-for="key in Object.keys(item)">
-            {{ item[key] }}
+          <td v-for="key in Object.keys(item)" :key="index">
+            {{ item [ key ] }}
           </td>
 
           <td>
@@ -204,12 +242,217 @@
         address: "",
         bookID: ""
       },
+
+      formName: 'សលាកប័ត្រឯកកត្តជន',
+      inputFields: [
+        {
+          key: "id",
+          label: "លេខ",
+          type: "text",
+          value: ""
+        },{
+          key: "bookID",
+          label: "លេខសៀវភៅ",
+          type: "text",
+          value: ""
+        }, {
+          key: "madeAt",
+          label: "ធ្វេីនៅ",
+          type: "text",
+          value: ""
+        }
+      ]
     }),
 
     computed: {
       formTitle () {
         return this.editedIndex === -1 ? 'ពត័មានអ្នកប្រេីប្រាស់ថ្មី' : 'កែពត័មានអ្នកប្រេីប្រាស់'
       },
+
+      personalInfoInputFields () {
+        return [{
+          key: "formula",
+          label: "រូបមន្ត",
+          type: "text",
+          col: 12,
+          value: ""
+        }, {
+          key: "last_name",
+          label: "គោត្តនាម",
+          type: "text",
+          col: 4,
+          value: ""
+        }, {
+          key: "first_name",
+          label: "នាម",
+          type: "text",
+          col: 4,
+          value: ""
+        }, {
+          key: "nickname",
+          label: "ឈ្មោះហៅក្រៅ",
+          type: "text",
+          col: 4,
+          value: ""
+        }, {
+          key: "dob",
+          label: "ថ្ងៃខែឆ្នាំកំណេីត",
+          type: "date",
+          col: 12,
+          value: ""
+        }, {
+          key: "pob_province",
+          label: "ខេត្ត/ក្រុងកំណេីត",
+          type: "select",
+          options: ['California', 'Colorado', 'Florida', 'Georgia', 'Texas', 'Wyoming'], // to fetch 
+          col: 4,
+          value: ""
+        }, {
+          key: "pob_district",
+          label: "ស្រុក/ខណ្ឌកំណេីត",
+          type: "select",
+          options: ['California', 'Colorado', 'Florida', 'Georgia', 'Texas', 'Wyoming'], // to fetch 
+          col: 4,
+          value: ""
+        }, {
+          key: "pob_commune",
+          label: "ភូមិ/សង្កាត់កំណេីត",
+          type: "select",
+          options: ['California', 'Colorado', 'Florida', 'Georgia', 'Texas', 'Wyoming'], // to fetch 
+          col: 4,
+          value: ""
+        }, {
+          key: "ethnicity",
+          label: "ជនជាតិ",
+          type: "text",
+          col: 4,
+          value: ""
+        }, {
+          key: "nationality",
+          label: "សញ្ជាតិ",
+          type: "text",
+          col: 4,
+          value: ""
+        }, {
+          key: "religion",
+          label: "សាសនា",
+          type: "text",
+          col: 4,
+          value: ""
+        }, {
+          key: "previous_occupation",
+          label: "មុខរបរធ្លាប់ធ្វេីពីមុន",
+          type: "text",
+          col: 6,
+          value: ""
+        }, {
+          key: "occupation",
+          label: "មុខរបរបច្ចុប្បន្ន",
+          type: "text",
+          col: 6,
+          value: ""
+        }, {
+          key: "current_address",
+          label: "អាស័យដ្ឋានបច្ចុប្បន្ន",
+          type: "text",
+          col: 12,
+          value: ""
+        }, {
+          key: "province",
+          label: "ខេត្ត/ក្រុង",
+          type: "select",
+          options: ['California', 'Colorado', 'Florida', 'Georgia', 'Texas', 'Wyoming'], // to fetch 
+          col: 4,
+          value: ""
+        }, {
+          key: "district",
+          label: "ស្រុក/ខណ្ឌ",
+          type: "select",
+          options: ['California', 'Colorado', 'Florida', 'Georgia', 'Texas', 'Wyoming'], // to fetch 
+          col: 4,
+          value: ""
+        }, {
+          key: "commune",
+          label: "ភូមិ/សង្កាត់",
+          type: "select",
+          options: ['California', 'Colorado', 'Florida', 'Georgia', 'Texas', 'Wyoming'], // to fetch 
+          col: 4,
+          value: ""
+        }, {
+          key: "identity",
+          label: "ភិនភាគ",
+          type: "text",
+          col: 10,
+          value: ""
+        }, {
+          key: "height",
+          label: "កម្ពស់ (ម៉ែត្រ)",
+          type: "text", // number
+          col: 2,
+          value: ""
+        }, {
+          key: "spouse",
+          label: "ប្តី ឬ ប្រពន្ធ",
+          type: "text",
+          col: 6,
+          value: ""
+        }, {
+          key: "spouse_address",
+          label: "នៅ",
+          type: "text",
+          col: 6,
+          value: ""
+        }, 
+
+        // parents info
+        {
+          key: "father_name",
+          label: "ឪពុកឈ្មោះ",
+          type: "text",
+          col: 12,
+          value: ""
+        }, {
+          key: "father_address",
+          label: "នៅ",
+          type: "text",
+          col: 12,
+          value: ""
+        }, {
+          key: "mother_name",
+          label: "ម្តាយឈ្មោះ",
+          type: "text",
+          col: 12,
+          value: ""
+        }, {
+          key: "mother_address",
+          label: "នៅ",
+          type: "text",
+          col: 12,
+          value: ""
+        }, 
+        
+        // officers in charge
+        {
+          key: "ផrivate_certificate_officer",
+          // label: "មន្ត្រីធ្វេីសលាកប័ត្រឯកកត្តជន",
+          label: `មន្ត្រីធ្វេី${ this.formName }`,
+          type: "text",
+          col: 12,
+          value: ""
+        }, {
+          key: "supervision_officer",
+          label: "មន្ត្រីបែងចែកត្រួតពិនិត្យ",
+          type: "text",
+          col: 12,
+          value: ""
+        }, {
+          key: "scheduling_research_officer",
+          label: "មន្ត្រីស្រាវជ្រាវ រៀបតារាង",
+          type: "text",
+          col: 12,
+          value: ""
+        }]
+      }
     },
 
     watch: {
