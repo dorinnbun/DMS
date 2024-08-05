@@ -33,7 +33,7 @@
             </template>
 
             <v-card>
-              <v-card-title style="text-align: center; margin: auto;">
+              <v-card-title class="form-title">
                 <v-text-field
                   v-model="formName"
                   style="text-align: center; width: 250px; font-size: 20px; font-weight: bold; margin: auto;"
