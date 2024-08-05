@@ -101,7 +101,16 @@
                         ></v-text-field>
                       </template>
                     </v-col>
-
+                    
+                    <v-col cols="12" sm="12" style="text-align: center;">
+                      <h4>Upload files</h4>
+                    </v-col>
+                    
+                    <!-- files input -->
+                    <v-col class="column-5" cols="12" sm="6" v-for="field in fileUploadsInputFields">
+                      <v-file-input :label="field.label" accept=".jpg,.png,.pdf"></v-file-input>
+                    </v-col>
+                    
                   </v-row>
                 </v-container>
               </v-card-text>
@@ -196,36 +205,13 @@
       dialog: false,
       dialogDelete: false,
       headers: [
-        { 
-          title: 'លេខរៀង', 
-          key: 'id', 
-          sortable: false  
-        },
-        { 
-          title: 'លេខសៀវភៅ', 
-          key: 'bookID' 
-        },
-        {
-          title: 'នាមគោត្តនាម',
-          align: 'start',
-          key: 'name',
-        },
-        { 
-          title: 'សញ្ជាតិ', 
-          key: 'nationality', 
-          sortable: false  
-        },
-        { 
-          title: 'អាសយដ្ឋាន', 
-          key: 'address', 
-          sortable: false  
-        },
-        { 
-          title: '', 
-          key: 'actions', 
-          sortable: false 
-        },
-      ],
+          { title: 'លេខរៀង', key: 'id', sortable: false },
+          { title: 'លេខសៀវភៅ', key: 'bookID' },
+          { title: 'នាមគោត្តនាម', align: 'start', key: 'name' },
+          { title: 'សញ្ជាតិ', key: 'nationality', sortable: false },
+          { title: 'អាសយដ្ឋាន', key: 'address', sortable: false },
+          { title: '', key: 'actions', sortable: false }
+        ],
       editedIndex: -1,
       editedItem: {
         name: '',
@@ -261,6 +247,20 @@
           type: "text",
           value: ""
         }
+      ],
+
+      fileUploadsInputFields: [
+        { key: "leftThumbPrint",  label: "មេដៃឆ្វេង",      type: "file", value: "" },
+        { key: "leftIndexPrint",  label: "ចង្អុលដៃឆ្វេង",    type: "file", value: "" },
+        { key: "leftMiddlePrint", label: "ដៃកណ្តាលឆ្វេង",  type: "file", value: "" },
+        { key: "leftRingPrint",   label: "នាងដៃឆ្វេង",     type: "file", value: "" },
+        { key: "leftPinkyPrint",  label: "កូនដៃឆ្វេង",      type: "file", value: "" },
+        
+        { key: "rightThumbPrint",  label: "មេដៃស្តាំ",      type: "file", value: "" },
+        { key: "rightIndexPrint",  label: "ចង្អុលដៃស្តាំ",    type: "file", value: "" },
+        { key: "rightMiddlePrint", label: "ដៃកណ្តាលស្តាំ",  type: "file", value: "" },
+        { key: "rightRingPrint",   label: "នាងដៃស្តាំ",     type: "file", value: "" },
+        { key: "rightPinkyPrint",  label: "កូនដៃស្តាំ",      type: "file", value: "" },
       ]
     }),
 
@@ -574,3 +574,4 @@
 
 
 <style scoped src="../../styles/table.scss"></style>
+<style scoped src="../../styles/records.scss"></style>

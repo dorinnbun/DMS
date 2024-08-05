@@ -1,0 +1,12 @@
+.column-5 {
+
+  @media (min-width: 576px ) {
+    flex-basis: 25%;
+    max-width: 25%;
+  }
+
+  @media (min-width: 768px ) {
+    flex-basis: 20%;
+    max-width: 20%;
+  }
+}
