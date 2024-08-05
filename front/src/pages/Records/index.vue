@@ -20,7 +20,7 @@
           <v-spacer></v-spacer>
 
           <!-- adding new record ==> a custom form dialog -->
-          <v-dialog v-model="dialog" max-width="90%">
+          <v-dialog v-model="dialog" max-width="90%" persistent>
             <template v-slot:activator="{ props }">
               <v-btn
                 class="mb-2"
@@ -41,7 +41,7 @@
               </v-card-title>
   
               <v-card-text>
-                <v-container style="margin: 0;">
+                <v-container style="margin: 0; max-width: 100% !important;">
                   <v-row>
 
                     <!-- form detail -->
@@ -60,12 +60,12 @@
                         <template v-for="field in personalInfoInputFields.slice(1, 21)" >
                           <v-col cols="12" :sm="field.col">
 
-                            <v-select
+                            <v-autocomplete
                               v-if="field.type === 'select'"
                               v-model="field.id"
                               :label="field.label"
                               :items="field.options"
-                            ></v-select>
+                            ></v-autocomplete>
 
                             <v-text-field
                               v-else
