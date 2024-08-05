@@ -212,26 +212,4 @@
 </script>
 
 
-<style scoped>
-  input {
-    border-radius: 5px;
-    padding: 10px;
-    background-color: white;
-    margin-left: 10px;
-    outline: none;
-    width: 250px;
-  }
-  
-  button {
-    background-color: #1867C0 !important;
-    color: white !important;
-    margin: 0 10px !important;
-    padding: 0 25px;
-    font-weight: bold !important;
-  }
-
-  .v-data-table-header th {
-    font-weight: bolder;
-    color: red !important;
-  }
-</style>
+<style scoped src="../../styles/table.scss"></style>
