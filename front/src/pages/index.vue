@@ -115,7 +115,7 @@
               <v-card-actions>
                 <v-spacer></v-spacer>
                 <v-btn color="blue-darken-1" variant="text" @click="closeDelete">បោះបង់</v-btn>
-                <v-btn color="blue-darken-1" variant="text" @click="deleteItemConfirm">លុបចោល</v-btn>
+                <button class="cancel-btn" @click="deleteItemConfirm">លុបចោល</button>
                 <v-spacer></v-spacer>
               </v-card-actions>
             </v-card>
