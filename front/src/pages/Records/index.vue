@@ -154,7 +154,12 @@
                   បោះបង់
                 </button>
 
-                <v-btn color="blue-darken-1" variant="text" @click="save">
+                <v-btn 
+                  color="blue-darken-1" 
+                  variant="text" 
+                  @click="save"
+                  :disabled="formNotSubmitable"
+                >
                   រក្សាទុក
                 </v-btn>
               </v-card-actions>
@@ -495,6 +500,13 @@
     computed: {
       formTitle () {
         return this.editedIndex === -1 ? 'ពត័មានអ្នកប្រេីប្រាស់ថ្មី' : 'កែពត័មានអ្នកប្រេីប្រាស់'
+      },
+
+      formNotSubmitable() {
+        return !this.inputFields.every(item => item.value) 
+          && !this.personalInfoInputFields.every(item => item.value) 
+          && !this.fingerPrintsFileInput.every(item => item.value) 
+          && !this.palmPrintFileInput.every(item => item.value)
       }
     },
 
