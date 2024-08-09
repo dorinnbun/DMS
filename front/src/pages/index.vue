@@ -25,7 +25,7 @@
 
           <v-dialog
             v-model="dialog"
-            max-width="500px"
+            max-width="80%"
           >
             <template v-slot:activator="{ props }">
               <v-btn
@@ -46,33 +46,60 @@
               <v-card-text>
                 <v-container>
                   <v-row>
-                    <!-- adding new item -->
-                     <template v-for="key in headers.slice(1, headers.length-1)">
+
+                    <!-- adding new user -->
+
+                    <template v-for="key in createObject">
                       <v-col cols="12" md="4" sm="6">
                         <v-text-field
-                          v-model="editedItem[key.key]"
-                          :label="key.title"
+                          v-if="key.type === 'text'"
+                          v-model="key.value"
+                          :label="key.label"
+                          persistent-hint="false"
+                          :rules="[v => !!v || 'ទិន្នន័យត្រូវបញ្ចូល']"
                         ></v-text-field>
+
+                        <v-text-field
+                          v-else-if="key.type === 'password'"
+                          v-model="key.value"
+                          :type="showPassword ? 'text' : 'password'"
+                          :name="key.label"
+                          :label="key.label"
+                          @click:append-inner="togglePasswordVisibility"
+                        >
+                          <template v-slot:append-inner>
+                            <v-icon @click="togglePasswordVisibility">
+                              {{ showPassword ? 'mdi-eye-off' : 'mdi-eye' }}
+                            </v-icon>
+                          </template>
+                        </v-text-field>
+
+                        <v-select
+                          v-else-if="key.type === 'select'"
+                          v-model="key.value"
+                          :label="key.label"
+                          :items="key.items"
+                          :rules="[v => !!v || 'ទិន្នន័យត្រូវបញ្ចូល']"
+                        ></v-select>
+                        
                       </v-col>
-                     </template>
+                    </template>
+
                   </v-row>
                 </v-container>
               </v-card-text>
   
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn
-                  color="blue-darken-1"
-                  variant="text"
-                  @click="close"
-                >
+                <button class="cancel-btn" @click="close">
                   បោះបង់
-                </v-btn>
+                </button>
 
                 <v-btn
                   color="blue-darken-1"
                   variant="text"
                   @click="save"
+                  :disabled="!createObject.every(item => item.value)"
                 >
                   រក្សាទុក
                 </v-btn>
@@ -152,6 +179,8 @@
   export default {
     data: () => ({
 
+      showPassword: false,
+
       itemsPerPage: 5, //
       search: '',
       serverItems: [],
@@ -167,26 +196,71 @@
           align: 'start',
           key: 'name',
         },
-        { title: 'សញ្ជាតិ', key: 'nationality', sortable: false  },
+        { title: 'អ៊ីម៉ែល', key: 'email', sortable: false  },
         { title: 'អាសយដ្ឋាន', key: 'address', sortable: false  },
-        { title: 'មុខរបរ', key: 'occupation' },
         { title: '', key: 'actions', sortable: false },
       ],
       editedIndex: -1,
       editedItem: {
         name: '',
         id: 0,
-        nationality: "",
+        email: "",
         address: "",
-        occupation: ""
       },
       defaultItem: {
         name: '',
         id: 0,
-        nationality: "",
+        email: "",
         address: "",
-        occupation: ""
       },
+      createObject: [
+        {
+          label: 'គោត្តនាម',
+          key: 'first_name',
+          value: '',
+          type: 'text'
+        }, {
+          label: 'នាម',
+          key: 'last_name',
+          value: '',
+          type: 'text'
+        }, {
+          key: 'email',
+          label: 'អ៊ីម៉ែល',
+          value: '',
+          type: 'text'
+        }, {
+          key: 'phone_number',
+          label: 'លេខទូរស័ព្ទ',
+          value: '',
+          type: 'text'
+        }, {
+          key: 'role',
+          label: 'តួនាទី',
+          value: '',
+          type: 'select',
+          items: [
+            'Admin',
+            'User',
+            'Guest'
+          ]
+        }, {
+          key: 'address',
+          label: 'អាសយដ្ឋាន',
+          value: '',
+          type: 'text'
+        }, {
+          key: "password",
+          label: "លេខសម្ងាត់",
+          value: "",
+          type: "password"
+        }, {
+          key: "confirm_password",
+          label: "បញ្ជាក់លេខសម្ងាត់",
+          value: "",
+          type: "password"
+        }
+      ]
     }),
 
     computed: {
@@ -210,42 +284,47 @@
     },
 
     methods: {
+
+      togglePasswordVisibility() {
+        this.showPassword = !this.showPassword;
+      },
+
       initialize () {
         this.serverItems = [
           {
             name: 'David Lee',
             id: 159,
-            nationality: "កម្ពុជា",
             address: "សង្កាត់ចំការមន រាជធានីភ្នំពេញ",
-            occupation: "លក់ដូរ",
+            email: "neary@hajhdea.co",
+            phoneNumber: "011234234"
           },
           {
             name: 'Daniel Lee',
             id: 237,
-            nationality: "កម្ពុជា",
             address: "សង្កាត់ចំការមន រាជធានីភ្នំពេញ",
-            occupation: "លក់ដូរ",
+            email: "neary@hajhdea.co",
+            phoneNumber: "011234234"
           },
           {
             name: 'Neary Lee',
             id: 262,
-            nationality: "កម្ពុជា",
             address: "សង្កាត់ចំការមន រាជធានីភ្នំពេញ",
-            occupation: "លក់ដូរ",
+            email: "neary@hajhdea.co",
+            phoneNumber: "011234234"
           },
           {
             name: 'Bopha Lee',
             id: 305,
-            nationality: "កម្ពុជា",
             address: "សង្កាត់ចំការមន រាជធានីភ្នំពេញ",
-            occupation: "លក់ដូរ",
+            email: "neary@hajhdea.co",
+            phoneNumber: "011234234"
           },
           {
             name: 'Dyna Lee',
             id: 356,
-            nationality: "កម្ពុជា",
             address: "សង្កាត់ចំការមន រាជធានីភ្នំពេញ",
-            occupation: "លក់ដូរ",
+            email: "neary@hajhdea.co",
+            phoneNumber: "011234234"
           }
         ]
       },
@@ -309,3 +388,10 @@
 
 
 <style scoped src="../styles/table.scss"></style>
+<style scoped>
+  .cancel-btn {
+    background-color: #D32F2F !important; 
+    padding: 6px 25px; 
+    border-radius: 4px;
+  }
+</style>
