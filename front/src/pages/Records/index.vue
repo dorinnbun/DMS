@@ -46,30 +46,41 @@
 
                     <!-- form detail -->
                     <v-col cols="12" sm="2">
-                      <v-text-field
-                        v-for="field in inputFields"
-                        v-model="field.id"
-                        :label="field.label"
-                      ></v-text-field>
+                      <template v-for="field in inputFields">
+
+                        <v-text-field
+                          v-if="field.type === 'text'"
+                          v-model="field.value"
+                          :label="field.label"
+                        ></v-text-field>
+
+                        <v-file-input 
+                          v-else 
+                          v-model="field.value"
+                          :label="field.label" 
+                          accept=".jpg,.png,.pdf"
+                        ></v-file-input>
+
+                      </template>
                     </v-col>
 
 
                     <!-- personal information -->
                     <v-col cols="12" sm="10">
                       <v-row>
-                        <template v-for="field in personalInfoInputFields.slice(1, 21)" >
-                          <v-col cols="12" :sm="field.col">
+                        <template v-for="field in personalInfoInputFields.slice(0, 21)" >
+                          <v-col cols="12" :sm="field.col" :offset="field.offset || 0">
 
                             <v-autocomplete
                               v-if="field.type === 'select'"
-                              v-model="field.id"
+                              v-model="field.value"
                               :label="field.label"
                               :items="field.options"
                             ></v-autocomplete>
 
                             <v-text-field
                               v-else
-                              v-model="field.id"
+                              v-model="field.value"
                               :label="field.label"
                               :type="field.type"
                             ></v-text-field>
@@ -84,7 +95,7 @@
                     <v-col cols="12" sm="6">
                       <template v-for="field in personalInfoInputFields.slice(21, 25)">
                           <v-text-field
-                            v-model="field.id"
+                            v-model="field.value"
                             :label="field.label"
                             :type="field.type"
                           ></v-text-field>
@@ -96,7 +107,7 @@
                     <v-col cols="12" sm="6">
                       <template v-for="field in personalInfoInputFields.slice(25, 30)" >
                         <v-text-field
-                          v-model="field.id"
+                          v-model="field.value"
                           :label="field.label"
                         ></v-text-field>
                       </template>
@@ -108,7 +119,7 @@
                     
                     <!-- files input -->
                     <v-col class="column-5" cols="12" sm="6" v-for="field in fileUploadsInputFields">
-                      <v-file-input :label="field.label" accept=".jpg,.png,.pdf"></v-file-input>
+                      <v-file-input v-model="field.value" :label="field.label" accept=".jpg,.png,.pdf"></v-file-input>
                     </v-col>
                     
                   </v-row>
@@ -237,7 +248,12 @@
           label: "លេខ",
           type: "text",
           value: ""
-        },{
+        }, {
+          key: "identityPhoto",
+          label: "រូបថត ៤x៦",
+          type: "file",
+          value: ""
+        },  {
           key: "bookID",
           label: "លេខសៀវភៅ",
           type: "text",
@@ -275,7 +291,8 @@
           key: "formula",
           label: "រូបមន្ត",
           type: "text",
-          col: 12,
+          col: 6,
+          offset: 6,
           value: ""
         }, {
           key: "last_name",
