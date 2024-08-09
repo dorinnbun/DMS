@@ -69,7 +69,7 @@
                     <v-col cols="12" sm="10">
                       <v-row>
                         <template v-for="field in personalInfoInputFields.slice(0, 21)" >
-                          <v-col cols="12" :sm="field.col" :offset="field.offset || 0">
+                          <v-col cols="12" :sm="field.col" :offset-md="field.offset || 0">
 
                             <v-autocomplete
                               v-if="field.type === 'select'"
@@ -90,6 +90,16 @@
                       </v-row>
                     </v-col>
 
+
+                    <!-- page 1 files input -->
+                    <v-col class="column-5" cols="12" sm="6" v-for="field in fingerPrintsFileInput">
+                      <v-file-input v-model="field.value" :label="field.label" accept=".jpg,.png,.pdf"></v-file-input>
+                    </v-col>
+
+                    <!-- end of page 1 input fields -->
+                    <v-divider></v-divider>
+
+                    <div style="height: 20px;"></div>
 
                     <!-- parents info -->
                     <v-col cols="12" sm="6">
@@ -112,13 +122,8 @@
                         ></v-text-field>
                       </template>
                     </v-col>
-                    
-                    <v-col cols="12" sm="12" style="text-align: center;">
-                      <h4>បង្ហោះរូបភាព</h4>
-                    </v-col>
-                    
-                    <!-- files input -->
-                    <v-col class="column-5" cols="12" sm="6" v-for="field in fileUploadsInputFields">
+
+                    <v-col cols="12" sm="6" v-for="field in palmPrintFileInput">
                       <v-file-input v-model="field.value" :label="field.label" accept=".jpg,.png,.pdf"></v-file-input>
                     </v-col>
                     
@@ -266,7 +271,7 @@
         }
       ],
 
-      fileUploadsInputFields: [
+      fingerPrintsFileInput: [
         { key: "leftThumbPrint",  label: "មេដៃឆ្វេង",      type: "file", value: "" },
         { key: "leftIndexPrint",  label: "ចង្អុលដៃឆ្វេង",    type: "file", value: "" },
         { key: "leftMiddlePrint", label: "ដៃកណ្តាលឆ្វេង",  type: "file", value: "" },
@@ -278,7 +283,13 @@
         { key: "rightMiddlePrint", label: "ដៃកណ្តាលស្តាំ",  type: "file", value: "" },
         { key: "rightRingPrint",   label: "នាងដៃស្តាំ",     type: "file", value: "" },
         { key: "rightPinkyPrint",  label: "កូនដៃស្តាំ",      type: "file", value: "" },
-      ]
+      ],
+
+      palmPrintFileInput: [
+        { key: "leftPalmPrint",  label: "បាតដៃឆ្វេង", type: "file", value: "" },
+        { key: "rightPalmPrint", label: "បាតដៃស្តាំ", type: "file", value: "" },
+      ],
+
     }),
 
     computed: {
