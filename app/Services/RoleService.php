@@ -5,6 +5,8 @@ namespace App\Services;
 use App\Models\Role;
 use App\Models\User;
 use App\Enums\RoleEnum;
+use Illuminate\Support\Facades\DB;
+use App\Services\PermissionService;
 use App\Http\Resources\Api\RoleResource;
 use Symfony\Component\CssSelector\Node\FunctionNode;
 
@@ -12,10 +14,11 @@ class RoleService extends BaseService
 {
   protected $model;
   protected $resourceClass = RoleResource::class;
-
-  public function __construct(Role $role)
+  protected $permissionService;
+  public function __construct(Role $role, PermissionService $permissionService)
   {
     $this->model = $this->make_resource($role);
+    $this->permissionService = $permissionService;
   }
 
   public function getRoleLists()
@@ -23,11 +26,22 @@ class RoleService extends BaseService
     return $this->queryBuilder();
   }
 
-  public function createRole($role_admin_list)
+  public function createRole($request)
   {
-    // $role_admin_list = ['guard_name' => 'api', 'name' => 'admin'];
-    $role = $this->create($role_admin_list);
-    return $this->make_resource($role);
+    try {
+
+      DB::beginTransaction();
+      $role = [
+        "name" => $request['name'],
+      ];
+      $role = $this->create($role);
+      
+      DB::commit();
+      return $this->make_resource($role);
+      
+    } catch (\Throwable $th) {
+      DB::rollBack();
+    }
   }
 
   public function getRole($role_id)
@@ -48,38 +62,18 @@ class RoleService extends BaseService
     return $this->make_resource($role);
   }
 
-  public function assign_role($user_mdoel)
+  public function assign_role($user_mdoel, $role_id)
   {
-    return $user_mdoel->assignRole($this->getRoleEnumValue($user_mdoel['role']));
+    $role = $this->getById($role_id);
+    return $user_mdoel->assignRole($role->name);
   }
 
-/*   public function attachMultipleRole(User $user,$roleIds, $extra_fields=[])
+  public function remove_role($user_mdoel)
   {
-    $existingRoles = $user->roles->pluck('id')->toArray();
-    $newRoles = array_diff($roleIds, $existingRoles);
-
-    if (!empty($newRoles)) {
-      $attach = $user->roles()->attach($newRoles);
-      return $attach;
-    }
+    $role_id = $user_mdoel->roles()->pluck('id')->first();
+    return $user_mdoel->removeRole($role_id);
   }
-  public function attachSingleRole(User $user,$roleId, $extra_fields=[])
-  {
-    if (!$user->roles->contains($roleId)) {
-      $attach = $user->roles()->attach($roleId);
-      return $attach;
-    }
-  }
-  public function detachRole(User $user, $role_id, $extra_fields=[])
-  {
-    $attach = $user->roles()->detach($role_id);
-    return $attach;
-  }
-  public function syncRole(User $user, $extra_fields=[])
-  {
-    $attach = $user->roles()->sync($user->role->id);
-    return $attach;
-  } */
+  
 
   public function getRoleEnumValue(string $role): ?string
   {

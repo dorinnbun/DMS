@@ -18,11 +18,6 @@ class UserRoleService extends RoleService
     
   }
 
-  public function assign_role($user_mdoel)
-  {
-    return $user_mdoel->assignRole($this->getRoleEnumValue($user_mdoel['role']));
-  }
-
   public function attachMultipleRole(User $user,$roleIds, $extra_fields=[])
   {
     $existingRoles = $user->roles->pluck('id')->toArray();
@@ -40,15 +35,22 @@ class UserRoleService extends RoleService
       return $attach;
     }
   }
-  public function detachRole(User $user, $role_id, $extra_fields=[])
+  public function detachRole(User $user, $roleId, $extra_fields=[])
   {
-    $attach = $user->roles()->detach($role_id);
+    $attach = $user->roles()->detach($roleId);
     return $attach;
   }
-  public function syncRole(User $user, $extra_fields=[])
+  public function syncRole(User $user,$roleId, $extra_fields=[])
   {
-    $attach = $user->roles()->sync($user->role->id);
+    // sync append list of role, if id exists skip and add all not exists
+    $attach = $user->roles()->sync($roleId);
     return $attach;
+  }
+  public function updateExistingPivotRole(User $user,$roleId, $extra_fields=[])
+  {
+    // sync append list of role, if id exists skip and add all not exists
+    $update_pivot = $user->roles()->updateExistingPivot($roleId, $extra_fields);
+    return $update_pivot;
   }
 
 }

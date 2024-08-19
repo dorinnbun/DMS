@@ -5,13 +5,13 @@ namespace App\Services;
 use App\Models\User;
 use App\Services\RoleService;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Resources\Api\UserResource;
+use App\Http\Resources\Api\AuthResource;
 
 class AuthService extends BaseService
 {
   protected $model;
   protected $role;
-  protected $resourceClass = UserResource::class;
+  protected $resourceClass = AuthResource::class;
   public $request;
 
   public function __construct(User $user, RoleService $role_service)
@@ -27,11 +27,11 @@ class AuthService extends BaseService
     return $token;
   }
 
-  public function register(Array $user)
+  public function register(Array $user, $role_id)
   {
     $user_model = $this->create($user);
-    // $user_model = $this->role->assign_role($user_model);
-    $user_model->assignRole($this->role->getRoleEnumValue($user['role']));
+    $user_model = $this->role->assign_role($user_model, $role_id);
+    // $user_model->assignRole($this->role->getRoleEnumValue($user['role']));
     return $user_model;
   }
 

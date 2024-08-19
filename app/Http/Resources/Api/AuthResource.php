@@ -6,7 +6,7 @@ use PHPOpenSourceSaver\JWTAuth\Token;
 use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class UserResource extends JsonResource
+class AuthResource extends JsonResource
 {
   public $token;
 
@@ -28,15 +28,6 @@ class UserResource extends JsonResource
       'name'  => $this->name,
       'email' => $this->email,
     ];
-
-    if ( isset($this->roles) ){
-      $user_list['roles'] = $this->roles->map(function ($role) {
-        return [
-          'id'   => $role->id,
-          'name' => $role->name,
-        ];
-      });
-    }
 
     if (is_JWT_token($this->token)) {
       $user_list['authorisation'] = [

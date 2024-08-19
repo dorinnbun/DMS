@@ -6,18 +6,15 @@ use PHPOpenSourceSaver\JWTAuth\Token;
 use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class UserResource extends JsonResource
+class DocumentResource extends JsonResource
 {
-  public $token;
 
-  public function __construct($resource, $token)
+  public function __construct($resource)
   {
-    $this->token = $token;
     parent::__construct($resource);
   }
   /**
    * Transform the resource into an array.
-   * login and register contain token
    * @param  \Illuminate\Http\Request  $request
    * @return array|\Illuminate\Contracts\Support\Arrayable|\JsonSerializable
    */
@@ -36,13 +33,6 @@ class UserResource extends JsonResource
           'name' => $role->name,
         ];
       });
-    }
-
-    if (is_JWT_token($this->token)) {
-      $user_list['authorisation'] = [
-        'token' => $this->token,
-        'type' => 'bearer',
-      ];
     }
     return $user_list;
   }

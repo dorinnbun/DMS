@@ -6,18 +6,15 @@ use PHPOpenSourceSaver\JWTAuth\Token;
 use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class UserResource extends JsonResource
+class ProvinceResource extends JsonResource
 {
-  public $token;
 
-  public function __construct($resource, $token)
+  public function __construct($resource)
   {
-    $this->token = $token;
     parent::__construct($resource);
   }
   /**
    * Transform the resource into an array.
-   * login and register contain token
    * @param  \Illuminate\Http\Request  $request
    * @return array|\Illuminate\Contracts\Support\Arrayable|\JsonSerializable
    */
@@ -25,25 +22,24 @@ class UserResource extends JsonResource
   {
     $user_list = [
       'id'    => $this->id,
+      'id'    => $this->code,
       'name'  => $this->name,
-      'email' => $this->email,
-    ];
-
-    if ( isset($this->roles) ){
-      $user_list['roles'] = $this->roles->map(function ($role) {
+      'name_in_english'  => $this->name_in_english,
+      'district' => $this->districts->map(function ($district) {
         return [
-          'id'   => $role->id,
-          'name' => $role->name,
+          'id'   => $district->id,
+          'name' => $district->name,
+          'name_in_english' => $district->name_in_english,
+          'communes' => $district->communes->map(function ($communes) {
+            return [
+              'id'   => $communes->id,
+              'name' => $communes->name,
+            ];
+          })
         ];
-      });
-    }
+      })
 
-    if (is_JWT_token($this->token)) {
-      $user_list['authorisation'] = [
-        'token' => $this->token,
-        'type' => 'bearer',
-      ];
-    }
+    ];
     return $user_list;
   }
 }

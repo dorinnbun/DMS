@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Medias;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,4 +16,11 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
+});
+
+Route::get("add-media", function() {
+    Medias::create([
+        "photo1" => "1",
+        "photo2" => "2",
+    ])->addMedia(storage_path("demo/0_vwcP0i8cGx1TKAte.png"))->toMediaCollection();
 });

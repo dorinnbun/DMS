@@ -1,0 +1,131 @@
+{
+  "docu" : [
+    {
+      "key": "id",
+      "label": "លេខ"
+    },
+    {
+      "key": "bookID",
+      "label": "លេខសៀវភៅ"
+    },
+    {
+      "key": "madeAt",
+      "label": "ធ្វេីនៅ"
+    },
+    {
+      "key": "formula",
+      "label": "រូបមន្ត"
+    },
+    {
+      "key": "last_name",
+      "label": "គោត្តនាម"
+    },
+    {
+      "key": "first_name",
+      "label": "នាម"
+    },
+    {
+      "key": "nickname",
+      "label": "ឈ្មោះហៅក្រៅ"
+    },
+    {
+      "key": "dob",
+      "label": "ថ្ងៃខែឆ្នាំកំណេីត"
+    },
+    {
+      "key": "pob_province",
+      "label": "ខេត្ត/ក្រុងកំណេីត"
+    },
+    {
+      "key": "pob_district",
+      "label": "ស្រុក/ខណ្ឌកំណេីត"
+    },
+    {
+      "key": "pob_commune",
+      "label": "ភូមិ/សង្កាត់កំណេីត"
+    },
+    {
+      "key": "ethnicity",
+      "label": "ជនជាតិ"
+    },
+    {
+      "key": "nationality",
+      "label": "សញ្ជាតិ"
+    },
+    {
+      "key": "religion",
+      "label": "សាសនា"
+    },
+    {
+      "key": "previous_occupation",
+      "label": "មុខរបរធ្លាប់ធ្វេីពីមុន"
+    },
+    {
+      "key": "occupation",
+      "label": "មុខរបរបច្ចុប្បន្ន"
+    },
+    {
+      "key": "current_address",
+      "label": "អាស័យដ្ឋានបច្ចុប្បន្ន"
+    },
+    {
+      "key": "province",
+      "label": "ខេត្ត/ក្រុង"
+    },
+    {
+      "key": "district",
+      "label": "ស្រុក/ខណ្ឌ"
+    },
+    {
+      "key": "commune",
+      "label": "ភូមិ/សង្កាត់"
+    },
+    {
+      "key": "identity",
+      "label": "ភិនភាគ"
+    },
+    {
+      "key": "height",
+      "label": "កម្ពស់ (ម៉ែត្រ)"
+    },
+    {
+      "key": "spouse",
+      "label": "ប្តី ឬ ប្រពន្ធ"
+    },
+    {
+      "key": "spouse_address",
+      "label": "នៅ"
+    },
+    // parents info
+    {
+      "key": "father_name",
+      "label": "ឪពុកឈ្មោះ"
+    },
+    {
+      "key": "father_address",
+      "label": "នៅ"
+    },
+    {
+      "key": "mother_name",
+      "label": "ម្តាយឈ្មោះ"
+    },
+    {
+      "key": "mother_address",
+      "label": "នៅ"
+    },
+    // officers in charge
+    {
+      "key": "private_certificate_officer",
+      "label": មន្ត្រីធ្វេី${ this.formName},
+    },
+    {
+      "key": "supervision_officer",
+      "label": "មន្ត្រីបែងចែកត្រួតពិនិត្យ"
+    },
+    {
+      "key": "scheduling_research_officer",
+      "label": "មន្ត្រីស្រាវជ្រាវ រៀបតារាង"
+    }
+    
+  ]
+}

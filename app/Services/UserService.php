@@ -24,6 +24,11 @@ class UserService extends BaseService
     return $this->queryBuilder();
   }
 
+  public function restore($id)
+  {
+    // todo: restore user record deleted
+  }
+
   public function getByUuid($uuid)
   {
     $user = $this->model->where('uuid', $uuid)->first();
@@ -33,10 +38,8 @@ class UserService extends BaseService
     return new User($user);
   }
 
-  public function updateUserRole($user_id, $attr)
+  public function addSingleUserRole($user_id, $attr)
   {
-    // if (count($attr) > 0) {
-    // }
     $user = $this->getById($user_id);
     $this->role->attachSingleRole($user, $attr['role']);
     // $this->role->attachRole($user, $attr->input('role'));
@@ -54,22 +57,4 @@ class UserService extends BaseService
     $this->role->syncRole($user, $attr['role']);
   }
 
-  public function updatePivotIdByParentId($user_id, $role_id, $attributes)
-  {
-    $modelObj = $this->getById($user_id);
-    if (!$modelObj) {
-      return false;
-    }
-    $currentRoleId = $modelObj->role->id;
-    if (count($attributes) < 0) {
-      DB::transaction(function () use ($modelObj, $currentRoleId, $role_id) {
-        // Detach the current role
-        $modelObj->roles()->detach($currentRoleId);
-
-        // Attach the new role
-        $modelObj->roles()->attach($role_id);
-      });
-      // $modelObj->roles()->sync([$role_id]);
-    }
-  }
 }

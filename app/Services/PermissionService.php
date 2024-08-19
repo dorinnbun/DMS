@@ -22,10 +22,17 @@ class PermissionService extends BaseService
     return $this->queryBuilder();
   }
 
-  public function createPermission($role_admin_list)
+  public function createPermission($permission_list)
   {
-    $permission = $this->create($role_admin_list);
-    return $this->make_resource($permission);
+    foreach ($permission_list as $name) {
+      if (is_array($name)) {
+        foreach ($name as $value) {
+          $permission[] = $this->create(['guard_name' => 'api', 'name' => $value]);
+        }
+      }
+    }
+    // return $this->make_resource($permission);
+    return $permission;
   }
 
   public function updatePermission($role_id, $attr)
@@ -38,5 +45,20 @@ class PermissionService extends BaseService
   {
     $permission = $this->delete($role_id);
     return $this->make_resource($permission);
+  }
+
+  public function give_permission($user_mdoel, $permission_list)
+  {
+    return $user_mdoel->givePermissionTo($permission_list);
+  }
+
+  public function revoke_permission($user_mdoel, $permission_list)
+  {
+    return $user_mdoel->revokePermissionTo($permission_list);
+  }
+
+  public function destroy_role($user_mdoel)
+  {
+    return $user_mdoel->delete();
   }
 }

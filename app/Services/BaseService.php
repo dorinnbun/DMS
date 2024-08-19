@@ -36,6 +36,16 @@ class BaseService
     return $this->model->find($id);
   }
 
+  public function getIncludeSoftDeleteById($id)
+  {
+    return $this->model->withTrashed()->find($id);
+  }
+
+  public function getOnlySoftDeleteById($id)
+  {
+    return $this->model->onlyTrashed()->find($id);
+  }
+
   public function getByUuid($uuid)
   {
     return $this->model->where('uuid', $uuid)->first();
@@ -78,6 +88,20 @@ class BaseService
       return $result;
     }
     return false;
+  }
+
+  public function restore($id)
+  {
+    $result = $this->model->withTrashed()->find($id);
+    $result->restore();
+    return $result;
+  }
+
+  public function permanentDelete($id)
+  {
+    $result = $this->model->withTrashed()->find($id);
+    $result->forceDelete();
+    return $result;
   }
 
   public function filter($filters, $query)

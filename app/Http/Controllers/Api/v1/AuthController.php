@@ -10,7 +10,7 @@ use App\Http\Requests\AuthRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\Api\v1\ParentApiController;
-use App\Http\Resources\Api\UserResource;
+use App\Http\Resources\Api\AuthResource;
 
 class AuthController extends ParentApiController
 {
@@ -33,7 +33,7 @@ class AuthController extends ParentApiController
 
       if (!$token) return $this->errorResponse('Unauthorized', 401);
 
-      $user = UserResource::make($this->auth_service->auth_user(), $token);
+      $user = AuthResource::make($this->auth_service->auth_user(), $token);
 
       return $this->response_json($user, "Successfully login");
 
@@ -44,38 +44,54 @@ class AuthController extends ParentApiController
 
   public function register(AuthRequest $request)
   {
-    $user_arr = [
-      'name'     => $request->name,
-      'email'    => $request->email,
-      'password' => Hash::make($request->password),
-      'role'     => $request->role
-    ];
-    $user = $this->auth_service->register($user_arr);
+    try {
 
-    $token = $this->auth_service->get_token($user);
-
-    $user = UserResource::make($user, $token);
-
-    return $this->response_json($user, "Successfully register");
+      $user_arr = [
+        'name'     => $request->name,
+        'email'    => $request->email,
+        'password' => Hash::make($request->password),
+        'role'     => $request->role
+      ];
+      $user = $this->auth_service->register($user_arr, $request->role);
+  
+      $token = $this->auth_service->get_token($user);
+  
+      $user = AuthResource::make($user, $token);
+  
+      return $this->response_json($user, "Successfully register");
+      
+    } catch (\Throwable $th) {
+      return $this->errorResponse($th->getMessage(), $th->getCode());
+    }
   }
 
   public function logout()
   {
-    $this->auth_service->logout();
-    return $this->response_json(null, "Successfully logged out");
-    return $this->httpResponse()
-    ->setStatus(200)
-    ->setMessage("Successfully logged out")
-    ->toApiResponse();
+    try {
+      $this->auth_service->logout();
+      return $this->response_json(null, "Successfully logged out");
+      return $this->httpResponse()
+      ->setStatus(200)
+      ->setMessage("Successfully logged out")
+      ->toApiResponse();
+      
+    } catch (\Throwable $th) {
+      return $this->errorResponse($th->getMessage(), $th->getCode());
+    }
   }
 
   public function refresh()
   {
-    $token = $this->auth_service->refresh();
-
-    $user = UserResource::make($this->auth_service->auth_user(), $token);
-
-    return $this->response_json($user, "Successfully refreshed token");
+    try {
+      $token = $this->auth_service->refresh();
+  
+      $user = AuthResource::make($this->auth_service->auth_user(), $token);
+  
+      return $this->response_json($user, "Successfully refreshed token");
+      
+    } catch (\Throwable $th) {
+      return $this->errorResponse($th->getMessage(), $th->getCode());
+    }
 
   }
 

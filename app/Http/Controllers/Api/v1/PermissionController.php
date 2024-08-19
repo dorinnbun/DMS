@@ -26,7 +26,7 @@ class PermissionController extends ParentApiController
 
   public function create(Request $request): JsonResponse
   {
-    $permission_create = $this->service->createPermission($request->all());
+    $permission_create = $this->service->createPermission($request->all()['permission']);
     return $this->response_json($permission_create, "successfully create permission");
   }
 
