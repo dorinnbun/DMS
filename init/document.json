@@ -1,5 +1,5 @@
 {
-  "docu" : [
+  "docu": [
     {
       "key": "id",
       "label": "លេខ"
@@ -96,7 +96,6 @@
       "key": "spouse_address",
       "label": "នៅ"
     },
-    // parents info
     {
       "key": "father_name",
       "label": "ឪពុកឈ្មោះ"
@@ -113,10 +112,9 @@
       "key": "mother_address",
       "label": "នៅ"
     },
-    // officers in charge
     {
       "key": "private_certificate_officer",
-      "label": មន្ត្រីធ្វេី${ this.formName},
+      "label": "មន្ត្រីធ្វេី${ this.formName}"
     },
     {
       "key": "supervision_officer",
@@ -125,7 +123,46 @@
     {
       "key": "scheduling_research_officer",
       "label": "មន្ត្រីស្រាវជ្រាវ រៀបតារាង"
+    },
+    {
+      "key": "allLeftFingers",
+      "label": "ផ្តិតម្រាមដៃឆ្វេងទាំងមូល",
+      "type": "file"
+    },
+    {
+      "key": "allRightFingers",
+      "label": "ផ្តិតម្រាមដៃស្តាំទាំងមូល",
+      "type": "file"
+    },
+    {
+      "key": "leftPalmPrint",
+      "label": "ផ្តិតបាតដៃឆ្វេង",
+      "type": "file"
+    },
+    {
+      "key": "rightPalmPrint",
+      "label": "ផ្តិតបាតដៃស្ដាំ",
+      "type": "file"
+    },
+    {
+      "key": "specialMark",
+      "label": "ស្លាកស្នាមពិសេស",
+      "type": "file"
+    },
+    {
+      "key": "rightPalmPrint",
+      "label": "រូបមួយជំហរ",
+      "type": "file"
+    },
+    {
+      "key": "rightSideProfile",
+      "label": "រូបចំហៀងស្ដាំ",
+      "type": "file"
+    },
+    {
+      "key": "leftSideProfile",
+      "label": "រូបចំហៀងឆ្វេង",
+      "type": "file"
     }
-    
   ]
 }

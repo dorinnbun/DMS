@@ -36,10 +36,10 @@ class ProvinceService extends BaseService
     return $this->getByIdWithRelation($district_id, ['communes']);
   }
 
-  public function restore()
-  {
-    // todo: restore province record deleted
-  }
+  // public function restore()
+  // {
+  //   // todo: restore province record deleted
+  // }
 
   public function getByUuid($uuid)
   {
