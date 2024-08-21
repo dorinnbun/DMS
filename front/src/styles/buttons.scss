@@ -1,0 +1,17 @@
+@import "colors.scss";
+
+.danger-btn {
+  background-color: $danger !important; 
+  padding: 6px 25px !important; 
+  border-radius: 4px;
+  color: $white !important;
+  font-weight: bold !important;
+}
+
+.primary-btn {
+  background-color: $secondary !important;
+  color: $white !important;
+  margin: 0 10px !important;
+  padding: 6px 25px !important; 
+  font-weight: bold !important;
+}

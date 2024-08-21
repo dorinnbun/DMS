@@ -24,13 +24,13 @@
           <v-spacer></v-spacer>
 
           <!-- Restore record confirmation modal -->
-          <v-dialog v-model="restoreDialog" max-width="500px">
+          <v-dialog v-model="restoreDialog" max-width="40%">
             <v-card>
-              <v-card-title class="text-h5">តើអ្នកប្រាកដថាចង់រក្សាទុកឯកសារនេះវិញទេ?</v-card-title>
-              <v-card-actions>
+              <v-card-title style="padding: 30px 0 30px 30px;" class="text-h5">តើអ្នកប្រាកដថាចង់រក្សាទុកឯកសារនេះវិញទេ?</v-card-title>
+              <v-card-actions style="padding-bottom: 30px">
                 <v-spacer></v-spacer>
-                <v-btn color="blue-darken-1" variant="text" @click="closeRestore">បោះបង់</v-btn>
-                <v-btn color="red" variant="text" @click="restoreItemConfirm">លុបចោល</v-btn>
+                <v-btn class="danger-btn" variant="text" @click="closeRestore">បោះបង់</v-btn>
+                <v-btn class="primary-btn" variant="text" @click="restoreItemConfirm">រក្សាទុកឯកសារ</v-btn>
                 <v-spacer></v-spacer>
               </v-card-actions>
             </v-card>
