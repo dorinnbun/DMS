@@ -47,7 +47,10 @@ export default defineConfig({
       vueTemplate: true,
     }),
   ],
-  define: { 'process.env': {} },
+  define: { 'process.env': {
+      VITE_API_BASE_URL: JSON.stringify(process.env.VITE_API_BASE_URL),
+    } 
+  },
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
