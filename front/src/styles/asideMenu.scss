@@ -1,0 +1,11 @@
+@import "_colors.scss";
+
+
+.v-navigation-drawer {
+  padding-top: 10px; 
+  background-color: $primary;
+}
+
+.v-list-item__content a {
+  color: $white;
+}

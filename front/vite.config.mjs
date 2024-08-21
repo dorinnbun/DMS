@@ -24,6 +24,7 @@ export default defineConfig({
       autoImport: true,
       styles: {
         configFile: 'src/styles/settings.scss',
+        global: ['src/styles/global.scss'],
       },
     }),
     Components(),

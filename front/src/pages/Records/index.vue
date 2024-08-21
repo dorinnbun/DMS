@@ -477,17 +477,17 @@
       }],
 
       fingerPrintsFileInput: [
-        { key: "leftThumbPrint",  label: "មេដៃឆ្វេង",      type: "file", value: "" },
-        { key: "leftIndexPrint",  label: "ចង្អុលដៃឆ្វេង",    type: "file", value: "" },
-        { key: "leftMiddlePrint", label: "ដៃកណ្តាលឆ្វេង",  type: "file", value: "" },
-        { key: "leftRingPrint",   label: "នាងដៃឆ្វេង",     type: "file", value: "" },
-        { key: "leftPinkyPrint",  label: "កូនដៃឆ្វេង",      type: "file", value: "" },
+        { key: "leftThumbPrint",  label : "មេដៃឆ្វេង",      type  : "file", value: "" },
+        { key: "leftIndexPrint",  label : "ចង្អុលដៃឆ្វេង",    type: "file", value: "" },
+        { key: "leftMiddlePrint", label : "ដៃកណ្តាលឆ្វេង",  type  : "file", value: "" },
+        { key: "leftRingPrint",   label : "នាងដៃឆ្វេង",     type  : "file", value: "" },
+        { key: "leftPinkyPrint",  label : "កូនដៃឆ្វេង",      type : "file", value: "" },
         
-        { key: "rightThumbPrint",  label: "មេដៃស្តាំ",      type: "file", value: "" },
+        { key: "rightThumbPrint",  label: "មេដៃស្តាំ",      type  : "file", value: "" },
         { key: "rightIndexPrint",  label: "ចង្អុលដៃស្តាំ",    type: "file", value: "" },
-        { key: "rightMiddlePrint", label: "ដៃកណ្តាលស្តាំ",  type: "file", value: "" },
-        { key: "rightRingPrint",   label: "នាងដៃស្តាំ",     type: "file", value: "" },
-        { key: "rightPinkyPrint",  label: "កូនដៃស្តាំ",      type: "file", value: "" },
+        { key: "rightMiddlePrint", label: "ដៃកណ្តាលស្តាំ",  type  : "file", value: "" },
+        { key: "rightRingPrint",   label: "នាងដៃស្តាំ",     type  : "file", value: "" },
+        { key: "rightPinkyPrint",  label: "កូនដៃស្តាំ",      type : "file", value: "" },
       ],
 
       palmPrintFileInput: [

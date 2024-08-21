@@ -3,7 +3,6 @@
   <v-navigation-drawer
     theme="dark"
     permanent
-    style="padding-top: 10px; background-color: #212632;"
   >
 
     <template v-slot:prepend>
@@ -57,15 +56,3 @@
   }
 
 </script>
-
-
-<style>
-  .v-list-item__content a {
-    color: white;
-    font-weight: bold;
-  }
-
-  a {
-    text-decoration: none;
-  }
-</style>
