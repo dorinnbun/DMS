@@ -29,8 +29,7 @@
           >
             <template v-slot:activator="{ props }">
               <v-btn
-                class="mb-2"
-                color="primary"
+                class="mb-2 primary-btn"
                 v-bind="props"
                 prepend-icon="mdi-plus-circle"
               >
@@ -39,7 +38,7 @@
             </template>
 
             <v-card>
-              <v-card-title>
+              <v-card-title style="padding: 30px 0 0 30px !important;">
                 <span class="text-h5">{{ formTitle }}</span>
               </v-card-title>
   
@@ -89,14 +88,14 @@
                 </v-container>
               </v-card-text>
   
-              <v-card-actions>
+              <v-card-actions style="padding: 0 30px 30px 0 !important;">
                 <v-spacer></v-spacer>
-                <button class="cancel-btn" @click="close">
+                <v-btn class="danger-btn" @click="close">
                   បោះបង់
-                </button>
+                </v-btn>
 
                 <v-btn
-                  color="blue-darken-1"
+                  color="blue-darken-1 primary-btn"
                   variant="text"
                   @click="save"
                   :disabled="!createObject.every(item => item.value)"
@@ -109,13 +108,13 @@
           </v-dialog>
 
           <!-- Delete user modal -->
-          <v-dialog v-model="dialogDelete" max-width="500px">
+          <v-dialog v-model="dialogDelete" max-width="40%">
             <v-card>
-              <v-card-title class="text-h5">តើអ្នកប្រាកដថាចង់លុបអ្នកប្រើប្រាស់នេះទេ?</v-card-title>
-              <v-card-actions>
+              <v-card-title style="padding: 30px !important;" class="text-h5">តើអ្នកប្រាកដថាចង់លុបអ្នកប្រើប្រាស់នេះទេ?</v-card-title>
+              <v-card-actions style="padding-bottom: 30px">
                 <v-spacer></v-spacer>
-                <v-btn color="blue-darken-1" variant="text" @click="closeDelete">បោះបង់</v-btn>
-                <button class="cancel-btn" @click="deleteItemConfirm">លុបចោល</button>
+                <v-btn color="blue-darken-1 primary-btn" variant="text" @click="closeDelete">បោះបង់</v-btn>
+                <v-btn class="danger-btn" @click="deleteItemConfirm">លុបចោល</v-btn>
                 <v-spacer></v-spacer>
               </v-card-actions>
             </v-card>
@@ -149,6 +148,7 @@
 </template>
 
 <script>
+
 
   const fetchUserData = {
       async fetch ({ page, itemsPerPage, sortBy }) {
@@ -388,10 +388,3 @@
 
 
 <style scoped src="../styles/table.scss"></style>
-<style scoped>
-  .cancel-btn {
-    background-color: #D32F2F !important; 
-    padding: 6px 25px; 
-    border-radius: 4px;
-  }
-</style>
