@@ -1,0 +1,57 @@
+import axios from 'axios'
+
+const token = localStorage.getItem('jwt_token')
+
+
+export const getProvinces = async () => {
+
+  try {
+    return await axios.get(
+      `${ import.meta.env.VITE_API_BASE_URL }/address/province`,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${ token }`// required?
+        }
+      }
+    )
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+
+export const getDistrict = async (provinceId) => {
+
+  try {
+    return await axios.get(
+      `${ import.meta.env.VITE_API_BASE_URL }/address/district/${ provinceId }`,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${ token }`// required?
+        }
+      }
+    )
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+
+export const getCommunes = async (districtId) => {
+
+  try {
+    return await axios.get(
+      `${ import.meta.env.VITE_API_BASE_URL }/address/communes/${ districtId }`,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${ token }`// required?
+        }
+      }
+    )
+  } catch (error) {
+    console.error(error)
+  }
+}
