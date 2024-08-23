@@ -91,3 +91,20 @@ export const deleteRecord = async (id) => {
     console.error(error)
   }
 }
+
+
+export const restoreRecord = async (id) => {
+  try {
+    return await axios.post(
+      `${ import.meta.env.VITE_API_BASE_URL }/document/${ id }`,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${ token }`
+        }
+      }
+    )
+  } catch (error) {
+    console.error(error)
+  }
+}
