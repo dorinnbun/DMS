@@ -1,0 +1,170 @@
+
+strong {
+  margin-right: 12px;
+}
+.form-container {
+  padding: 0 15px;
+}
+
+.form-title {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.field-container {
+  margin-bottom: 10px;
+}
+
+.field-label {
+  font-style: italic;
+  margin-right: 12px;
+}
+
+.field-value {
+  font-style: italic;
+}
+
+.field-image {
+  width: 120px;
+  height: auto;
+  margin-top: 10px;
+  margin-left: 30px;
+}
+
+.center-align {
+  text-align: center;
+}
+
+.fingerprint-container {
+  border: 1px solid black;
+}
+
+.palm-print-container {
+  margin-top: 40px;
+  text-align: center;
+}
+
+.palm-print-image {
+  width: 350px;
+  height: auto;
+  margin-top: 10px;
+  margin-left: 20px;
+}
+
+.divider-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.vertical-divider {
+  height: 100%;
+  width: 2px;
+  background-color: #424242;
+}
+
+.special-mark-container {
+  margin-bottom: 20px;
+  margin-top: 20px;
+}
+
+.special-mark-item {
+  border: 1px solid lightgray;
+}
+
+
+
+
+@media print {
+  .form-container {
+    padding: 0;
+  }
+
+  .form-title {
+    text-align: center;
+    margin-bottom: 10px;
+  }
+
+  .field-container {
+    margin-bottom: 5px;
+  }
+
+  .field-label {
+    font-style: normal;
+    margin-right: 8px;
+  }
+
+  .field-value {
+    font-style: normal;
+  }
+
+  .field-image {
+    width: 100px;
+    height: auto;
+    margin: 5px auto;
+  }
+
+  .center-align {
+    text-align: center;
+  }
+
+  .fingerprint-container {
+    border: 1px solid black;
+  }
+
+  .palm-print-container {
+    margin-top: 20px;
+  }
+
+  .non-printable {
+    display: none;
+  }
+}
+
+
+
+@media print {
+  .field-container {
+    page-break-inside: avoid;
+  }
+}
+
+
+
+
+
+.column-5 {
+  @media (min-width: 576px) {
+    flex-basis: 50%;
+    max-width: 50%;
+  }
+  
+  @media (min-width: 768px) {
+    flex-basis: 33%;
+    max-width: 33%;
+  }
+
+  @media (min-width: 1200px) {
+    flex-basis: 20%;
+    max-width: 20%;
+  }
+}
+
+@media print {
+  .column-5 {
+    flex: 1 1 20%;
+    max-width: 20%;
+    box-sizing: border-box; 
+  }
+
+  .special-mark-item {
+    page-break-inside: avoid;
+  }
+
+  .special-mark-container {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0;
+    padding: 0;
+  }
+}
