@@ -152,6 +152,20 @@
                       ></v-file-input>
                     </v-col>
 
+
+                    <!-- Full body pictures -->
+                    <template v-for="field in fullBodyPhotoFileInput">
+                      <v-col cols="12" sm="4">
+                        <v-file-input 
+                          v-model="field.value" 
+                          :label="field.label" 
+                          accept=".jpg,.png,.pdf"
+                          :rules="[v => !!v || 'ឯកសារត្រូវបញ្ចូល']"
+                        ></v-file-input>
+                      </v-col>
+                    </template>
+
+                    
                     <!-- end of page 1 input fields -->
                     <v-divider></v-divider>
 
