@@ -165,11 +165,10 @@
                       </v-col>
                     </template>
 
-                    
+
                     <!-- end of page 1 input fields -->
                     <v-divider></v-divider>
-
-                    <div style="height: 20px;"></div>
+                    <div style="height: 50px;"></div>
 
                     <!-- parents info -->
                     <v-col cols="12" sm="6">
@@ -196,6 +195,23 @@
                     </v-col>
 
                     <v-col cols="12" sm="6" v-for="field in palmPrintFileInput">
+                      <v-file-input 
+                        v-model="field.value" 
+                        :label="field.label" 
+                        accept=".jpg,.png,.pdf"
+                        :rules="[v => !!v || 'ឯកសារត្រូវបញ្ចូល']"
+                      ></v-file-input>
+                    </v-col>
+
+
+                    <!-- Special mark -->
+                    <v-col
+                      v-for="field in specialMark"
+                      :key="field.key"
+                      cols="12"
+                      sm="4"
+                      class="special-mark-item"
+                    >
                       <v-file-input 
                         v-model="field.value" 
                         :label="field.label" 
