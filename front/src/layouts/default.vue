@@ -2,7 +2,7 @@
 
   <v-app>
     <v-card>
-      <v-layout v-if="isLoggedIn" style="height: 100vh">
+      <v-layout v-if="displayAsideMenu" style="min-height: 100vh">
         
         <AsideMenu />
 
@@ -32,6 +32,8 @@
   import { storeToRefs } from 'pinia'
   import { useRouter, useRoute } from 'vue-router'
 
+  console.log(import.meta.env.VITE_API_BASE_URL) // env calling
+
   const router = useRouter()
   const route = useRoute()
   
@@ -41,5 +43,9 @@
   if (!isLoggedIn.value) {
     router.push({ path: '/login' })
   }
+
+  const displayAsideMenu = computed(() => {
+    return route.fullPath !== '/login' && route.fullPath !== '/records/detail' // to be updated to detail{id}
+  })
   
 </script>

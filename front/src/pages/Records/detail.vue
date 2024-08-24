@@ -77,6 +77,9 @@
             <strong class="field-label">{{ field.label }}:</strong>
             <span class="field-value">{{ field.value }}</span>
           </div>
+          <div style="visibility: hidden;">
+            content
+          </div>
           <div class="palm-print-container">
             <strong>{{ palmPrintFileInput[1].label }}</strong>
             <div>
@@ -106,8 +109,6 @@
       </v-row>
     </v-container>
   </div>
-
-  <button onclick="window.print()">Print</button>
 </template>
 
 
@@ -123,19 +124,19 @@ export default {
         value: "12345"
       }, {
         key: "identityPhoto",
-        label: "រូបថត ៤x៦",
+        label: "រូបថត 4x6",
         type: "file",
         value: "../../../public/john-doe.jpg"
       }, {
         key: "bookID",
         label: "លេខសៀវភៅ",
         type: "text",
-        value: "BK-2024-001"
+        value: "2024-08-24-99879"
       }, {
         key: "madeAt",
         label: "ធ្វេីនៅ",
         type: "text",
-        value: "Phnom Penh"
+        value: "ភ្នំពេញ"
       }
     ],
 
@@ -151,13 +152,13 @@ export default {
       label: "គោត្តនាមនាម",
       type: "text",
       col: 6,
-      value: "John Doe"
+      value: "សុខា សុខា"
     }, {
       key: "nickname",
       label: "ឈ្មោះហៅក្រៅ",
       type: "text",
       col: 6,
-      value: "Johnny"
+      value: "សុខា"
     }, {
       key: "dob",
       label: "ថ្ងៃខែឆ្នាំកំណេីត",
@@ -176,62 +177,62 @@ export default {
       label: "ជនជាតិ",
       type: "text",
       col: 4,
-      value: "Khmer"
+      value: "ខ្មែរ"
     }, {
       key: "nationality",
       label: "សញ្ជាតិ",
       type: "text",
       col: 4,
-      value: "Cambodian"
+      value: "ខ្មែរ"
     }, {
       key: "religion",
       label: "សាសនា",
       type: "text",
       col: 4,
-      value: "Buddhism"
+      value: "ពុទ្ធសាសនា"
     }, {
       key: "previous_occupation",
       label: "មុខរបរធ្លាប់ធ្វេីពីមុន",
       type: "text",
       col: 12,
-      value: "Teacher"
+      value: "គ្រូបង្រៀន"
     }, {
       key: "occupation",
       label: "មុខរបរបច្ចុប្បន្ន",
       type: "text",
       col: 12,
-      value: "Engineer"
+      value: "វិស្វករ"
     }, {
       key: "current_address",
       label: "អាស័យដ្ឋានបច្ចុប្បន្ន",
       type: "text",
       col: 12,
-      value: "123 Street, Phnom Penh"
+      value: "ផ្ទះ123 ផ្លូវ123 ភ្នំពេញ"
     },
     {
       key: "identity",
       label: "ភិនភាគ",
       type: "text",
-      col: 10,
+      col: 9,
       value: "N/A"
     }, {
       key: "height",
       label: "កម្ពស់ (ម៉ែត្រ)",
       type: "text", // number
-      col: 2,
+      col: 3,
       value: "1.75"
     }, {
       key: "spouse",
       label: "ប្តី ឬ ប្រពន្ធ",
       type: "text",
       col: 6,
-      value: "Jane Doe"
+      value: "ឃុន នារី"
     }, {
       key: "spouse_address",
       label: "នៅ",
       type: "text",
       col: 6,
-      value: "123 Street, Phnom Penh"
+      value: "ផ្ទះ123 ផ្លូវ123 ភ្នំពេញ"
     },
 
     // parents info
@@ -240,25 +241,25 @@ export default {
       label: "ឪពុកឈ្មោះ",
       type: "text",
       col: 12,
-      value: "John Doe Sr."
+      value: "សុខា សុខា"
     }, {
       key: "father_address",
       label: "នៅ",
       type: "text",
       col: 12,
-      value: "456 Avenue, Phnom Penh"
+      value: "ផ្ទះ123 ផ្លូវ123 ភ្នំពេញ"
     }, {
       key: "mother_name",
       label: "ម្តាយឈ្មោះ",
       type: "text",
       col: 12,
-      value: "Jane Doe"
+      value: "ឃុន នារី"
     }, {
       key: "mother_address",
       label: "នៅ",
       type: "text",
       col: 12,
-      value: "456 Avenue, Phnom Penh"
+      value: "ផ្ទះ123 ផ្លូវ123 ភ្នំពេញ"
     },
 
     // officers in charge
@@ -267,19 +268,19 @@ export default {
       label: "មន្ត្រីធ្វេីឯកសារ",
       type: "text",
       col: 12,
-      value: "Officer A"
+      value: "សុខា សុខា"
     }, {
       key: "supervision_officer",
       label: "មន្ត្រីបែងចែកត្រួតពិនិត្យ",
       type: "text",
       col: 12,
-      value: "Officer B"
+      value: "សុខា សុខា"
     }, {
       key: "scheduling_research_officer",
       label: "មន្ត្រីស្រាវជ្រាវ រៀបតារាង",
       type: "text",
       col: 12,
-      value: "Officer C"
+      value: "សុខា សុខា"
     }],
 
     fingerPrintsFileInput: [
