@@ -104,6 +104,54 @@
                       ></v-file-input>
                     </v-col>
 
+
+                    <!-- Full fingers prints file input -->
+                    <!-- to follow the original template ==> use statically -->
+                    <v-col cols="12" sm="4">
+                      <v-file-input 
+                        v-model="fullFingersPrintFileInput[0].value" 
+                        :label="fullFingersPrintFileInput[0].label" 
+                        accept=".jpg,.png,.pdf"
+                        :rules="[v => !!v || 'ឯកសារត្រូវបញ្ចូល']"
+                      ></v-file-input>
+                    </v-col>
+
+                    <v-col cols="12" sm="4">
+                      <p style="text-align: center; margin-bottom: 12px;">
+                        ផ្តិតមេដៃទាំងពីរ
+                      </p>
+                      <v-row>
+
+                        <v-col cols="12" sm="6">
+                          <v-file-input 
+                            v-model="fullFingersPrintFileInput[1].value" 
+                            :label="fullFingersPrintFileInput[1].label" 
+                            accept=".jpg,.png,.pdf"
+                            :rules="[v => !!v || 'ឯកសារត្រូវបញ្ចូល']"
+                          ></v-file-input>
+                        </v-col>
+
+                        <v-col cols="12" sm="6">
+                          <v-file-input 
+                            v-model="fullFingersPrintFileInput[2].value" 
+                            :label="fullFingersPrintFileInput[2].label" 
+                            accept=".jpg,.png,.pdf"
+                            :rules="[v => !!v || 'ឯកសារត្រូវបញ្ចូល']"
+                          ></v-file-input>
+                        </v-col>
+
+                      </v-row>
+                    </v-col>
+
+                    <v-col cols="12" sm="4">
+                      <v-file-input 
+                        v-model="fullFingersPrintFileInput[3].value" 
+                        :label="fullFingersPrintFileInput[3].label" 
+                        accept=".jpg,.png,.pdf"
+                        :rules="[v => !!v || 'ឯកសារត្រូវបញ្ចូល']"
+                      ></v-file-input>
+                    </v-col>
+
                     <!-- end of page 1 input fields -->
                     <v-divider></v-divider>
 
@@ -489,10 +537,29 @@
         { key: "rightPinkyPrint",  label: "កូនដៃស្តាំ",      type : "file", value: "" },
       ],
 
+      fullFingersPrintFileInput: [
+        { key: "fourLeftFingersPrint", label: "ផ្តិតម្រាមដៃឆ្វេងទាំងបួន", type: "file", value: "" },
+        { key: "leftThumbPrint01", label: "មេដៃឆ្វេង", type: "file", value: "" },
+        { key: "rightThumbPrint01", label: "មេដៃស្តាំ", type: "file", value: "" },
+        { key: "fourRightFingersPrint", label: "ផ្តិតម្រាមដៃស្តាំទាំងបួន", type: "file", value: "" },
+      ],
+
+      fullBodyPhotoFileInput: [
+        { key: "frontBodyPhoto", label: "រូបមួយជំហរ", type: "file", value: "" },
+        { key: "rightProfilePhoto", label: "រូបចំហៀងស្តាំ", type: "file", value: "" },
+        { key: "leftProfilePhoto",  label: "រូបចំហៀងឆ្វេង", type: "file", value: "" },
+      ],
+
       palmPrintFileInput: [
         { key: "leftPalmPrint",  label: "បាតដៃឆ្វេង", type: "file", value: "" },
         { key: "rightPalmPrint", label: "បាតដៃស្តាំ", type: "file", value: "" },
       ],
+
+      specialMark: [
+        { key: "specialMark1", label: "ស្លាកសញ្ញាពិសេស", type: "file", value: "" },
+        { key: "specialMark2", label: "ស្លាកសញ្ញាពិសេស", type: "file", value: "" },
+        { key: "specialMark3", label: "ស្លាកសញ្ញាពិសេស", type: "file", value: "" },
+      ]
 
     }),
 
