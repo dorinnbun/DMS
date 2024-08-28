@@ -6,7 +6,7 @@
       <v-row>
 
         <!-- Form Details -->
-        <v-col cols="12" sm="2">
+        <v-col cols="12" sm="3" md="2">
           <template v-for="field in inputFields" :key="field.key">
             <div class="field-container">
               <strong class="field-label">{{ field.label }}:</strong>
@@ -19,10 +19,10 @@
         </v-col>
 
         <!-- Personal Information -->
-        <v-col cols="12" sm="10">
+        <v-col cols="12" sm="9" md="10">
           <v-row>
             <template v-for="field in personalInfoInputFields.slice(0, 14)" :key="field.key">
-              <v-col cols="12" :sm="field.col" :offset-md="field.offset || 0">
+              <v-col cols="12" :sm="field.col" :offset-sm="field.offset || 0" style="padding: 0;">
                 <div class="field-container">
                   <strong class="field-label">{{ field.label }}:</strong>
                   <span class="field-value">{{ field.value }}</span>
@@ -32,7 +32,7 @@
           </v-row>
         </v-col>
 
-        <!-- Fingerprint Files -->
+        <!-- Fingerprint Files --> 
         <v-col
           v-for="field in fingerPrintsFileInput"
           :key="field.key"
@@ -41,13 +41,70 @@
           class="fingerprint-container column-5"
         >
           <div class="field-container center-align">
-            <strong class="field-label">{{ field.label }}:</strong>
-            <div v-if="field.type === 'file'">
-              <img :src="field.value" alt="file" class="field-image">
-            </div>
-            <span v-else>{{ field.value }}</span>
+            <p><strong class="field-label">{{ field.label }}:</strong></p>
+            <img :src="field.value" alt="file" class="field-image">
           </div>
         </v-col>
+
+        <!-- Full fingers prints file input -->
+        <v-col cols="12" sm="4">
+          <div class="field-container center-align">
+            <p><strong class="field-label">{{ fullFingersPrintFileInput[0].label }}:</strong></p>
+            <img :src="fullFingersPrintFileInput[0].value" alt="file" class="field-image">
+          </div>
+        </v-col>
+
+        <!-- each thumbs -->
+        <v-col cols="12" sm="4" style="border: 1px solid grey; border-top: 0;">
+          <p style="text-align: center; margin-bottom: 12px;">
+            ផ្តិតមេដៃទាំងពីរ
+          </p>
+          <v-row>
+
+            <v-col cols="12" sm="6" style="border-top: 1px solid grey; border-right: 1px solid grey; margin: 0;">
+              <div class="field-container center-align" style="margin: 0;">
+                <p><strong class="field-label">{{ fullFingersPrintFileInput[1].label }}:</strong>
+                </p> 
+                <img :src="fullFingersPrintFileInput[1].value" alt="file" class="field-image">
+              </div>
+            </v-col>
+
+            <v-col cols="12" sm="6" style="border-top: 1px solid grey">
+              <div class="field-container center-align">
+                <p><strong class="field-label">{{ fullFingersPrintFileInput[2].label }}:</strong>
+                </p>
+                <img :src="fullFingersPrintFileInput[2].value" alt="file" class="field-image">
+              </div>
+            </v-col>
+
+          </v-row>
+        </v-col>
+
+        <v-col cols="12" sm="4">
+          <div class="field-container center-align">
+            <p><strong class="field-label">{{ fullFingersPrintFileInput[3].label }}:</strong></p>
+            <img :src="fullFingersPrintFileInput[3].value" alt="file" class="field-image">
+          </div>
+        </v-col>
+
+
+        <!-- Full body photo file input -->
+        <v-row justify="center" style="margin: 1px 0">
+          <v-col
+            v-for="field in fullBodyPhotoFileInput"
+            :key="field.key"
+            cols="12" sm="3"
+            style="border: 1px solid lightgray;"
+            class="full-body-image"
+          >
+            <div class="center-align">
+              <strong>{{ field.label }}</strong>
+              <div>
+                <img :src="field.value" alt="file" class="full-body-image">
+              </div>
+            </div>
+          </v-col>
+        </v-row>
 
         <!-- Divider -->
         <v-divider></v-divider>
@@ -213,13 +270,13 @@ export default {
       key: "identity",
       label: "ភិនភាគ",
       type: "text",
-      col: 9,
+      col: 8,
       value: "N/A"
     }, {
       key: "height",
       label: "កម្ពស់ (ម៉ែត្រ)",
       type: "text", // number
-      col: 3,
+      col: 4,
       value: "1.75"
     }, {
       key: "spouse",
@@ -296,6 +353,19 @@ export default {
       { key: "leftRingPrint", label: "នាងដៃឆ្វេង", type: "file", value: "../../../public/finger-print.jpg" },
       { key: "leftPinkyPrint", label: "កូនដៃឆ្វេង", type: "file", value: "../../../public/finger-print.jpg" },
     ],
+
+    fullBodyPhotoFileInput: [
+        { key: "frontBodyPhoto", label: "រូបមួយជំហរ", type: "file", value: "../../../public/finger-print.jpg" },
+        { key: "rightProfilePhoto", label: "រូបចំហៀងស្តាំ", type: "file", value: "../../../public/finger-print.jpg" },
+        { key: "leftProfilePhoto",  label: "រូបចំហៀងឆ្វេង", type: "file", value: "../../../public/finger-print.jpg" },
+      ],
+
+    fullFingersPrintFileInput: [
+        { key: "fourLeftFingersPrint", label: "ផ្តិតម្រាមដៃឆ្វេងទាំងបួន", type: "file", value: "../../../public/finger-print.jpg" },
+        { key: "leftThumbPrint01", label: "មេដៃឆ្វេង", type: "file", value: "../../../public/finger-print.jpg" },
+        { key: "rightThumbPrint01", label: "មេដៃស្តាំ", type: "file", value: "../../../public/finger-print.jpg" },
+        { key: "fourRightFingersPrint", label: "ផ្តិតម្រាមដៃស្តាំទាំងបួន", type: "file", value: "../../../public/finger-print.jpg" },
+      ],
 
     palmPrintFileInput: [
       { key: "leftPalmPrint", label: "បាតដៃឆ្វេង", type: "file", value: "../../../public/palm-print.jpeg" },
