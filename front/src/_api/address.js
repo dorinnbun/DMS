@@ -3,6 +3,24 @@ import axios from 'axios'
 const token = localStorage.getItem('jwt_token')
 
 
+export const getAddresses = async () => {
+  
+    try {
+      return await axios.get(
+        `${ import.meta.env.VITE_API_BASE_URL }/address`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        }
+      )
+
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  
 export const getProvinces = async () => {
 
   try {
@@ -21,7 +39,7 @@ export const getProvinces = async () => {
 }
 
 
-export const getDistrict = async (provinceId) => {
+export const getDistricts = async (provinceId) => {
 
   try {
     return await axios.get(

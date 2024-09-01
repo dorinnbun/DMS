@@ -1,13 +1,11 @@
-import axios from 'axios'
+import axiosInstance from '../../axiosConfig';
 
 const token = localStorage.getItem('dms-token')
 
 export const getAllUsers = async (params) => {
 
-  
-
   try {
-    return await axios.get(
+    return await axiosInstance.get(
       `${ import.meta.env.VITE_API_BASE_URL }/user`,
       {
         headers: {
@@ -25,7 +23,7 @@ export const getAllUsers = async (params) => {
 export const getUser = async (id) => {
 
   try {
-    return await axios.get(
+    return await axiosInstance.get(
       `${ import.meta.env.VITE_API_BASE_URL }/user/${ id }`,
       {
         headers: {
@@ -42,7 +40,7 @@ export const getUser = async (id) => {
 
 export const createUser = async (body) => {
   try {
-    return await axios.post(
+    return await axiosInstance.post(
       `${ import.meta.env.VITE_API_BASE_URL }/user`,
       body,
       {
@@ -60,7 +58,7 @@ export const createUser = async (body) => {
 
 export const updateUser = async (body) => {
   try {
-    return await axios.patch(
+    return await axiosInstance.patch(
       `${ import.meta.env.VITE_API_BASE_URL }/user/${ body.id }`,
       body,
       {
@@ -78,7 +76,7 @@ export const updateUser = async (body) => {
 
 export const deleteUser = async (id) => {
   try {
-    return await axios.delete(
+    return await axiosInstance.delete(
       `${ import.meta.env.VITE_API_BASE_URL }/user/${ id }`,
       {
         headers: {

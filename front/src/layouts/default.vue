@@ -32,8 +32,6 @@
   import { storeToRefs } from 'pinia'
   import { useRouter, useRoute } from 'vue-router'
 
-  console.log(import.meta.env.VITE_API_BASE_URL) // env calling
-
   const router = useRouter()
   const route = useRoute()
   
@@ -53,5 +51,4 @@
   const displayAsideMenu = computed(() => {
     return route.fullPath !== '/login' && route.fullPath !== '/records/detail' // to be updated to detail{id}
   })
-  
 </script>

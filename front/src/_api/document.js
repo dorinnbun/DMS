@@ -1,12 +1,12 @@
-import axios from 'axios'
+import axiosInstance from '../../axiosConfig';
 
-const token = localStorage.getItem('jwt_token')
+const token = localStorage.getItem('dms-token')
 
 
 export const getAllRecords = async () => {
 
   try {
-    return await axios.get(
+    return await axiosInstance.get(
       `${ import.meta.env.VITE_API_BASE_URL }/document`,
       {
         headers: {
@@ -24,7 +24,7 @@ export const getAllRecords = async () => {
 export const getRecord = async (id) => {
 
   try {
-    return await axios.get(
+    return await axiosInstance.get(
       `${ import.meta.env.VITE_API_BASE_URL }/document/${ id }`,
       {
         headers: {
@@ -41,7 +41,7 @@ export const getRecord = async (id) => {
 
 export const createRecord = async (body) => {
   try {
-    return await axios.post(
+    return await axiosInstance.post(
       `${ import.meta.env.VITE_API_BASE_URL }/document`,
       body,
       {
@@ -59,7 +59,7 @@ export const createRecord = async (body) => {
 
 export const updateRecord = async (body) => {
   try {
-    return await axios.patch(
+    return await axiosInstance.patch(
       `${ import.meta.env.VITE_API_BASE_URL }/document/${ body.id }`,
       body,
       {
@@ -78,7 +78,7 @@ export const updateRecord = async (body) => {
 
 export const deleteRecord = async (id) => {
   try {
-    return await axios.delete(
+    return await axiosInstance.delete(
       `${ import.meta.env.VITE_API_BASE_URL }/document/${ id }`,
       {
         headers: {
@@ -95,7 +95,7 @@ export const deleteRecord = async (id) => {
 
 export const restoreRecord = async (id) => {
   try {
-    return await axios.post(
+    return await axiosInstance.post(
       `${ import.meta.env.VITE_API_BASE_URL }/document/${ id }`,
       {
         headers: {
