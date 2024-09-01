@@ -78,6 +78,8 @@
                           v-model="key.value"
                           :label="key.label"
                           :items="key.items"
+                          :item-title="item => item.name"
+                          :item-value="item => item.id"
                           :rules="[v => !!v || 'ទិន្នន័យត្រូវបញ្ចូល']"
                         ></v-select>
                         
@@ -150,6 +152,7 @@
 <script>
 
   import { getAllUsers } from '../_api/user.js'
+  import { getAllRoles as getAllRolesAPI } from '../_api/role.js'
 
   export default {
     data: () => ({
@@ -220,11 +223,6 @@
             'Guest'
           ]
         }, {
-          key: 'role',
-          label: 'តួនាទី',
-          value: '',
-          type: 'text'
-        }, {
           key: "password",
           label: "លេខសម្ងាត់",
           value: "",
@@ -256,10 +254,26 @@
     async created () {
       this.initialize()
       await this.fetchUserData()
+      await this.getAllRoles()
       console.log("this.loading", this.loading);
     },
 
     methods: {
+
+      async getAllRoles () {
+        try {
+          const { data: { data: { items } } } = await getAllRolesAPI()
+          this.createObject.map (item => {
+            if (item.key === 'role') {
+              item.items = items
+            }
+          })
+          return data
+          
+        } catch (error) {
+          console.log("error", error);
+        }
+      },
 
     //   fetchUserData {
     //   async fetch ({ page, itemsPerPage, sortBy }) {
