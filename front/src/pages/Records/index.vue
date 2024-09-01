@@ -267,8 +267,14 @@
       <template v-slot:item="{ item, index }">
         <tr @click="viewRecord(item)" style="cursor: pointer;">
 
-          <td v-for="key in Object.keys(item)" :key="index">
-            {{ item [ key ] }}
+          <td v-for="header in headers" :key="index">
+            <template v-if="header.key === 'full_name'">
+              {{ item.first_name + ' ' + item.last_name }}
+            </template>
+            
+            <template v-else>
+              {{ item [header.key] }}
+            </template>
           </td>
 
           <td>
@@ -291,6 +297,8 @@
     getDistricts as getDistrictsAPI,
     getCommunes as getCommunesAPI
   } from '@/_api/address'
+
+  import { getAllRecords } from '@/_api/document'
 
 
   // const fetchRecordData = {
@@ -332,27 +340,27 @@
       dialogDelete: false,
       headers: [
           { title: 'លេខរៀង', key: 'id', sortable: false },
-          { title: 'លេខសៀវភៅ', key: 'bookID' },
-          { title: 'នាមគោត្តនាម', align: 'start', key: 'name' },
+          { title: 'លេខសៀវភៅ', key: 'book_id' },
+          { title: 'នាមគោត្តនាម', align: 'start', key: 'full_name' },
           { title: 'សញ្ជាតិ', key: 'nationality', sortable: false },
-          { title: 'អាសយដ្ឋាន', key: 'address', sortable: false },
+          { title: 'អាសយដ្ឋាន', key: 'current_address', sortable: false },
           { title: '', key: 'actions', sortable: false }
         ],
       editedIndex: -1,
       editedItem: {
         name: '',
         id: 0,
-        bookID: "",
+        book_id: "",
         nationality: "",
         address: "",
-        bookID: ""
+        book_id: ""
       },
       defaultItem: {
         name: '',
         id: 0,
         nationality: "",
         address: "",
-        bookID: ""
+        book_id: ""
       },
 
       formName: 'សលាកប័ត្រឯកកត្តជន',
@@ -368,7 +376,7 @@
           type: "file",
           value: ""
         },  {
-          key: "bookID",
+          key: "book_id",
           label: "លេខសៀវភៅ",
           type: "text",
           value: ""
@@ -705,7 +713,7 @@
 
       async fetchDistricts (provinceID) {
         try {
-          const { data: { data: { item: districts } } } = await getDistrictsAPI(provinceID) // tmp
+          const { data: { data: { item: districts } } } = await getDistrictsAPI(provinceID)
           return districts
 
         } catch (error) {
@@ -725,47 +733,54 @@
       },
 
 
+      async fetchRecordData () {
+        const { data: { data } } = await getAllRecords()
+        console.log("data", data);
+        
+        return data
+      },
+
       initialize () {
         this.serverItems = [
           {
             name: 'David Lee',
             id: 159,
-            bookID: 88,
+            book_id: 88,
             nationality: "កម្ពុជា",
             address: "សង្កាត់ចំការមន រាជធានីភ្នំពេញ",
           },
           {
             name: 'Daniel Lee',
             id: 237,
-            bookID: 848,
+            book_id: 848,
             nationality: "កម្ពុជា",
             address: "សង្កាត់ចំការមន រាជធានីភ្នំពេញ",
           },
           {
             name: 'Neary Lee',
             id: 262,
-            bookID: 888,
+            book_id: 888,
             nationality: "កម្ពុជា",
             address: "សង្កាត់ចំការមន រាជធានីភ្នំពេញ",
           },
           {
             name: 'Bopha Lee',
             id: 305,
-            bookID: 188,
+            book_id: 188,
             nationality: "កម្ពុជា",
             address: "សង្កាត់ចំការមន រាជធានីភ្នំពេញ",
           },
           {
             name: 'Dyna Lee',
             id: 356,
-            bookID: 89,
+            book_id: 89,
             nationality: "កម្ពុជា",
             address: "សង្កាត់ចំការមន រាជធានីភ្នំពេញ"
           }
         ]
       },
 
-      loadItems ({ page, itemsPerPage, sortBy }) {
+      async loadItems ({ page, itemsPerPage, sortBy }) {
         this.loading = true
         // fetchRecordData.fetch({ page, itemsPerPage, sortBy }).then(({ items, total }) => {
         //   this.serverItems = items
@@ -774,6 +789,9 @@
         //   this.totalItems = total
         //   this.loading = false
         // })
+        const data = await this.fetchRecordData()
+        this.serverItems = data.items
+        this.totalItems = data.meta.total
         this.loading = false
       },
 
