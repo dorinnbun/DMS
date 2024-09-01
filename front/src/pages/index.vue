@@ -149,33 +149,8 @@
 
 <script>
 
+  import { getAllUsers } from '../_api/user.js'
 
-  const fetchUserData = {
-      async fetch ({ page, itemsPerPage, sortBy }) {
-        // return new Promise(resolve => {
-        //   setTimeout(() => {
-        //     const start = (page - 1) * itemsPerPage
-        //     const end = start + itemsPerPage
-            
-        //     const items = this.serverItems.slice()
-
-        //     if (sortBy.length) {
-        //       const sortKey = sortBy[0].key
-        //       const sortOrder = sortBy[0].order
-        //       items.sort((a, b) => {
-        //         const aValue = a[sortKey]
-        //         const bValue = b[sortKey]
-        //         return sortOrder === 'desc' ? bValue - aValue : aValue - bValue
-        //       })
-        //     }
-
-        //     const paginated = items.slice(start, end)
-
-        //     resolve({ items: paginated, total: items.length })
-        //   }, 500)
-        // })
-      },
-    }
   export default {
     data: () => ({
 
@@ -197,7 +172,7 @@
           key: 'name',
         },
         { title: 'អ៊ីម៉ែល', key: 'email', sortable: false  },
-        { title: 'អាសយដ្ឋាន', key: 'address', sortable: false  },
+        { title: 'តួនាទី', key: 'role', sortable: false  },
         { title: '', key: 'actions', sortable: false },
       ],
       editedIndex: -1,
@@ -205,13 +180,13 @@
         name: '',
         id: 0,
         email: "",
-        address: "",
+        role: "",
       },
       defaultItem: {
         name: '',
         id: 0,
         email: "",
-        address: "",
+        role: "",
       },
       createObject: [
         {
@@ -245,8 +220,8 @@
             'Guest'
           ]
         }, {
-          key: 'address',
-          label: 'អាសយដ្ឋាន',
+          key: 'role',
+          label: 'តួនាទី',
           value: '',
           type: 'text'
         }, {
@@ -278,58 +253,55 @@
       },
     },
 
-    created () {
+    async created () {
       this.initialize()
+      await this.fetchUserData()
       console.log("this.loading", this.loading);
     },
 
     methods: {
+
+    //   fetchUserData {
+    //   async fetch ({ page, itemsPerPage, sortBy }) {
+    //     return new Promise(resolve => {
+    //       setTimeout(() => {
+    //         const start = (page - 1) * itemsPerPage
+    //         const end = start + itemsPerPage
+            
+    //         const items = this.serverItems.slice()
+
+    //         if (sortBy.length) {
+    //           const sortKey = sortBy[0].key
+    //           const sortOrder = sortBy[0].order
+    //           items.sort((a, b) => {
+    //             const aValue = a[sortKey]
+    //             const bValue = b[sortKey]
+    //             return sortOrder === 'desc' ? bValue - aValue : aValue - bValue
+    //           })
+    //         }
+
+    //         const paginated = items.slice(start, end)
+
+    //         resolve({ items: paginated, total: items.length })
+    //       }, 500)
+    //     })
+    //   },
+    // }
+
+      async fetchUserData () {
+        const { data: { data } } = await getAllUsers()
+        return data
+      },
 
       togglePasswordVisibility() {
         this.showPassword = !this.showPassword;
       },
 
       initialize () {
-        this.serverItems = [
-          {
-            name: 'David Lee',
-            id: 159,
-            address: "សង្កាត់ចំការមន រាជធានីភ្នំពេញ",
-            email: "neary@hajhdea.co",
-            phoneNumber: "011234234"
-          },
-          {
-            name: 'Daniel Lee',
-            id: 237,
-            address: "សង្កាត់ចំការមន រាជធានីភ្នំពេញ",
-            email: "neary@hajhdea.co",
-            phoneNumber: "011234234"
-          },
-          {
-            name: 'Neary Lee',
-            id: 262,
-            address: "សង្កាត់ចំការមន រាជធានីភ្នំពេញ",
-            email: "neary@hajhdea.co",
-            phoneNumber: "011234234"
-          },
-          {
-            name: 'Bopha Lee',
-            id: 305,
-            address: "សង្កាត់ចំការមន រាជធានីភ្នំពេញ",
-            email: "neary@hajhdea.co",
-            phoneNumber: "011234234"
-          },
-          {
-            name: 'Dyna Lee',
-            id: 356,
-            address: "សង្កាត់ចំការមន រាជធានីភ្នំពេញ",
-            email: "neary@hajhdea.co",
-            phoneNumber: "011234234"
-          }
-        ]
+        this.serverItems = []
       },
 
-      loadItems ({ page, itemsPerPage, sortBy }) {
+      async loadItems ({ page, itemsPerPage, sortBy }) {
         this.loading = true
         // fetchUserData.fetch({ page, itemsPerPage, sortBy }).then(({ items, total }) => {
         //   this.serverItems = items
@@ -338,6 +310,12 @@
         //   this.totalItems = total
         //   this.loading = false
         // })
+        const data = await this.fetchUserData()
+        console.log("data", data);
+        
+        this.serverItems = data.items
+        this.totalItems = data.meta.total
+
         this.loading = false
       },
 

@@ -1,10 +1,10 @@
 import axios from 'axios'
 
-const token = localStorage.getItem('jwt_token')
+const token = localStorage.getItem('dms-token')
 
+export const getAllUsers = async (params) => {
 
-
-export const getAllUsers = async () => {
+  
 
   try {
     return await axios.get(
