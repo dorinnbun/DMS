@@ -85,7 +85,7 @@
         if (status == 200 && code == 200) {
           
           const token = data.data.item.authorisation.token
-          localStorage.setItem('token', token)
+          localStorage.setItem('dms-token', token)
           authStore.$patch({ isLoggedIn: true })
           router.push({ path: '/' })
 
@@ -106,7 +106,7 @@
   const required = (v) => {
     return !!v || 'សូមបំពេញទិន្នន័យខាងលេី'
   }
-  
+
 </script>
 
 <style>

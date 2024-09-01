@@ -40,6 +40,12 @@
   const authStore = useAuthStore()
   const { isLoggedIn } = storeToRefs(authStore)
 
+  const token = localStorage.getItem('dms-token')
+
+  if (token) {
+    authStore.$patch({ isLoggedIn: true })
+  }
+
   if (!isLoggedIn.value) {
     router.push({ path: '/login' })
   }

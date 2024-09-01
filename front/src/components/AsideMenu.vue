@@ -53,6 +53,7 @@
       isLoggedIn: false
     })
     router.push({ path: '/login' })
+    localStorage.removeItem('dms-token')
   }
 
 </script>
