@@ -41,7 +41,7 @@ export const getUser = async (id) => {
 export const createUser = async (body) => {
   try {
     return await axiosInstance.post(
-      `${ import.meta.env.VITE_API_BASE_URL }/user`,
+      `${ import.meta.env.VITE_API_BASE_URL }/auth/register`,
       body,
       {
         headers: {

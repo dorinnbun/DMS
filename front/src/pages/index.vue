@@ -99,7 +99,7 @@
                 <v-btn
                   color="blue-darken-1 primary-btn"
                   variant="text"
-                  @click="save"
+                  @click="createUser"
                   :disabled="!createObject.every(item => item.value)"
                 >
                   រក្សាទុក
@@ -151,7 +151,7 @@
 
 <script>
 
-  import { getAllUsers } from '../_api/user.js'
+  import { getAllUsers, createUser as createUserAPI } from '../_api/user.js'
   import { getAllRoles as getAllRolesAPI } from '../_api/role.js'
 
   export default {
@@ -217,22 +217,19 @@
           label: 'តួនាទី',
           value: '',
           type: 'select',
-          items: [
-            'Admin',
-            'User',
-            'Guest'
-          ]
+          items: []
         }, {
           key: "password",
           label: "លេខសម្ងាត់",
           value: "",
           type: "password"
-        }, {
-          key: "confirm_password",
-          label: "បញ្ជាក់លេខសម្ងាត់",
-          value: "",
-          type: "password"
-        }
+        }, 
+        // {
+        //   key: "confirm_password",
+        //   label: "បញ្ជាក់លេខសម្ងាត់",
+        //   value: "",
+        //   type: "password"
+        // }
       ]
     }),
 
@@ -268,7 +265,6 @@
               item.items = items
             }
           })
-          return data
           
         } catch (error) {
           console.log("error", error);
@@ -315,7 +311,10 @@
         this.serverItems = []
       },
 
-      async loadItems ({ page, itemsPerPage, sortBy }) {
+      async loadItems (params) {
+        if (params) {
+          const { page, itemsPerPage, sortBy } = params
+        }
         this.loading = true
         // fetchUserData.fetch({ page, itemsPerPage, sortBy }).then(({ items, total }) => {
         //   this.serverItems = items
@@ -325,7 +324,6 @@
         //   this.loading = false
         // })
         const data = await this.fetchUserData()
-        console.log("data", data);
         
         this.serverItems = data.items
         this.totalItems = data.meta.total
@@ -366,13 +364,29 @@
         })
       },
 
-      save () {
-        if (this.editedIndex > -1) {
-          Object.assign(this.serverItems[this.editedIndex], this.editedItem)
-        } else {
-          this.serverItems.push(this.editedItem)
+      async createUser () {
+
+        let bodyObject = {}
+        this.createObject.map (item => {
+          bodyObject[item["key"]] = item["value"]
+        })
+
+        try {
+          await createUserAPI({
+            name: bodyObject.first_name + bodyObject.last_name,
+            email: bodyObject.email,
+            role: bodyObject.role,
+            password: bodyObject.password,
+            phone_number: bodyObject.phone_number
+          })
+          await this.loadItems()
+          
+        } catch (error) {
+          console.log(error);
         }
+        
         this.close()
+
       },
     },
   }
