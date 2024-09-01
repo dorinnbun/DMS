@@ -67,18 +67,22 @@
 
 
                     <!-- personal information -->
+
                     <v-col cols="12" sm="10">
                       <v-row>
                         <template v-for="field in personalInfoInputFields.slice(0, 21)" >
                           <v-col cols="12" :sm="field.col" :offset-md="field.offset || 0">
 
-                            <v-autocomplete
+                            <v-select
                               v-if="field.type === 'select'"
                               v-model="field.value"
                               :label="field.label"
                               :items="field.options"
+                              :item-title="item => item.name"
+                              :item-value="item => item.id"
                               :rules="[v => !!v || 'ទិន្នន័យត្រូវបញ្ចូល']"
-                            ></v-autocomplete>
+                              @update:model-value="updateAddressSelection(field)"
+                            ></v-select>
 
                             <v-text-field
                               v-else
@@ -282,32 +286,39 @@
 
 <script>
 
-  const fetchRecordData = {
-      async fetch ({ page, itemsPerPage, sortBy }) {
-        // return new Promise(resolve => {
-        //   setTimeout(() => {
-        //     const start = (page - 1) * itemsPerPage
-        //     const end = start + itemsPerPage
+  import { 
+    getProvinces as getProvincesAPI,  
+    getDistricts as getDistrictsAPI,
+    getCommunes as getCommunesAPI
+  } from '@/_api/address'
+
+
+  // const fetchRecordData = {
+  //     async fetch ({ page, itemsPerPage, sortBy }) {
+  //       // return new Promise(resolve => {
+  //       //   setTimeout(() => {
+  //       //     const start = (page - 1) * itemsPerPage
+  //       //     const end = start + itemsPerPage
             
-        //     const items = this.serverItems.slice()
+  //       //     const items = this.serverItems.slice()
 
-        //     if (sortBy.length) {
-        //       const sortKey = sortBy[0].key
-        //       const sortOrder = sortBy[0].order
-        //       items.sort((a, b) => {
-        //         const aValue = a[sortKey]
-        //         const bValue = b[sortKey]
-        //         return sortOrder === 'desc' ? bValue - aValue : aValue - bValue
-        //       })
-        //     }
+  //       //     if (sortBy.length) {
+  //       //       const sortKey = sortBy[0].key
+  //       //       const sortOrder = sortBy[0].order
+  //       //       items.sort((a, b) => {
+  //       //         const aValue = a[sortKey]
+  //       //         const bValue = b[sortKey]
+  //       //         return sortOrder === 'desc' ? bValue - aValue : aValue - bValue
+  //       //       })
+  //       //     }
 
-        //     const paginated = items.slice(start, end)
+  //       //     const paginated = items.slice(start, end)
 
-        //     resolve({ items: paginated, total: items.length })
-        //   }, 500)
-        // })
-      },
-    }
+  //       //     resolve({ items: paginated, total: items.length })
+  //       //   }, 500)
+  //       // })
+  //     },
+  //   }
   export default {
     data: () => ({
 
@@ -404,21 +415,21 @@
         key: "pob_province",
         label: "ខេត្ត/ក្រុងកំណេីត",
         type: "select",
-        options: ['California', 'Colorado', 'Florida', 'Georgia', 'Texas', 'Wyoming'], // to fetch 
+        options: [],
         col: 4,
         value: ""
       }, {
         key: "pob_district",
         label: "ស្រុក/ខណ្ឌកំណេីត",
         type: "select",
-        options: ['California', 'Colorado', 'Florida', 'Georgia', 'Texas', 'Wyoming'], // to fetch 
+        options: [],
         col: 4,
         value: ""
       }, {
         key: "pob_commune",
         label: "ភូមិ/សង្កាត់កំណេីត",
         type: "select",
-        options: ['California', 'Colorado', 'Florida', 'Georgia', 'Texas', 'Wyoming'], // to fetch 
+        options: [],
         col: 4,
         value: ""
       }, {
@@ -461,21 +472,21 @@
         key: "province",
         label: "ខេត្ត/ក្រុង",
         type: "select",
-        options: ['California', 'Colorado', 'Florida', 'Georgia', 'Texas', 'Wyoming'], // to fetch 
+        options: [],
         col: 4,
         value: ""
       }, {
         key: "district",
         label: "ស្រុក/ខណ្ឌ",
         type: "select",
-        options: ['California', 'Colorado', 'Florida', 'Georgia', 'Texas', 'Wyoming'], // to fetch 
+        options: [],
         col: 4,
         value: ""
       }, {
         key: "commune",
         label: "ភូមិ/សង្កាត់",
         type: "select",
-        options: ['California', 'Colorado', 'Florida', 'Georgia', 'Texas', 'Wyoming'], // to fetch 
+        options: [],
         col: 4,
         value: ""
       }, {
@@ -603,7 +614,24 @@
           && !this.personalInfoInputFields.every(item => item.value) 
           && !this.fingerPrintsFileInput.every(item => item.value) 
           && !this.palmPrintFileInput.every(item => item.value)
-      }
+      },
+
+      async getProvincesID () {
+        try {
+          const { data: { data: { item: provinces } } } = await getProvincesAPI()
+          return provinces.map(province => province.id)
+        } catch (error) {
+          console.log("error", error);
+        }
+      },
+
+      async getAllProvinces() {
+        this.personalInfoInputFields.map (async field => {
+          if (field.key.includes("province")) {
+            field.options = await this.fetchProvinces()
+          }
+        })
+      },
     },
 
     watch: {
@@ -617,10 +645,86 @@
 
     created () {
       this.initialize()
+      this.getAllProvinces
       console.log("this.loading", this.loading);
     },
 
     methods: {
+
+      async updateAddressSelection(val) {
+        const resetField = async (field, newOptions = []) => {
+          field.value = null;
+          field.options = newOptions;
+        };
+
+        const updateFields = async (keyToMatch, fetchFunction) => {
+          await Promise.all(
+            this.personalInfoInputFields.map(async (field) => {
+              if (field.key === keyToMatch) {
+                const options = fetchFunction ? await fetchFunction(val.value) : [];
+                await resetField(field, options);
+              }
+            })
+          );
+        };
+
+        switch (val.key) {
+          case "pob_province":
+            await updateFields("pob_district", this.fetchDistricts);
+            await updateFields("pob_commune");
+            break;
+
+          case "province":
+            await updateFields("district", this.fetchDistricts);
+            await updateFields("commune");
+            break;
+
+          case "pob_district":
+            await updateFields("pob_commune", this.fetchCommunes);
+            break;
+
+          case "district":
+            await updateFields("commune", this.fetchCommunes);
+            break;
+
+          default:
+            break;
+        }
+      },
+
+
+      async fetchProvinces () {
+        try {
+          const { data: { data: { item: provinces } } } = await getProvincesAPI()
+          return provinces
+        } catch (error) {
+          console.log("error", error);
+        }
+      },
+
+
+      async fetchDistricts (provinceID) {
+        try {
+          const { data: { data: { item: districts } } } = await getDistrictsAPI(provinceID) // tmp
+          return districts
+
+        } catch (error) {
+          console.log("error", error);
+        }
+      },
+
+
+      async fetchCommunes (districtID) {
+        try {
+          const { data: { data: { item: communes } } } = await getCommunesAPI(districtID)
+          return communes
+
+        } catch (error) {
+          console.log("error", error);
+        }
+      },
+
+
       initialize () {
         this.serverItems = [
           {
