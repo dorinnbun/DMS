@@ -10,7 +10,7 @@ export const getAddresses = async () => {
         `${ import.meta.env.VITE_API_BASE_URL }/address`,
         {
           headers: {
-            'Content-Type': 'application/json',
+            'Content-Type': 'application/json'
           }
         }
       )
@@ -28,8 +28,7 @@ export const getProvinces = async () => {
       `${ import.meta.env.VITE_API_BASE_URL }/address/province`,
       {
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${ token }`// required?
+          'Content-Type': 'application/json'
         }
       }
     )
@@ -46,8 +45,7 @@ export const getDistricts = async (provinceId) => {
       `${ import.meta.env.VITE_API_BASE_URL }/address/district/${ provinceId }`,
       {
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${ token }`// required?
+          'Content-Type': 'application/json'
         }
       }
     )
@@ -64,8 +62,7 @@ export const getCommunes = async (districtId) => {
       `${ import.meta.env.VITE_API_BASE_URL }/address/communes/${ districtId }`,
       {
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${ token }`// required?
+          'Content-Type': 'application/json'
         }
       }
     )
