@@ -5,7 +5,7 @@
 
     <v-form
       v-model="form"
-      @submit.prevent="onSubmit"
+      @submit.prevent="login"
     >
       <v-text-field
         v-model="email"
@@ -20,10 +20,20 @@
         v-model="password"
         :readonly="loading"
         :rules="[required]"
+        type="password"
         label="ពាក្យសម្ងាត់"
         placeholder="បញ្ចូលពាក្យសម្ងាត់របស់អ្នក"
         clearable
       ></v-text-field>
+
+      <v-alert
+        v-if="wrongCredential"
+        type="error"
+        dismissible
+        class="mt-3"
+      >
+        {{ loginError }}
+      </v-alert>
 
       <br>
 
@@ -47,28 +57,56 @@
   import { useRouter } from 'vue-router'
   import { useAuthStore } from '@/stores/auth'
 
+  import { login as loginAPI } from '@/_api/auth'
+
   const form = ref(false)
   const email = ref(null)
   const password = ref(null)
   const loading = ref(false)
+  const wrongCredential = ref(false)
+  const loginError = ref('អ៊ីមែល ឬ ពាក្យសម្ងាត់ មិនត្រឹមត្រូវ')
+
   const router = useRouter()
   const authStore = useAuthStore()
 
-  const onSubmit = () => {
-    if (!form.value) return
-    loading.value = true
 
-    // login API
+  // login
+  const login = async () => {
+      if (!form.value) return
+      loading.value = true
 
-    authStore.$patch({
-      isLoggedIn: true
-    })
-    router.push({ path: '/' })
-  }
+      try {
+        const { data } = await loginAPI({
+          email: email.value,
+          password: password.value
+        })
+        const { status, code } = data
+
+        if (status == 200 && code == 200) {
+          
+          const token = data.data.item.authorisation.token
+          localStorage.setItem('token', token)
+          authStore.$patch({ isLoggedIn: true })
+          router.push({ path: '/' })
+
+        } else if (code == 401) {
+          wrongCredential.value = true
+        }
+
+      } catch (error) {
+        console.log(error)
+        wrongCredential.value = true
+        loginError.value = 'សូមព្យាយាមម្តងទៀត។'
+      }
+
+      loading.value = false
+
+    }
 
   const required = (v) => {
     return !!v || 'សូមបំពេញទិន្នន័យខាងលេី'
   }
+  
 </script>
 
 <style>
