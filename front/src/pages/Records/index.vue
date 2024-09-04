@@ -5,7 +5,7 @@
     <v-data-table-server
       v-model:items-per-page="itemsPerPage"
       :headers="headers"
-      :items="serverItems"
+      :items="fetchedData"
       :items-length="totalItems"
       :loading="loading"
       :search="search"
@@ -15,8 +15,82 @@
       <template v-slot:top>
         <v-toolbar flat >
 
-          <input type="text" placeholder="ស្វែករកឯកសារ..." v-model="search"/>
+            <input type="text" placeholder="ស្វែករកឯកសារ..." v-model="search"/>
+            <v-select
+              v-model="filterCategory"
+              :items="filterOptions"
+              :item-title="item => item.text"
+              :item-value="item => item.value"
+              label="ស្វែងរកតាមរយ:"
+              @update:model-value="updateFilter"
+              class="c-form-field"
+              style="max-width: 200px !important; margin-left: 20px;"
+            ></v-select>
 
+            <v-text-field
+              v-if="filterCategory === 'filtering_date'"
+              v-model="startDate"
+              label="កាលបរិច្ឆេទចាប់ផ្តើម"
+              class="c-form-field"
+              type="date"
+            ></v-text-field>
+
+            <v-text-field
+              v-if="filterCategory === 'filtering_date'"
+              v-model="endDate"
+              label="កាលបរិច្ឆេទបញ្ចប់"
+              class="c-form-field"
+              type="date"
+            ></v-text-field>
+
+            <v-select
+              v-if="filterCategory === 'filtering_current_address' || filterCategory === 'filtering_pob_address'"
+              v-model="selectedProvince"
+              :items="provincesFiltering"
+              :item-title="item => item.name"
+              :item-value="item => item.id"
+              label="ខេត្ត"
+              @update:model-value="updateAddressSelection(filterCategory, 'province')"
+              class="c-form-field"
+            ></v-select>
+
+            <v-select
+              v-if="filterCategory === 'filtering_current_address' || filterCategory === 'filtering_pob_address'"
+              v-model="selectedDistrict"
+              :items="districtsFiltering"
+              :item-title="item => item.name"
+              :item-value="item => item.id"
+              label="ស្រុក"
+              class="c-form-field"
+              @update:model-value="updateAddressSelection(filterCategory, 'district')"
+            ></v-select>
+
+            <v-select
+              v-if="filterCategory === 'filtering_current_address' || filterCategory === 'filtering_pob_address'"
+              v-model="selectedCommune"
+              :items="communesFiltering"
+              :item-title="item => item.name"
+              :item-value="item => item.id"
+              class="c-form-field"
+              label="ឃុំ"
+              @update:model-value="updateAddressSelection(filterCategory, 'commune')"
+            ></v-select>
+
+            <v-select
+              v-if="filterCategory === 'filtering_user'"
+              v-model="selectedUser"
+              :items="usersList"
+              :item-title="item => item.name"
+              :item-value="item => item.id"
+              class="c-form-field"
+              label="ឈ្មោះមន្ត្រី"
+              @update:model-value="filterUser(selectedUser)"
+
+            ></v-select>
+
+            <v-btn icon @click="clearFilter">
+              <v-icon>mdi-filter-remove</v-icon>
+            </v-btn>
           <v-spacer></v-spacer>
 
           <!-- adding new record ==> a custom form dialog -->
@@ -60,6 +134,7 @@
                           :label="field.label" 
                           :rules="[v => !!v || 'ទិន្នន័យត្រូវបញ្ចូល']"
                           accept=".jpg,.png,.pdf"
+                          @change="handleFileChange($event, field)"
                         ></v-file-input>
 
                       </template>
@@ -81,7 +156,7 @@
                               :item-title="item => item.name"
                               :item-value="item => item.id"
                               :rules="[v => !!v || 'ទិន្នន័យត្រូវបញ្ចូល']"
-                              @update:model-value="updateAddressSelection(field)"
+                              @update:model-value="updateAddressSelection(field, null)"
                             ></v-select>
 
                             <v-text-field
@@ -105,6 +180,7 @@
                         :label="field.label" 
                         accept=".jpg,.png,.pdf"
                         :rules="[v => !!v || 'ឯកសារត្រូវបញ្ចូល']"
+                        @change="handleFileChange($event, field)"
                       ></v-file-input>
                     </v-col>
 
@@ -117,6 +193,7 @@
                         :label="fullFingersPrintFileInput[0].label" 
                         accept=".jpg,.png,.pdf"
                         :rules="[v => !!v || 'ឯកសារត្រូវបញ្ចូល']"
+                        @change="handleFileChange($event, field)"
                       ></v-file-input>
                     </v-col>
 
@@ -141,6 +218,7 @@
                             :label="fullFingersPrintFileInput[2].label" 
                             accept=".jpg,.png,.pdf"
                             :rules="[v => !!v || 'ឯកសារត្រូវបញ្ចូល']"
+                            @change="handleFileChange($event, field)"
                           ></v-file-input>
                         </v-col>
 
@@ -153,6 +231,7 @@
                         :label="fullFingersPrintFileInput[3].label" 
                         accept=".jpg,.png,.pdf"
                         :rules="[v => !!v || 'ឯកសារត្រូវបញ្ចូល']"
+                        @change="handleFileChange($event, field)"
                       ></v-file-input>
                     </v-col>
 
@@ -165,6 +244,7 @@
                           :label="field.label" 
                           accept=".jpg,.png,.pdf"
                           :rules="[v => !!v || 'ឯកសារត្រូវបញ្ចូល']"
+                          @change="handleFileChange($event, field)"
                         ></v-file-input>
                       </v-col>
                     </template>
@@ -204,6 +284,7 @@
                         :label="field.label" 
                         accept=".jpg,.png,.pdf"
                         :rules="[v => !!v || 'ឯកសារត្រូវបញ្ចូល']"
+                        @change="handleFileChange($event, field)"
                       ></v-file-input>
                     </v-col>
 
@@ -221,6 +302,22 @@
                         :label="field.label" 
                         accept=".jpg,.png,.pdf"
                         :rules="[v => !!v || 'ឯកសារត្រូវបញ្ចូល']"
+                        @change="handleFileChange($event, field)"
+                      ></v-file-input>
+                    </v-col>
+
+
+                    <v-col
+                      :key="formTemplate.key"
+                      cols="12"
+                      sm="2"
+                      class="special-mark-item"
+                    >
+                      <v-file-input 
+                        v-model="formTemplate.value" 
+                        :label="formTemplate.label" 
+                        accept=".jpg,.png,.pdf"
+                        @change="handleFileChange($event, field)"
                       ></v-file-input>
                     </v-col>
                     
@@ -238,7 +335,7 @@
                 <v-btn 
                   color="blue-darken-1 primary-btn" 
                   variant="text" 
-                  @click="save"
+                  @click="createRecord"
                   :disabled="formNotSubmitable"
                 >
                   រក្សាទុក
@@ -298,41 +395,33 @@
     getCommunes as getCommunesAPI
   } from '@/_api/address'
 
-  import { getAllRecords } from '@/_api/document'
+  import { getAllRecords, createRecord as createRecordAPI } from '@/_api/document'
+  import { getAllUsers as getAllUsersAPI } from '@/_api/user'
 
-
-  // const fetchRecordData = {
-  //     async fetch ({ page, itemsPerPage, sortBy }) {
-  //       // return new Promise(resolve => {
-  //       //   setTimeout(() => {
-  //       //     const start = (page - 1) * itemsPerPage
-  //       //     const end = start + itemsPerPage
-            
-  //       //     const items = this.serverItems.slice()
-
-  //       //     if (sortBy.length) {
-  //       //       const sortKey = sortBy[0].key
-  //       //       const sortOrder = sortBy[0].order
-  //       //       items.sort((a, b) => {
-  //       //         const aValue = a[sortKey]
-  //       //         const bValue = b[sortKey]
-  //       //         return sortOrder === 'desc' ? bValue - aValue : aValue - bValue
-  //       //       })
-  //       //     }
-
-  //       //     const paginated = items.slice(start, end)
-
-  //       //     resolve({ items: paginated, total: items.length })
-  //       //   }, 500)
-  //       // })
-  //     },
-  //   }
   export default {
     data: () => ({
 
+      filterOptions: [
+        { text: 'កាលបរិច្ឆេទ', value: 'filtering_date' },
+        { text: 'អាស័យដ្ឋានបច្ចុប្បន្ន', value: 'filtering_current_address' },
+        { text: 'ទីកន្លែងកំណើត', value: 'filtering_pob_address' },
+        { text: 'មន្ត្រី', value: 'filtering_user' }
+      ],
+      filterCategory: "",
+      startDate: "",
+      endDate: "",
+      selectedProvince: "",
+      selectedDistrict: "",
+      selectedCommune: "",
+      selectedUser: "",
+      provincesFiltering: [],
+      districtsFiltering: [],
+      communesFiltering: [],
+      usersList: [],
+
       itemsPerPage: 5, //
       search: '',
-      serverItems: [],
+      fetchedData: [],
       loading: true,
       totalItems: 20,//
 
@@ -342,7 +431,6 @@
           { title: 'លេខរៀង', key: 'id', sortable: false },
           { title: 'លេខសៀវភៅ', key: 'book_id' },
           { title: 'នាមគោត្តនាម', align: 'start', key: 'full_name' },
-          { title: 'សញ្ជាតិ', key: 'nationality', sortable: false },
           { title: 'អាសយដ្ឋាន', key: 'current_address', sortable: false },
           { title: '', key: 'actions', sortable: false }
         ],
@@ -366,12 +454,12 @@
       formName: 'សលាកប័ត្រឯកកត្តជន',
       inputFields: [
         {
-          key: "id",
+          key: "number",
           label: "លេខ",
           type: "text",
-          value: ""
+          value: "12345"
         }, {
-          key: "identityPhoto",
+          key: "identity_photo",
           label: "រូបថត ៤x៦",
           type: "file",
           value: ""
@@ -379,12 +467,12 @@
           key: "book_id",
           label: "លេខសៀវភៅ",
           type: "text",
-          value: ""
+          value: "ABC123"
         }, {
           key: "madeAt",
           label: "ធ្វេីនៅ",
           type: "text",
-          value: ""
+          value: "Phnom Penh"
         }
       ],
 
@@ -394,221 +482,223 @@
         type: "text",
         col: 6,
         offset: 6,
-        value: ""
+        value: "Formula123"
       }, {
         key: "last_name",
         label: "គោត្តនាម",
         type: "text",
         col: 4,
-        value: ""
+        value: "Smith"
       }, {
         key: "first_name",
         label: "នាម",
         type: "text",
         col: 4,
-        value: ""
+        value: "John"
       }, {
         key: "nickname",
         label: "ឈ្មោះហៅក្រៅ",
         type: "text",
         col: 4,
-        value: ""
+        value: "Johnny"
       }, {
         key: "dob",
         label: "ថ្ងៃខែឆ្នាំកំណេីត",
         type: "date",
         col: 12,
-        value: ""
+        value: "1990-01-01"
       }, {
         key: "pob_province",
         label: "ខេត្ត/ក្រុងកំណេីត",
         type: "select",
         options: [],
         col: 4,
-        value: ""
+        value: "Phnom Penh"
       }, {
         key: "pob_district",
         label: "ស្រុក/ខណ្ឌកំណេីត",
         type: "select",
         options: [],
         col: 4,
-        value: ""
+        value: "Chamkarmon"
       }, {
         key: "pob_commune",
         label: "ភូមិ/សង្កាត់កំណេីត",
         type: "select",
         options: [],
         col: 4,
-        value: ""
+        value: "Boeung Keng Kang I"
       }, {
         key: "ethnicity",
         label: "ជនជាតិ",
         type: "text",
         col: 4,
-        value: ""
+        value: "Khmer"
       }, {
         key: "nationality",
         label: "សញ្ជាតិ",
         type: "text",
         col: 4,
-        value: ""
+        value: "Cambodian"
       }, {
         key: "religion",
         label: "សាសនា",
         type: "text",
         col: 4,
-        value: ""
+        value: "Buddhist"
       }, {
         key: "previous_occupation",
         label: "មុខរបរធ្លាប់ធ្វេីពីមុន",
         type: "text",
         col: 6,
-        value: ""
+        value: "Teacher"
       }, {
         key: "occupation",
         label: "មុខរបរបច្ចុប្បន្ន",
         type: "text",
         col: 6,
-        value: ""
+        value: "Engineer"
       }, {
         key: "current_address",
         label: "អាស័យដ្ឋានបច្ចុប្បន្ន",
         type: "text",
         col: 12,
-        value: ""
+        value: "123 Main St, Phnom Penh"
       }, {
         key: "province",
         label: "ខេត្ត/ក្រុង",
         type: "select",
         options: [],
         col: 4,
-        value: ""
+        value: "Phnom Penh"
       }, {
         key: "district",
         label: "ស្រុក/ខណ្ឌ",
         type: "select",
         options: [],
         col: 4,
-        value: ""
+        value: "Chamkarmon"
       }, {
         key: "commune",
         label: "ភូមិ/សង្កាត់",
         type: "select",
         options: [],
         col: 4,
-        value: ""
+        value: "Boeung Keng Kang I"
       }, {
         key: "identity",
         label: "ភិនភាគ",
         type: "text",
         col: 10,
-        value: ""
+        value: "123456789"
       }, {
         key: "height",
         label: "កម្ពស់ (ម៉ែត្រ)",
         type: "text", // number
         col: 2,
-        value: ""
+        value: "1.75"
       }, {
         key: "spouse",
         label: "ប្តី ឬ ប្រពន្ធ",
         type: "text",
         col: 6,
-        value: ""
+        value: "Jane Doe"
       }, {
         key: "spouse_address",
         label: "នៅ",
         type: "text",
         col: 6,
-        value: ""
-      }, 
+        value: "456 Elm St, Phnom Penh"
+      },
 
-      // parents info
-      {
-        key: "father_name",
-        label: "ឪពុកឈ្មោះ",
-        type: "text",
-        col: 12,
-        value: ""
-      }, {
-        key: "father_address",
-        label: "នៅ",
-        type: "text",
-        col: 12,
-        value: ""
-      }, {
-        key: "mother_name",
-        label: "ម្តាយឈ្មោះ",
-        type: "text",
-        col: 12,
-        value: ""
-      }, {
-        key: "mother_address",
-        label: "នៅ",
-        type: "text",
-        col: 12,
-        value: ""
-      }, 
-      
-      // officers in charge
-      {
-        key: "ផrivate_certificate_officer",
-        // label: "មន្ត្រីធ្វេីសលាកប័ត្រឯកកត្តជន",
-        label: "មន្ត្រីធ្វេីឯកសារ",
-        type: "text",
-        col: 12,
-        value: ""
-      }, {
-        key: "supervision_officer",
-        label: "មន្ត្រីបែងចែកត្រួតពិនិត្យ",
-        type: "text",
-        col: 12,
-        value: ""
-      }, {
-        key: "scheduling_research_officer",
-        label: "មន្ត្រីស្រាវជ្រាវ រៀបតារាង",
-        type: "text",
-        col: 12,
-        value: ""
-      }],
+        // parents info
+        {
+          key: "father_name",
+          label: "ឪពុកឈ្មោះ",
+          type: "text",
+          col: 12,
+          value: "James Smith"
+        }, {
+          key: "father_address",
+          label: "នៅ",
+          type: "text",
+          col: 12,
+          value: "789 Oak St, Phnom Penh"
+        }, {
+          key: "mother_name",
+          label: "ម្តាយឈ្មោះ",
+          type: "text",
+          col: 12,
+          value: "Mary Smith"
+        }, {
+          key: "mother_address",
+          label: "នៅ",
+          type: "text",
+          col: 12,
+          value: "789 Oak St, Phnom Penh"
+        },
 
-      fingerPrintsFileInput: [
-        { key: "leftThumbPrint",  label : "មេដៃឆ្វេង",      type  : "file", value: "" },
-        { key: "leftIndexPrint",  label : "ចង្អុលដៃឆ្វេង",    type: "file", value: "" },
-        { key: "leftMiddlePrint", label : "ដៃកណ្តាលឆ្វេង",  type  : "file", value: "" },
-        { key: "leftRingPrint",   label : "នាងដៃឆ្វេង",     type  : "file", value: "" },
-        { key: "leftPinkyPrint",  label : "កូនដៃឆ្វេង",      type : "file", value: "" },
-        
-        { key: "rightThumbPrint",  label: "មេដៃស្តាំ",      type  : "file", value: "" },
-        { key: "rightIndexPrint",  label: "ចង្អុលដៃស្តាំ",    type: "file", value: "" },
-        { key: "rightMiddlePrint", label: "ដៃកណ្តាលស្តាំ",  type  : "file", value: "" },
-        { key: "rightRingPrint",   label: "នាងដៃស្តាំ",     type  : "file", value: "" },
-        { key: "rightPinkyPrint",  label: "កូនដៃស្តាំ",      type : "file", value: "" },
-      ],
+        // officers in charge
+        {
+          key: "ផrivate_certificate_officer",
+          // label: "មន្ត្រីធ្វេីសលាកប័ត្រឯកកត្តជន",
+          label: "មន្ត្រីធ្វេីឯកសារ",
+          type: "text",
+          col: 12,
+          value: "Officer A"
+        }, {
+          key: "supervision_officer",
+          label: "មន្ត្រីបែងចែកត្រួតពិនិត្យ",
+          type: "text",
+          col: 12,
+          value: "Officer B"
+        }, {
+          key: "scheduling_research_officer",
+          label: "មន្ត្រីស្រាវជ្រាវ រៀបតារាង",
+          type: "text",
+          col: 12,
+          value: "Officer C"
+        }],
 
-      fullFingersPrintFileInput: [
-        { key: "fourLeftFingersPrint", label: "ផ្តិតម្រាមដៃឆ្វេងទាំងបួន", type: "file", value: "" },
-        { key: "leftThumbPrint01", label: "មេដៃឆ្វេង", type: "file", value: "" },
-        { key: "rightThumbPrint01", label: "មេដៃស្តាំ", type: "file", value: "" },
-        { key: "fourRightFingersPrint", label: "ផ្តិតម្រាមដៃស្តាំទាំងបួន", type: "file", value: "" },
-      ],
+        fingerPrintsFileInput: [
+          { key: "leftThumbPrint",  label : "មេដៃឆ្វេង",      type  : "file", value: "" },
+          { key: "leftIndexPrint",  label : "ចង្អុលដៃឆ្វេង",    type: "file", value: "" },
+          { key: "leftMiddlePrint", label : "ដៃកណ្តាលឆ្វេង",  type  : "file", value: "" },
+          { key: "leftRingPrint",   label : "នាងដៃឆ្វេង",     type  : "file", value: "" },
+          { key: "leftPinkyPrint",  label : "កូនដៃឆ្វេង",      type : "file", value: "" },
+          
+          { key: "rightThumbPrint",  label: "មេដៃស្តាំ",      type  : "file", value: "" },
+          { key: "rightIndexPrint",  label: "ចង្អុលដៃស្តាំ",    type: "file", value: "" },
+          { key: "rightMiddlePrint", label: "ដៃកណ្តាលស្តាំ",  type  : "file", value: "" },
+          { key: "rightRingPrint",   label: "នាងដៃស្តាំ",     type  : "file", value: "" },
+          { key: "rightPinkyPrint",  label: "កូនដៃស្តាំ",      type : "file", value: "" },
+        ],
 
-      fullBodyPhotoFileInput: [
-        { key: "frontBodyPhoto", label: "រូបមួយជំហរ", type: "file", value: "" },
-        { key: "rightProfilePhoto", label: "រូបចំហៀងស្តាំ", type: "file", value: "" },
-        { key: "leftProfilePhoto",  label: "រូបចំហៀងឆ្វេង", type: "file", value: "" },
-      ],
+        fullFingersPrintFileInput: [
+          { key: "fourLeftFingersPrint", label: "ផ្តិតម្រាមដៃឆ្វេងទាំងបួន", type: "file", value: "" },
+          { key: "leftThumbPrint01", label: "មេដៃឆ្វេង", type: "file", value: "" },
+          { key: "rightThumbPrint01", label: "មេដៃស្តាំ", type: "file", value: "" },
+          { key: "fourRightFingersPrint", label: "ផ្តិតម្រាមដៃស្តាំទាំងបួន", type: "file", value: "" },
+        ],
 
-      palmPrintFileInput: [
-        { key: "leftPalmPrint",  label: "បាតដៃឆ្វេង", type: "file", value: "" },
-        { key: "rightPalmPrint", label: "បាតដៃស្តាំ", type: "file", value: "" },
-      ],
+        fullBodyPhotoFileInput: [
+          { key: "frontBodyPhoto", label: "រូបមួយជំហរ", type: "file", value: "" },
+          { key: "rightProfilePhoto", label: "រូបចំហៀងស្តាំ", type: "file", value: "" },
+          { key: "leftProfilePhoto",  label: "រូបចំហៀងឆ្វេង", type: "file", value: "" },
+        ],
 
-      specialMark: [
-        { key: "specialMark1", label: "ស្លាកសញ្ញាពិសេស", type: "file", value: "" },
-        { key: "specialMark2", label: "ស្លាកសញ្ញាពិសេស", type: "file", value: "" },
-        { key: "specialMark3", label: "ស្លាកសញ្ញាពិសេស", type: "file", value: "" },
-      ]
+        palmPrintFileInput: [
+          { key: "leftPalmPrint",  label: "បាតដៃឆ្វេង", type: "file", value: "" },
+          { key: "rightPalmPrint", label: "បាតដៃស្តាំ", type: "file", value: "" },
+        ],
+
+        specialMark: [
+          { key: "specialMark1", label: "ស្លាកសញ្ញាពិសេស", type: "file", value: "" },
+          { key: "specialMark2", label: "ស្លាកសញ្ញាពិសេស", type: "file", value: "" },
+          { key: "specialMark3", label: "ស្លាកសញ្ញាពិសេស", type: "file", value: "" },
+        ],
+
+        formTemplate: {key: "formTemplate", label: 'រូបភាពឯកសារ (បេីមាន)', type: 'file', value: ""},
 
     }),
 
@@ -649,6 +739,12 @@
       dialogDelete (val) {
         val || this.closeDelete()
       },
+      endDate(val) {
+        console.log('end date', val);
+        if (this.startDate && this.endDate) {
+          // call the api
+        }
+      }
     },
 
     created () {
@@ -659,7 +755,51 @@
 
     methods: {
 
-      async updateAddressSelection(val) {
+      async filterUser (userId) {
+        this.loadItems({
+          filters: {
+            upload_by: userId
+          }
+        })
+      },
+
+      // for query purpose
+      async fetchAllUsers () {
+        try {
+          const { data: { data: { items } } } = await getAllUsersAPI()
+          return items
+          
+        } catch (error) {
+          console.log("error===", error);
+          
+        }
+      },
+
+      async updateFilter (val) {
+        if (this.filterCategory === 'filtering_current_address' || this.filterCategory === 'filtering_pob_address') {
+          this.provincesFiltering = await this.fetchProvinces()
+          
+        } else if (this.filterCategory === 'filtering_user') {
+          this.usersList = await this.fetchAllUsers()
+          
+        }
+      },
+
+      clearFilter() {
+          this.filterCategory = "";
+          this.startDate = "";
+          this.endDate = "";
+          this.selectedProvince = "";
+          this.selectedDistrict = "";
+          this.selectedCommune = "";
+          this.selectedUser = "";
+          this.districtsFiltering = [];
+          this.communesFiltering = [];
+          this.loadItems()
+        },
+
+      async updateAddressSelection(category, key) {
+        
         const resetField = async (field, newOptions = []) => {
           field.value = null;
           field.options = newOptions;
@@ -669,14 +809,31 @@
           await Promise.all(
             this.personalInfoInputFields.map(async (field) => {
               if (field.key === keyToMatch) {
-                const options = fetchFunction ? await fetchFunction(val.value) : [];
+                const options = fetchFunction ? await fetchFunction(category.value) : [];
                 await resetField(field, options);
               }
             })
           );
         };
 
-        switch (val.key) {
+        // @TODO:
+        if (key) {
+          if (key === 'province') {
+            this.districtsFiltering = []
+            this.communesFiltering = []
+            // call search api
+            this.districtsFiltering = await this.fetchDistricts(this.selectedProvince)
+          } else if (key === 'district') {
+            this.communesFiltering = []
+            // call search api
+            this.communesFiltering = await this.fetchCommunes(this.selectedDistrict)
+          } else if (key === 'commune') {
+            // call search api
+          }
+        }
+
+
+        switch (category.key) {
           case "pob_province":
             await updateFields("pob_district", this.fetchDistricts);
             await updateFields("pob_commune");
@@ -694,7 +851,7 @@
           case "district":
             await updateFields("commune", this.fetchCommunes);
             break;
-
+            
           default:
             break;
         }
@@ -733,82 +890,57 @@
       },
 
 
-      async fetchRecordData () {
-        const { data: { data } } = await getAllRecords()
-        console.log("data", data);
-        
+      async fetchRecordData (params) {
+        const { data: { data } } = await getAllRecords(params)
         return data
       },
 
-      initialize () {
-        this.serverItems = [
-          {
-            name: 'David Lee',
-            id: 159,
-            book_id: 88,
-            nationality: "កម្ពុជា",
-            address: "សង្កាត់ចំការមន រាជធានីភ្នំពេញ",
-          },
-          {
-            name: 'Daniel Lee',
-            id: 237,
-            book_id: 848,
-            nationality: "កម្ពុជា",
-            address: "សង្កាត់ចំការមន រាជធានីភ្នំពេញ",
-          },
-          {
-            name: 'Neary Lee',
-            id: 262,
-            book_id: 888,
-            nationality: "កម្ពុជា",
-            address: "សង្កាត់ចំការមន រាជធានីភ្នំពេញ",
-          },
-          {
-            name: 'Bopha Lee',
-            id: 305,
-            book_id: 188,
-            nationality: "កម្ពុជា",
-            address: "សង្កាត់ចំការមន រាជធានីភ្នំពេញ",
-          },
-          {
-            name: 'Dyna Lee',
-            id: 356,
-            book_id: 89,
-            nationality: "កម្ពុជា",
-            address: "សង្កាត់ចំការមន រាជធានីភ្នំពេញ"
-          }
-        ]
+      async fetchUsers () {
+        try {
+          const { data: { data: { item: users } } } = await getAllUsers()
+          
+        } catch (error) {
+          console.log("error===", error);
+          
+        }
       },
 
-      async loadItems ({ page, itemsPerPage, sortBy }) {
+      initialize () {
+        this.fetchedData = []
+      },
+
+      async loadItems (params) {
+        if (params) {
+          const { page, itemsPerPage, sortBy } = params
+        }
         this.loading = true
         // fetchRecordData.fetch({ page, itemsPerPage, sortBy }).then(({ items, total }) => {
-        //   this.serverItems = items
-        //   console.log("in loaditem", this.serverItems);
+        //   this.fetchedData = items
+        //   console.log("in loaditem", this.fetchedData);
           
         //   this.totalItems = total
         //   this.loading = false
         // })
-        const data = await this.fetchRecordData()
-        this.serverItems = data.items
+        let data = await this.fetchRecordData(params || {})
+        this.fetchedData = data.items
         this.totalItems = data.meta.total
         this.loading = false
       },
 
       editItem (item) {
-        this.editedIndex = this.serverItems.indexOf(item)
+        this.editedIndex = this.fetchedData.indexOf(item)
         this.editedItem = Object.assign({}, item)
         this.dialog = true
       },
 
       deleteItem (item) {
-        this.editedIndex = this.serverItems.indexOf(item)
+        this.editedIndex = this.fetchedData.indexOf(item)
         this.editedItem = Object.assign({}, item)
         this.dialogDelete = true
       },
 
       deleteItemConfirm () {
-        this.serverItems.splice(this.editedIndex, 1)
+        this.fetchedData.splice(this.editedIndex, 1)
         this.closeDelete()
       },
 
@@ -830,16 +962,53 @@
 
       viewRecord (item) {
         const id = item.id;
-        console.log("id", id);
+        this.$router.push("/records/" + id) //@TODO: use the uuid / number instead
       },
 
-      save () {
-        if (this.editedIndex > -1) {
-          Object.assign(this.serverItems[this.editedIndex], this.editedItem)
-        } else {
-          this.serverItems.push(this.editedItem)
+      handleFileChange(event, key) {
+        const file = event.target.files[0];
+        if (file) {
+          this[key] = [{ key, value: file, type: 'file' }];
         }
-        this.close()
+      },
+
+      async createRecord () {
+
+        let formData = new FormData();
+
+        const createObject = [
+          ...this.inputFields, 
+          ...this.personalInfoInputFields, 
+          ...this.fingerPrintsFileInput, 
+          ...this.fullFingersPrintFileInput, 
+          ...this.fullBodyPhotoFileInput, 
+          ...this.palmPrintFileInput, 
+          ...this.specialMark,
+          this.formTemplate
+        ]
+
+        console.log("createObject", createObject);
+
+        createObject.forEach(item => {
+          formData.append(item.key, item.value);
+        });
+
+        console.log("formData", formData);
+
+        formData.forEach((value, key) => {
+          console.log(`${key}:`, value);
+        });
+
+        try {
+
+          const result = await createRecordAPI(formData, createObject)
+          console.log("result====", result);
+          
+          await this.loadItems()
+          
+        } catch (error) {
+          console.log(error);
+        }
       },
     },
   }
@@ -848,3 +1017,5 @@
 
 <style scoped src="../../styles/table.scss"></style>
 <style scoped src="../../styles/records.scss"></style>
+<style scoped src="../../styles/form.scss"></style>
+
