@@ -49,6 +49,6 @@
   }
 
   const displayAsideMenu = computed(() => {
-    return route.fullPath !== '/login' && route.fullPath !== '/records/detail' // to be updated to detail{id}
+    return route.fullPath !== '/login' && route.name !== '/Records/[id]'
   })
 </script>
