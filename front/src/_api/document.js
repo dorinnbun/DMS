@@ -1,13 +1,14 @@
 import axiosInstance from '../../axiosConfig';
+import {setParams} from '../utils/setParams.js';
 
 const token = localStorage.getItem('dms-token')
 
 
-export const getAllRecords = async () => {
+export const getAllRecords = async (params) => {
 
   try {
     return await axiosInstance.get(
-      `${ import.meta.env.VITE_API_BASE_URL }/document`,
+      `${ import.meta.env.VITE_API_BASE_URL }/document${ params ? '?' + setParams(params) : '' }`,
       {
         headers: {
           'Content-Type': 'application/json',
@@ -39,18 +40,19 @@ export const getRecord = async (id) => {
 }
 
 
-export const createRecord = async (body) => {
+export const createRecord = async (formData) => {
   try {
     return await axiosInstance.post(
       `${ import.meta.env.VITE_API_BASE_URL }/document`,
-      body,
+      formData,
       {
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'multipart/form-data',
           'Authorization': `Bearer ${ token }`
         }
       }
     )
+
   } catch (error) {
     console.error(error)
   }

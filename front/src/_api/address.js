@@ -1,7 +1,5 @@
 import axios from 'axios'
 
-const token = localStorage.getItem('jwt_token')
-
 
 export const getAddresses = async () => {
   
