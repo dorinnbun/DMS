@@ -5,7 +5,7 @@
     <v-data-table-server
       v-model:items-per-page="itemsPerPage"
       :headers="headers"
-      :items="serverItems"
+      :items="fetchedData"
       :items-length="totalItems"
       :loading="loading"
       :search="search"
@@ -15,11 +15,11 @@
       <template v-slot:top>
         <v-toolbar flat >
 
-          <input
+          <!-- <input
             type="text"
             placeholder="ស្វែករកឯកសារ..."
             v-model="search"
-          />
+          /> -->
 
           <v-spacer></v-spacer>
 
@@ -151,7 +151,13 @@
 
 <script>
 
-  import { getAllUsers, createUser as createUserAPI } from '../_api/user.js'
+  import { 
+    getAllUsers, 
+    createUser as createUserAPI,
+    getUser as getUserAPI,
+    updateUser as updateUserAPI,
+    deleteUser as deleteUserAPI
+  } from '../_api/user.js'
   import { getAllRoles as getAllRolesAPI } from '../_api/role.js'
 
   export default {
@@ -161,7 +167,7 @@
 
       itemsPerPage: 5, //
       search: '',
-      serverItems: [],
+      fetchedData: [],
       loading: true,
       totalItems: 20,//
 
@@ -278,7 +284,7 @@
     //         const start = (page - 1) * itemsPerPage
     //         const end = start + itemsPerPage
             
-    //         const items = this.serverItems.slice()
+    //         const items = this.fetchedData.slice()
 
     //         if (sortBy.length) {
     //           const sortKey = sortBy[0].key
@@ -308,7 +314,7 @@
       },
 
       initialize () {
-        this.serverItems = []
+        this.fetchedData = []
       },
 
       async loadItems (params) {
@@ -317,34 +323,58 @@
         }
         this.loading = true
         // fetchUserData.fetch({ page, itemsPerPage, sortBy }).then(({ items, total }) => {
-        //   this.serverItems = items
-        //   console.log("in loaditem", this.serverItems);
+        //   this.fetchedData = items
+        //   console.log("in loaditem", this.fetchedData);
           
         //   this.totalItems = total
         //   this.loading = false
         // })
         const data = await this.fetchUserData()
         
-        this.serverItems = data.items
+        this.fetchedData = data.items
         this.totalItems = data.meta.total
 
         this.loading = false
       },
 
-      editItem (item) {
-        this.editedIndex = this.serverItems.indexOf(item)
+      async getSelectedUser (id) {
+        try {
+          const { data: { data: { item: user } } } = await getUserAPI(id)
+          return user
+          
+        } catch (error) {
+          console.log(error);
+        }
+      },
+
+      async editItem (item) {
+        const user = await this.getSelectedUser(item.id)
+        console.log("user to edit==", user);
+        
+        this.editedIndex = this.fetchedData.indexOf(item)
         this.editedItem = Object.assign({}, item)
         this.dialog = true
       },
 
       deleteItem (item) {
-        this.editedIndex = this.serverItems.indexOf(item)
+        console.log("item to delete====", item);
+        
+        this.editedIndex = this.fetchedData.indexOf(item)
         this.editedItem = Object.assign({}, item)
         this.dialogDelete = true
       },
 
-      deleteItemConfirm () {
-        this.serverItems.splice(this.editedIndex, 1)
+      async deleteItemConfirm () {
+        // this.fetchedData.splice(this.editedIndex, 1)
+        try {
+          const result = await deleteUserAPI(item.id)
+          console.log("resuot after delete", result);
+          
+          await this.loadItems()
+
+        } catch (error) {
+          console.log(error);
+        }
         this.closeDelete()
       },
 
