@@ -1,4 +1,4 @@
-export const setParams = ({ filters, keySearch, limit, page, sort }) => {
+export const setParams = ({ filters, keySearch, limit, page, sort, others }) => {
 
   const params = [];
   if (limit) {
@@ -22,6 +22,12 @@ export const setParams = ({ filters, keySearch, limit, page, sort }) => {
   if (keySearch) {
     Object.keys(keySearch).forEach((key) => {
       params.push(`keySearch[${ key }]=${ keySearch[key] }`);
+    });
+  }
+
+  if (others) {
+    Object.keys(others).forEach((key) => {
+      params.push(`${ key }=${ others[key] }`);
     });
   }
 

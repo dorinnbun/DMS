@@ -50,7 +50,7 @@
               :item-title="item => item.name"
               :item-value="item => item.id"
               label="ខេត្ត"
-              @update:model-value="updateAddressSelection(filterCategory, 'province')"
+              @update:model-value="updateAddressSelection(filterCategory, filterCategory === 'filtering_current_address' ? 'province' : 'pob_province')"
               class="c-form-field"
             ></v-select>
 
@@ -62,7 +62,7 @@
               :item-value="item => item.id"
               label="ស្រុក"
               class="c-form-field"
-              @update:model-value="updateAddressSelection(filterCategory, 'district')"
+              @update:model-value="updateAddressSelection(filterCategory, filterCategory === 'filtering_current_address' ? 'district' : 'pob_district')"
             ></v-select>
 
             <v-select
@@ -73,7 +73,7 @@
               :item-value="item => item.id"
               class="c-form-field"
               label="ឃុំ"
-              @update:model-value="updateAddressSelection(filterCategory, 'commune')"
+              @update:model-value="updateAddressSelection(filterCategory, filterCategory === 'filtering_current_address' ? 'commune' : 'pob_commune')"
             ></v-select>
 
             <v-select
@@ -740,9 +740,14 @@
         val || this.closeDelete()
       },
       endDate(val) {
-        console.log('end date', val);
         if (this.startDate && this.endDate) {
-          // call the api
+          this.loadItems({
+            others: {
+              between: 'madeAt',
+              min: this.startDate,
+              max: this.endDate
+            }
+          })
         }
       }
     },
@@ -775,7 +780,19 @@
         }
       },
 
+      resetFilterValue () {
+        this.startDate = ""
+        this.endDate = ""
+        this.selectedProvince = ""
+        this.selectedDistrict = ""
+        this.selectedCommune = ""
+        this.selectedUser = ""
+        this.loadItems()
+      },
+
       async updateFilter (val) {
+        this.resetFilterValue()
+
         if (this.filterCategory === 'filtering_current_address' || this.filterCategory === 'filtering_pob_address') {
           this.provincesFiltering = await this.fetchProvinces()
           
@@ -799,7 +816,7 @@
         },
 
       async updateAddressSelection(category, key) {
-        
+
         const resetField = async (field, newOptions = []) => {
           field.value = null;
           field.options = newOptions;
@@ -816,20 +833,37 @@
           );
         };
 
-        // @TODO:
+        // for the table filtering purpose
         if (key) {
-          if (key === 'province') {
-            this.districtsFiltering = []
-            this.communesFiltering = []
-            // call search api
-            this.districtsFiltering = await this.fetchDistricts(this.selectedProvince)
-          } else if (key === 'district') {
-            this.communesFiltering = []
-            // call search api
-            this.communesFiltering = await this.fetchCommunes(this.selectedDistrict)
-          } else if (key === 'commune') {
-            // call search api
+
+          let filters = {};
+
+          switch (key) {
+            case 'province':
+            case 'pob_province':
+              this.districtsFiltering = [];
+              this.communesFiltering = [];
+              filters[key] = this.selectedProvince;
+              this.districtsFiltering = await this.fetchDistricts(this.selectedProvince);
+              break;
+
+            case 'district':
+            case 'pob_district':
+              this.communesFiltering = [];
+              filters[key] = this.selectedDistrict;
+              this.communesFiltering = await this.fetchCommunes(this.selectedDistrict);
+              break;
+
+            case 'commune':
+            case 'pob_commune':
+              filters[key] = this.selectedCommune;
+              break;
+
+            default:
+              break;
           }
+
+          this.loadItems({ filters });
         }
 
 
