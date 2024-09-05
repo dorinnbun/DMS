@@ -13,7 +13,6 @@
         :rules="[required]"
         class="mb-4"
         label="អ៊ីមែល"
-        clearable
       ></v-text-field>
 
       <v-text-field
@@ -23,7 +22,6 @@
         type="password"
         label="ពាក្យសម្ងាត់"
         placeholder="បញ្ចូលពាក្យសម្ងាត់របស់អ្នក"
-        clearable
       ></v-text-field>
 
       <v-alert
