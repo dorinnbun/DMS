@@ -1004,8 +1004,8 @@
       },
 
       viewRecord (item) {
-        const id = item.id;
-        this.$router.push("/records/" + id) //@TODO: use the uuid / number instead
+        const uuid = item.uuid;
+        this.$router.push("/records/" + uuid)
       },
 
       handleFileChange(event, key) {

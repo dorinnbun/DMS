@@ -218,7 +218,6 @@ export default defineComponent({
 
     getFieldDisplayValue(field) {
       if (this.record) {
-        console.log("record==", this.record);
         
         switch (field.key) {
           case 'pob':
@@ -235,9 +234,9 @@ export default defineComponent({
 
     async getRecord () {
       try {
-        const { data: { data: record } } = await getRecordAPI(this.docId)
+        const result = await getRecordAPI(this.docId)
+        const record = result?.data?.data?.item
         this.record = record
-        console.log('record:', record);
 
         if (record) {
           [
@@ -252,6 +251,8 @@ export default defineComponent({
               f.value = record?.[f.key] ?? f.value
             })
           })
+        } else {
+          this.$router.push("/records/")
         }
 
       } catch (error) {
@@ -264,7 +265,7 @@ export default defineComponent({
 
   async created() {
     const route = useRoute()
-    this.docId = route.params.id //@TODO: use the uuid / number instead
+    this.docId = route.params.id
     if (this.docId) {
       this.getRecord()
     }
