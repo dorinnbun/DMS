@@ -6,6 +6,7 @@ import { getRecord as getRecordAPI } from '../../_api/document'
 export default defineComponent({
   name: 'RecordDetail',
   data: () => ({
+    openFormTemplatePreview: false,
     docId: null,
     record: {},
     formName: 'សលាកប័ត្រឯកកត្តជន',
@@ -438,6 +439,22 @@ export default defineComponent({
             </div>
           </v-col>
         </v-row>
+        
+        <v-container v-if="record.formTemplate" class="form-image-container">
+          <p>ឯកសារ</p>
+          <v-img
+            :src="record.formTemplate ?? ''"
+            @click="openFormTemplatePreview = true"
+            max-width="50"
+            class="my-2 cursor-pointer"
+          ></v-img>
+
+          <v-dialog v-model="openFormTemplatePreview" max-width="800">
+            <v-card>
+              <v-img :src="record.formTemplate ?? ''"></v-img>
+            </v-card>
+          </v-dialog>
+        </v-container>
 
       </v-row>
     </v-container>
