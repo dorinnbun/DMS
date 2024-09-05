@@ -8,7 +8,6 @@
       :items="fetchedData"
       :items-length="totalItems"
       :loading="loading"
-      :search="search"
       item-value="name"
       @update:options="loadItems"
     >
@@ -749,6 +748,16 @@
             }
           })
         }
+      },
+      search(val) {
+        this.loadItems({
+          keySearch: {
+            first_name: val, 
+            last_name: val,
+            book_id: val,
+            number: val
+          }
+        })
       }
     },
 
