@@ -59,14 +59,15 @@ export const createRecord = async (formData) => {
 }
 
 
-export const updateRecord = async (body) => {
+export const updateRecord = async (id, body) => {
+  
   try {
-    return await axiosInstance.patch(
-      `${ import.meta.env.VITE_API_BASE_URL }/document/${ body.id }`,
+    return await axiosInstance.post(
+      `${ import.meta.env.VITE_API_BASE_URL }/document/${ id }`,
       body,
       {
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'multipart/form-data',
           'Authorization': `Bearer ${ token }`
         }
       }

@@ -3,10 +3,13 @@
 input {
   border-radius: 5px;
   padding: 10px;
-  background-color: $white;
   margin-left: 10px;
   outline: none;
   width: 250px;
+}
+
+input.search {
+  background-color: $white;
 }
 
 .v-data-table-header__content {

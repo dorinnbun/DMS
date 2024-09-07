@@ -14,7 +14,7 @@
       <template v-slot:top>
         <v-toolbar flat >
 
-            <input type="text" placeholder="ស្វែករកឯកសារ..." v-model="search"/>
+            <input class="search" type="text" placeholder="ស្វែករកឯកសារ..." v-model="search"/>
             <v-select
               v-model="filterCategory"
               :items="filterOptions"
@@ -127,14 +127,16 @@
                           :rules="[v => !!v || 'ទិន្នន័យត្រូវបញ្ចូល']"
                         ></v-text-field>
 
-                        <v-file-input 
-                          v-else 
-                          v-model="field.value"
-                          :label="field.label" 
-                          :rules="[v => !!v || 'ទិន្នន័យត្រូវបញ្ចូល']"
-                          accept=".jpg,.png,.pdf"
-                          @change="handleFileChange($event, field)"
-                        ></v-file-input>
+                        <template v-else>
+                          <img v-if="isEditingMode && field.value" :src="field.value" alt="ស្នាមម្រាមដៃ" style="width: 100px; height: auto;">
+                          <v-file-input
+                            v-model="field.value"
+                            :label="field.label" 
+                            :rules="[v => !!v || 'ទិន្នន័យត្រូវបញ្ចូល']"
+                            accept=".jpg,.png,.pdf"
+                            @change="handleFileChange($event, field)"
+                          ></v-file-input>
+                        </template>
 
                       </template>
                     </v-col>
@@ -173,20 +175,22 @@
 
 
                     <!-- page 1 files input -->
-                    <v-col class="column-5" cols="12" sm="6" v-for="field in fingerPrintsFileInput">
-                      <v-file-input 
-                        v-model="field.value" 
-                        :label="field.label" 
-                        accept=".jpg,.png,.pdf"
-                        :rules="[v => !!v || 'ឯកសារត្រូវបញ្ចូល']"
-                        @change="handleFileChange($event, field)"
-                      ></v-file-input>
-                    </v-col>
+                      <v-col class="column-5" cols="12" sm="6" v-for="field in fingerPrintsFileInput">
+                        <img v-if="isEditingMode && field.value" :src="field.value" alt="ស្នាមម្រាមដៃ" style="width: 100px; height: 100px;">
+                        <v-file-input 
+                          v-model="field.value" 
+                          :label="field.label" 
+                          accept=".jpg,.png,.pdf"
+                          :rules="[v => !!v || 'ឯកសារត្រូវបញ្ចូល']"
+                          @change="handleFileChange($event, field)"
+                        ></v-file-input>
+                      </v-col>
 
 
                     <!-- Full fingers prints file input -->
                     <!-- to follow the original template ==> use statically -->
                     <v-col cols="12" sm="4">
+                      <img v-if="isEditingMode && fullFingersPrintFileInput[0].value" :src="fullFingersPrintFileInput[0].value" alt="ស្នាមម្រាមដៃ" style="width: 100px; height: 100px;">
                       <v-file-input 
                         v-model="fullFingersPrintFileInput[0].value" 
                         :label="fullFingersPrintFileInput[0].label" 
@@ -203,6 +207,7 @@
                       <v-row>
 
                         <v-col cols="12" sm="6">
+                          <img v-if="isEditingMode && fullFingersPrintFileInput[1].value" :src="fullFingersPrintFileInput[1].value" alt="ស្នាមម្រាមដៃ" style="width: 100px; height: 100px;">
                           <v-file-input 
                             v-model="fullFingersPrintFileInput[1].value" 
                             :label="fullFingersPrintFileInput[1].label" 
@@ -212,6 +217,7 @@
                         </v-col>
 
                         <v-col cols="12" sm="6">
+                          <img v-if="isEditingMode && fullFingersPrintFileInput[2].value" :src="fullFingersPrintFileInput[2].value" alt="ស្នាមម្រាមដៃ" style="width: 100px; height: 100px;">
                           <v-file-input 
                             v-model="fullFingersPrintFileInput[2].value" 
                             :label="fullFingersPrintFileInput[2].label" 
@@ -225,6 +231,7 @@
                     </v-col>
 
                     <v-col cols="12" sm="4">
+                      <img v-if="isEditingMode && fullFingersPrintFileInput[3].value" :src="fullFingersPrintFileInput[3].value" alt="ស្នាមម្រាមដៃ" style="width: 100px; height: 100px;">
                       <v-file-input 
                         v-model="fullFingersPrintFileInput[3].value" 
                         :label="fullFingersPrintFileInput[3].label" 
@@ -238,6 +245,7 @@
                     <!-- Full body pictures -->
                     <template v-for="field in fullBodyPhotoFileInput">
                       <v-col cols="12" sm="4">
+                        <img v-if="isEditingMode && field.value" :src="field.value" alt="ស្នាមម្រាមដៃ" style="width: 100px; height: 100px;">
                         <v-file-input 
                           v-model="field.value" 
                           :label="field.label" 
@@ -278,6 +286,7 @@
                     </v-col>
 
                     <v-col cols="12" sm="6" v-for="field in palmPrintFileInput">
+                      <img v-if="isEditingMode && field.value" :src="field.value" alt="ស្នាមម្រាមដៃ" style="width: 100px; height: 100px;">
                       <v-file-input 
                         v-model="field.value" 
                         :label="field.label" 
@@ -296,6 +305,7 @@
                       sm="4"
                       class="special-mark-item"
                     >
+                    <img v-if="isEditingMode && field.value" :src="field.value" alt="ស្នាមម្រាមដៃ" style="width: 100px; height: 100px;">
                       <v-file-input 
                         v-model="field.value" 
                         :label="field.label" 
@@ -309,9 +319,10 @@
                     <v-col
                       :key="formTemplate.key"
                       cols="12"
-                      sm="2"
+                      sm="3"
                       class="special-mark-item"
                     >
+                      <img v-if="isEditingMode && formTemplate.value" :src="formTemplate.value" alt="ស្នាមម្រាមដៃ" style="width: 100px; height: 100px;">
                       <v-file-input 
                         v-model="formTemplate.value" 
                         :label="formTemplate.label" 
@@ -334,7 +345,7 @@
                 <v-btn 
                   color="blue-darken-1 primary-btn" 
                   variant="text" 
-                  @click="createRecord"
+                  @click="saveAction"
                   :disabled="formNotSubmitable"
                 >
                   រក្សាទុក
@@ -394,7 +405,12 @@
     getCommunes as getCommunesAPI
   } from '@/_api/address'
 
-  import { getAllRecords, createRecord as createRecordAPI } from '@/_api/document'
+  import { 
+    getAllRecords, 
+    createRecord as createRecordAPI,
+    getRecord as getRecordAPI,
+    updateRecord as updateRecordAPI,
+  } from '@/_api/document'
   import { getAllUsers as getAllUsersAPI } from '@/_api/user'
 
   export default {
@@ -417,6 +433,11 @@
       districtsFiltering: [],
       communesFiltering: [],
       usersList: [],
+
+      editingItem: [],
+      selectedRecord: {},
+
+      isEditingMode: false,
 
       itemsPerPage: 5, //
       search: '',
@@ -458,7 +479,8 @@
           type: "text",
           value: "12345"
         }, {
-          key: "identity_photo",
+          key: "identityPhoto",
+          name: "identity_photo",
           label: "រូបថត ៤x៦",
           type: "file",
           value: ""
@@ -639,7 +661,7 @@
 
         // officers in charge
         {
-          key: "ផrivate_certificate_officer",
+          key: "private_certificate_officer",
           // label: "មន្ត្រីធ្វេីសលាកប័ត្រឯកកត្តជន",
           label: "មន្ត្រីធ្វេីឯកសារ",
           type: "text",
@@ -660,44 +682,44 @@
         }],
 
         fingerPrintsFileInput: [
-          { key: "leftThumbPrint",  label : "មេដៃឆ្វេង",      type  : "file", value: "" },
-          { key: "leftIndexPrint",  label : "ចង្អុលដៃឆ្វេង",    type: "file", value: "" },
-          { key: "leftMiddlePrint", label : "ដៃកណ្តាលឆ្វេង",  type  : "file", value: "" },
-          { key: "leftRingPrint",   label : "នាងដៃឆ្វេង",     type  : "file", value: "" },
-          { key: "leftPinkyPrint",  label : "កូនដៃឆ្វេង",      type : "file", value: "" },
+          { key: "leftThumbPrint",  label : "មេដៃឆ្វេង",      type  : "file", value: "", name: "left_thumb_print" },
+          { key: "leftIndexPrint",  label : "ចង្អុលដៃឆ្វេង",    type: "file", value: "", name: "left_index_print" },
+          { key: "leftMiddlePrint", label : "ដៃកណ្តាលឆ្វេង",  type  : "file", value: "", name: "left_middle_print" },
+          { key: "leftRingPrint",   label : "នាងដៃឆ្វេង",     type  : "file", value: "", name: "left_ring_print" },
+          { key: "leftPinkyPrint",  label : "កូនដៃឆ្វេង",      type : "file", value: "", name: "left_pinky_print" },
           
-          { key: "rightThumbPrint",  label: "មេដៃស្តាំ",      type  : "file", value: "" },
-          { key: "rightIndexPrint",  label: "ចង្អុលដៃស្តាំ",    type: "file", value: "" },
-          { key: "rightMiddlePrint", label: "ដៃកណ្តាលស្តាំ",  type  : "file", value: "" },
-          { key: "rightRingPrint",   label: "នាងដៃស្តាំ",     type  : "file", value: "" },
-          { key: "rightPinkyPrint",  label: "កូនដៃស្តាំ",      type : "file", value: "" },
+          { key: "rightThumbPrint",  label: "មេដៃស្តាំ",      type  : "file", value: "", name: "right_thumb_print" },
+          { key: "rightIndexPrint",  label: "ចង្អុលដៃស្តាំ",    type: "file", value: "", name: "right_index_print" },
+          { key: "rightMiddlePrint", label: "ដៃកណ្តាលស្តាំ",  type  : "file", value: "", name: "right_middle_print" },
+          { key: "rightRingPrint",   label: "នាងដៃស្តាំ",     type  : "file", value: "", name: "right_ring_print" },
+          { key: "rightPinkyPrint",  label: "កូនដៃស្តាំ",      type : "file", value: "", name: "right_pinky_print" },
         ],
 
         fullFingersPrintFileInput: [
-          { key: "fourLeftFingersPrint", label: "ផ្តិតម្រាមដៃឆ្វេងទាំងបួន", type: "file", value: "" },
-          { key: "leftThumbPrint01", label: "មេដៃឆ្វេង", type: "file", value: "" },
-          { key: "rightThumbPrint01", label: "មេដៃស្តាំ", type: "file", value: "" },
-          { key: "fourRightFingersPrint", label: "ផ្តិតម្រាមដៃស្តាំទាំងបួន", type: "file", value: "" },
+          { key: "fourLeftFingersPrint", label: "ផ្តិតម្រាមដៃឆ្វេងទាំងបួន", type: "file", value: "", name: "four_left_fingers_print" },
+          { key: "leftThumbPrint01", label: "មេដៃឆ្វេង", type: "file", value: "", name: "left_thumb_print01" },
+          { key: "rightThumbPrint01", label: "មេដៃស្តាំ", type: "file", value: "", name: "right_thumb_print01" },
+          { key: "fourRightFingersPrint", label: "ផ្តិតម្រាមដៃស្តាំទាំងបួន", type: "file", value: "", name: "four_right_fingers_print" },
         ],
 
         fullBodyPhotoFileInput: [
-          { key: "frontBodyPhoto", label: "រូបមួយជំហរ", type: "file", value: "" },
-          { key: "rightProfilePhoto", label: "រូបចំហៀងស្តាំ", type: "file", value: "" },
-          { key: "leftProfilePhoto",  label: "រូបចំហៀងឆ្វេង", type: "file", value: "" },
+          { key: "frontBodyPhoto", label: "រូបមួយជំហរ", type: "file", value: "", name: "front_body_photo" },
+          { key: "rightProfilePhoto", label: "រូបចំហៀងស្តាំ", type: "file", value: "", name: "right_profile_photo" },
+          { key: "leftProfilePhoto",  label: "រូបចំហៀងឆ្វេង", type: "file", value: "", name: "left_profile_photo" },
         ],
 
         palmPrintFileInput: [
-          { key: "leftPalmPrint",  label: "បាតដៃឆ្វេង", type: "file", value: "" },
-          { key: "rightPalmPrint", label: "បាតដៃស្តាំ", type: "file", value: "" },
+          { key: "leftPalmPrint",  label: "បាតដៃឆ្វេង", type: "file", value: "", name: "left_palm_print" },
+          { key: "rightPalmPrint", label: "បាតដៃស្តាំ", type: "file", value: "", name: "right_palm_print" },
         ],
 
         specialMark: [
-          { key: "specialMark1", label: "ស្លាកសញ្ញាពិសេស", type: "file", value: "" },
-          { key: "specialMark2", label: "ស្លាកសញ្ញាពិសេស", type: "file", value: "" },
-          { key: "specialMark3", label: "ស្លាកសញ្ញាពិសេស", type: "file", value: "" },
+          { key: "specialMark1", label: "ស្លាកសញ្ញាពិសេស", type: "file", value: "", name: "special_mark1" },
+          { key: "specialMark2", label: "ស្លាកសញ្ញាពិសេស", type: "file", value: "", name: "special_mark2" },
+          { key: "specialMark3", label: "ស្លាកសញ្ញាពិសេស", type: "file", value: "", name: "special_mark3" },
         ],
 
-        formTemplate: {key: "formTemplate", label: 'រូបភាពឯកសារ (បេីមាន)', type: 'file', value: ""},
+        formTemplate: {key: "formTemplate", label: 'រូបភាពឯកសារ (បេីមាន)', type: 'file', value: "", name: "form_template" },
 
     }),
 
@@ -764,10 +786,17 @@
     created () {
       this.initialize()
       this.getAllProvinces
-      console.log("this.loading", this.loading);
     },
 
     methods: {
+
+      saveAction () {
+        if (this.isEditingMode) {
+          this.updateRecord()
+        } else {
+          this.createRecord()
+        }
+      },
 
       async filterUser (userId) {
         this.loadItems({
@@ -970,10 +999,48 @@
         this.loading = false
       },
 
-      editItem (item) {
-        this.editedIndex = this.fetchedData.indexOf(item)
-        this.editedItem = Object.assign({}, item)
-        this.dialog = true
+      async editItem (item) {
+        this.isEditingMode = true
+        const { data } = await getRecordAPI(item.uuid)
+        if (data) {
+          const record = data?.data?.item;
+          this.selectedRecord = record;
+
+
+          console.log("record", record);
+
+          // const fieldsToUpdate = [
+          //   ...this.inputFields.map(field => ({ ...field })),
+          //   ...this.personalInfoInputFields.map(field => ({ ...field })),
+          //   ...this.fingerPrintsFileInput.map(field => ({ ...field })),
+          //   ...this.fullFingersPrintFileInput.map(field => ({ ...field })),
+          //   ...this.fullBodyPhotoFileInput.map(field => ({ ...field })),
+          //   ...this.palmPrintFileInput.map(field => ({ ...field })),
+          //   ...this.specialMark.map(field => ({ ...field })),
+          // ];
+
+          let fieldsToUpdate = [
+            ...this.inputFields,
+            ...this.personalInfoInputFields,
+            ...this.fingerPrintsFileInput,
+            ...this.fullFingersPrintFileInput,
+            ...this.fullBodyPhotoFileInput,
+            ...this.palmPrintFileInput,
+            ...this.specialMark,
+          ];
+
+          fieldsToUpdate.forEach(field => {
+            field.value = record[field.name || field.key] || '';
+          });
+
+          this.editingItem = fieldsToUpdate;
+          console.log("this.inputfields===", this.inputFields);
+          
+          
+          console.log("fieldsToUpdate", fieldsToUpdate);
+          
+          this.dialog = true
+        }
       },
 
       deleteItem (item) {
@@ -1015,6 +1082,43 @@
         }
       },
 
+      async updateRecord () {
+        console.log("this.editingItem==========", this.editingItem);
+        let fieldsToUpdate = [
+            ...this.inputFields,
+            ...this.personalInfoInputFields,
+            ...this.fingerPrintsFileInput,
+            ...this.fullFingersPrintFileInput,
+            ...this.fullBodyPhotoFileInput,
+            ...this.palmPrintFileInput,
+            ...this.specialMark,
+          ];
+          
+
+        console.log("fieldsToUpdate==========", fieldsToUpdate);
+
+        try {
+          const formData = new FormData();
+          fieldsToUpdate.forEach(item => {
+            formData.append(item.key, item.value);
+          });
+
+          const result = await updateRecordAPI(this.selectedRecord.id, formData)
+          console.log("result====", result);
+          
+          formData.forEach((value, key) => {
+            console.log(`${key}:`, value);
+          });
+          
+          await this.loadItems()
+          
+        } catch (error) {
+          console.log(error);
+        }
+        
+        
+      },
+
       async createRecord () {
 
         let formData = new FormData();
@@ -1045,7 +1149,10 @@
         try {
 
           const result = await createRecordAPI(formData, createObject)
-          console.log("result====", result);
+          console.log("result====", result.data);
+          if (result.data.code === "200") {
+            this.dialog = false
+          }
           
           await this.loadItems()
           

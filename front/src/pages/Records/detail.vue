@@ -175,12 +175,12 @@ export default {
     formName: 'សលាកប័ត្រឯកកត្តជន',
     inputFields: [
       {
-        key: "id",
+        key: "number",
         label: "លេខ",
         type: "text",
         value: "12345"
       }, {
-        key: "identityPhoto",
+        key: "identity_photo",
         label: "រូបថត 4x6",
         type: "file",
         value: "../../../public/john-doe.jpg"
@@ -341,41 +341,40 @@ export default {
     }],
 
     fingerPrintsFileInput: [
-      { key: "rightThumbPrint", label: "មេដៃស្តាំ", type: "file", value: "../../../public/finger-print.jpg" },
-      { key: "rightIndexPrint", label: "ចង្អុលដៃស្តាំ", type: "file", value: "../../../public/finger-print.jpg" },
-      { key: "rightMiddlePrint", label: "ដៃកណ្តាលស្តាំ", type: "file", value: "../../../public/finger-print.jpg" },
-      { key: "rightRingPrint", label: "នាងដៃស្តាំ", type: "file", value: "../../../public/finger-print.jpg" },
-      { key: "rightPinkyPrint", label: "កូនដៃស្តាំ", type: "file", value: "../../../public/finger-print.jpg" },
-
-      { key: "leftThumbPrint", label: "មេដៃឆ្វេង", type: "file", value: "../../../public/finger-print.jpg" },
-      { key: "leftIndexPrint", label: "ចង្អុលដៃឆ្វេង", type: "file", value: "../../../public/finger-print.jpg" },
-      { key: "leftMiddlePrint", label: "ដៃកណ្តាលឆ្វេង", type: "file", value: "../../../public/finger-print.jpg" },
-      { key: "leftRingPrint", label: "នាងដៃឆ្វេង", type: "file", value: "../../../public/finger-print.jpg" },
-      { key: "leftPinkyPrint", label: "កូនដៃឆ្វេង", type: "file", value: "../../../public/finger-print.jpg" },
+      { key: "right_thumb_print", label: "មេដៃស្តាំ", type: "file", value: "../../../public/finger-print.jpg" },
+      { key: "right_index_print", label: "ចង្អុលដៃស្តាំ", type: "file", value: "../../../public/finger-print.jpg" },
+      { key: "right_middle_print", label: "ដៃកណ្តាលស្តាំ", type: "file", value: "../../../public/finger-print.jpg" },
+      { key: "right_ring_print", label: "នាងដៃស្តាំ", type: "file", value: "../../../public/finger-print.jpg" },
+      { key: "right_pinky_print", label: "កូនដៃស្តាំ", type: "file", value: "../../../public/finger-print.jpg" },
+      { key: "left_thumb_print", label: "មេដៃឆ្វេង", type: "file", value: "../../../public/finger-print.jpg" },
+      { key: "left_index_print", label: "ចង្អុលដៃឆ្វេង", type: "file", value: "../../../public/finger-print.jpg" },
+      { key: "left_middle_print", label: "ដៃកណ្តាលឆ្វេង", type: "file", value: "../../../public/finger-print.jpg" },
+      { key: "left_ring_print", label: "នាងដៃឆ្វេង", type: "file", value: "../../../public/finger-print.jpg" },
+      { key: "left_pinky_print", label: "កូនដៃឆ្វេង", type: "file", value: "../../../public/finger-print.jpg" },
     ],
 
     fullBodyPhotoFileInput: [
-        { key: "frontBodyPhoto", label: "រូបមួយជំហរ", type: "file", value: "../../../public/finger-print.jpg" },
-        { key: "rightProfilePhoto", label: "រូបចំហៀងស្តាំ", type: "file", value: "../../../public/finger-print.jpg" },
-        { key: "leftProfilePhoto",  label: "រូបចំហៀងឆ្វេង", type: "file", value: "../../../public/finger-print.jpg" },
-      ],
+      { key: "front_body_photo", label: "រូបមួយជំហរ", type: "file", value: "../../../public/finger-print.jpg" },
+      { key: "right_profile_photo", label: "រូបចំហៀងស្តាំ", type: "file", value: "../../../public/finger-print.jpg" },
+      { key: "left_profile_photo", label: "រូបចំហៀងឆ្វេង", type: "file", value: "../../../public/finger-print.jpg" },
+    ],
 
     fullFingersPrintFileInput: [
-        { key: "fourLeftFingersPrint", label: "ផ្តិតម្រាមដៃឆ្វេងទាំងបួន", type: "file", value: "../../../public/finger-print.jpg" },
-        { key: "leftThumbPrint01", label: "មេដៃឆ្វេង", type: "file", value: "../../../public/finger-print.jpg" },
-        { key: "rightThumbPrint01", label: "មេដៃស្តាំ", type: "file", value: "../../../public/finger-print.jpg" },
-        { key: "fourRightFingersPrint", label: "ផ្តិតម្រាមដៃស្តាំទាំងបួន", type: "file", value: "../../../public/finger-print.jpg" },
-      ],
+      { key: "four_left_fingers_print", label: "ផ្តិតម្រាមដៃឆ្វេងទាំងបួន", type: "file", value: "../../../public/finger-print.jpg" },
+      { key: "left_thumb_print01", label: "មេដៃឆ្វេង", type: "file", value: "../../../public/finger-print.jpg" },
+      { key: "right_thumb_print01", label: "មេដៃស្តាំ", type: "file", value: "../../../public/finger-print.jpg" },
+      { key: "four_right_fingers_print", label: "ផ្តិតម្រាមដៃស្តាំទាំងបួន", type: "file", value: "../../../public/finger-print.jpg" },
+    ],
 
     palmPrintFileInput: [
-      { key: "leftPalmPrint", label: "បាតដៃឆ្វេង", type: "file", value: "../../../public/palm-print.jpeg" },
-      { key: "rightPalmPrint", label: "បាតដៃស្តាំ", type: "file", value: "../../../public/palm-print.jpeg" },
+      { key: "left_palm_print", label: "បាតដៃឆ្វេង", type: "file", value: "../../../public/palm-print.jpeg" },
+      { key: "right_palm_print", label: "បាតដៃស្តាំ", type: "file", value: "../../../public/palm-print.jpeg" },
     ],
 
     specialMark: [
-      { "key": "specialMark1", "label": "ស្លាកសញ្ញាពិសេស", "type": "file", "value": "../../../public/finger-print.jpg" },
-      { "key": "specialMark2", "label": "ស្លាកសញ្ញាពិសេស", "type": "file", "value": "../../../public/finger-print.jpg" },
-      { "key": "specialMark3", "label": "ស្លាកសញ្ញាពិសេស", "type": "file", "value": "../../../public/finger-print.jpg" },
+      { key: "special_mark1", label: "ស្លាកសញ្ញាពិសេស", type: "file", value: "../../../public/finger-print.jpg" },
+      { key: "special_mark2", label: "ស្លាកសញ្ញាពិសេស", type: "file", value: "../../../public/finger-print.jpg" },
+      { key: "special_mark3", label: "ស្លាកសញ្ញាពិសេស", type: "file", value: "../../../public/finger-print.jpg" },
     ]
   })
 }

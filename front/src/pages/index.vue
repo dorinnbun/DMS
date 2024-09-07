@@ -24,7 +24,7 @@
           <v-spacer></v-spacer>
 
           <v-dialog
-            v-model="dialog"
+            v-model="dialogCreate"
             max-width="80%"
           >
             <template v-slot:activator="{ props }">
@@ -32,6 +32,7 @@
                 class="mb-2 primary-btn"
                 v-bind="props"
                 prepend-icon="mdi-plus-circle"
+                @click="openCreateDialog"
               >
                 បញ្ចូលថ្មី
               </v-btn>
@@ -39,15 +40,12 @@
 
             <v-card>
               <v-card-title style="padding: 30px 0 0 30px !important;">
-                <span class="text-h5">{{ formTitle }}</span>
+                <span class="text-h5">{{ isEditMode ? 'Edit User' : 'Create New User' }}</span>
               </v-card-title>
-  
+
               <v-card-text>
                 <v-container>
                   <v-row>
-
-                    <!-- adding new user -->
-
                     <template v-for="key in createObject">
                       <v-col cols="12" md="4" sm="6">
                         <v-text-field
@@ -82,14 +80,12 @@
                           :item-value="item => item.id"
                           :rules="[v => !!v || 'ទិន្នន័យត្រូវបញ្ចូល']"
                         ></v-select>
-                        
                       </v-col>
                     </template>
-
                   </v-row>
                 </v-container>
               </v-card-text>
-  
+
               <v-card-actions style="padding: 0 30px 30px 0 !important;">
                 <v-spacer></v-spacer>
                 <v-btn class="danger-btn" @click="close">
@@ -99,12 +95,11 @@
                 <v-btn
                   color="blue-darken-1 primary-btn"
                   variant="text"
-                  @click="createUser"
+                  @click="isEditMode ? updateUser() : createUser()"
                   :disabled="!createObject.every(item => item.value)"
                 >
-                  រក្សាទុក
+                  {{ isEditMode ? 'Update User' : 'រក្សាទុក' }}
                 </v-btn>
-
               </v-card-actions>
             </v-card>
           </v-dialog>
@@ -165,13 +160,16 @@
 
       showPassword: false,
 
+      isEditMode: false,
+
       itemsPerPage: 5, //
       search: '',
       fetchedData: [],
       loading: true,
       totalItems: 20,//
 
-      dialog: false,
+      dialogCreate: false,
+      dialogEdit: false,
       dialogDelete: false,
       headers: [
         { title: 'លេខ', key: 'id', sortable: false  },
@@ -229,13 +227,7 @@
           label: "លេខសម្ងាត់",
           value: "",
           type: "password"
-        }, 
-        // {
-        //   key: "confirm_password",
-        //   label: "បញ្ជាក់លេខសម្ងាត់",
-        //   value: "",
-        //   type: "password"
-        // }
+        }
       ]
     }),
 
@@ -262,6 +254,25 @@
     },
 
     methods: {
+
+      openCreateDialog() {
+        // Reset fields when creating a new user
+        this.isEditMode = false;
+        this.createObject.forEach(item => item.value = '');
+        this.dialogCreate = true;
+      },
+
+      async editItem(item) {
+        const user = await this.getSelectedUser(item.id);
+
+        // Assign user values to the fields
+        this.createObject.forEach(field => {
+          field.value = user[field.key] || '';
+        });
+
+        this.isEditMode = true;
+        this.dialogCreate = true;
+      },
 
       async getAllRoles () {
         try {
@@ -347,14 +358,12 @@
         }
       },
 
-      async editItem (item) {
-        const user = await this.getSelectedUser(item.id)
-        console.log("user to edit==", user);
+      // async editItem (item) {
+      //   const user = await this.getSelectedUser(item.id)
+      //   console.log("user to edit==", user);
         
-        this.editedIndex = this.fetchedData.indexOf(item)
-        this.editedItem = Object.assign({}, item)
-        this.dialog = true
-      },
+      //   this.dialogCreate = true
+      // },
 
       deleteItem (item) {
         console.log("item to delete====", item);
@@ -417,6 +426,10 @@
         
         this.close()
 
+      },
+
+      updateUser() {
+        // Handle update user logic
       },
     },
   }
