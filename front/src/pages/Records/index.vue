@@ -483,7 +483,7 @@
           key: "number",
           label: "លេខ",
           type: "text",
-          value: "12345"
+          value: ""
         }, {
           key: "identityPhoto",
           name: "identity_photo",
@@ -494,12 +494,12 @@
           key: "book_id",
           label: "លេខសៀវភៅ",
           type: "text",
-          value: "ABC123"
+          value: ""
         }, {
           key: "madeAt",
           label: "ធ្វេីនៅ",
           type: "text",
-          value: "Phnom Penh"
+          value: ""
         }
       ],
 
@@ -509,133 +509,133 @@
         type: "text",
         col: 6,
         offset: 6,
-        value: "Formula123"
+        value: ""
       }, {
         key: "last_name",
         label: "គោត្តនាម",
         type: "text",
         col: 4,
-        value: "Smith"
+        value: ""
       }, {
         key: "first_name",
         label: "នាម",
         type: "text",
         col: 4,
-        value: "John"
+        value: ""
       }, {
         key: "nickname",
         label: "ឈ្មោះហៅក្រៅ",
         type: "text",
         col: 4,
-        value: "Johnny"
+        value: ""
       }, {
         key: "dob",
         label: "ថ្ងៃខែឆ្នាំកំណេីត",
         type: "date",
         col: 12,
-        value: "1990-01-01"
+        value: ""
       }, {
         key: "pob_province",
         label: "ខេត្ត/ក្រុងកំណេីត",
         type: "select",
         options: [],
         col: 4,
-        value: "Phnom Penh"
+        value: ""
       }, {
         key: "pob_district",
         label: "ស្រុក/ខណ្ឌកំណេីត",
         type: "select",
         options: [],
         col: 4,
-        value: "Chamkarmon"
+        value: ""
       }, {
         key: "pob_commune",
         label: "ភូមិ/សង្កាត់កំណេីត",
         type: "select",
         options: [],
         col: 4,
-        value: "Boeung Keng Kang I"
+        value: ""
       }, {
         key: "ethnicity",
         label: "ជនជាតិ",
         type: "text",
         col: 4,
-        value: "Khmer"
+        value: ""
       }, {
         key: "nationality",
         label: "សញ្ជាតិ",
         type: "text",
         col: 4,
-        value: "Cambodian"
+        value: ""
       }, {
         key: "religion",
         label: "សាសនា",
         type: "text",
         col: 4,
-        value: "Buddhist"
+        value: ""
       }, {
         key: "previous_occupation",
         label: "មុខរបរធ្លាប់ធ្វេីពីមុន",
         type: "text",
         col: 6,
-        value: "Teacher"
+        value: ""
       }, {
         key: "occupation",
         label: "មុខរបរបច្ចុប្បន្ន",
         type: "text",
         col: 6,
-        value: "Engineer"
+        value: ""
       }, {
         key: "current_address",
         label: "អាស័យដ្ឋានបច្ចុប្បន្ន",
         type: "text",
         col: 12,
-        value: "123 Main St, Phnom Penh"
+        value: ""
       }, {
         key: "province",
         label: "ខេត្ត/ក្រុង",
         type: "select",
         options: [],
         col: 4,
-        value: "Phnom Penh"
+        value: ""
       }, {
         key: "district",
         label: "ស្រុក/ខណ្ឌ",
         type: "select",
         options: [],
         col: 4,
-        value: "Chamkarmon"
+        value: ""
       }, {
         key: "commune",
         label: "ភូមិ/សង្កាត់",
         type: "select",
         options: [],
         col: 4,
-        value: "Boeung Keng Kang I"
+        value: ""
       }, {
         key: "identity",
         label: "ភិនភាគ",
         type: "text",
         col: 10,
-        value: "123456789"
+        value: ""
       }, {
         key: "height",
         label: "កម្ពស់ (ម៉ែត្រ)",
         type: "text", // number
         col: 2,
-        value: "1.75"
+        value: ""
       }, {
         key: "spouse",
         label: "ប្តី ឬ ប្រពន្ធ",
         type: "text",
         col: 6,
-        value: "Jane Doe"
+        value: ""
       }, {
         key: "spouse_address",
         label: "នៅ",
         type: "text",
         col: 6,
-        value: "456 Elm St, Phnom Penh"
+        value: ""
       },
 
         // parents info
@@ -644,25 +644,25 @@
           label: "ឪពុកឈ្មោះ",
           type: "text",
           col: 12,
-          value: "James Smith"
+          value: ""
         }, {
           key: "father_address",
           label: "នៅ",
           type: "text",
           col: 12,
-          value: "789 Oak St, Phnom Penh"
+          value: ""
         }, {
           key: "mother_name",
           label: "ម្តាយឈ្មោះ",
           type: "text",
           col: 12,
-          value: "Mary Smith"
+          value: ""
         }, {
           key: "mother_address",
           label: "នៅ",
           type: "text",
           col: 12,
-          value: "789 Oak St, Phnom Penh"
+          value: ""
         },
 
         // officers in charge
@@ -672,19 +672,19 @@
           label: "មន្ត្រីធ្វេីឯកសារ",
           type: "text",
           col: 12,
-          value: "Officer A"
+          value: ""
         }, {
           key: "supervision_officer",
           label: "មន្ត្រីបែងចែកត្រួតពិនិត្យ",
           type: "text",
           col: 12,
-          value: "Officer B"
+          value: ""
         }, {
           key: "scheduling_research_officer",
           label: "មន្ត្រីស្រាវជ្រាវ រៀបតារាង",
           type: "text",
           col: 12,
-          value: "Officer C"
+          value: ""
         }],
 
         fingerPrintsFileInput: [
