@@ -120,23 +120,51 @@
         </v-toolbar>
       </template>
 
-      <!-- Table's action menu -->
-      <template v-slot:item.actions="{ item }">
-        <v-icon
-          class="me-2"
-          size="small"
-          @click="editItem(item)"
-          color="blue"
-        >
-          mdi-pencil
-        </v-icon>
-        <v-icon
-          size="small"
-          @click="deleteUser(item)"
-          color="red"
-        >
-          mdi-delete
-        </v-icon>
+      <template v-slot:item="{ item, index }">
+        <tr @click="viewUser(item)" style="cursor: pointer;">
+
+          <td v-for="header in headers" :key="index">
+            <template v-if="header.key === 'full_name'">
+              {{ item.first_name + ' ' + item.last_name }}
+            </template>
+            
+            <template v-else>
+              {{ item [header.key] }}
+            </template>
+          </td>
+
+          <td>
+            <v-icon small color="blue" @click.stop="editItem(item)">mdi-pencil</v-icon>
+            <v-icon small color="red" @click.stop="deleteItem(item)">mdi-delete</v-icon>
+          </td>
+        </tr>
+
+        
+        <v-dialog v-model="dialogDetail" max-width="80%">
+          <v-card>
+            <v-card-title style="padding: 30px !important;" class="text-h5">ពត័មានអ្នកប្រេីប្រាស់</v-card-title>
+
+            <v-card-text>
+              <v-container>
+                <v-row>
+                  <template v-for="field in createObject">
+                    <v-col cols="12" md="4" sm="6">
+                      <div v-if="field.key !== 'password'">
+                        {{ field.label }}: {{ field.value }}
+                      </div>
+                    </v-col>
+                  </template>
+                </v-row>
+              </v-container>
+            </v-card-text>
+
+            <v-card-actions style="padding: 0 30px 30px 0 !important;">
+              <v-spacer></v-spacer>
+              <v-btn class="danger-btn" @click="dialogDetail = false">បឹទ</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+
       </template>
   
     </v-data-table-server>
@@ -167,9 +195,8 @@
       fetchedData: [],
       loading: true,
       totalItems: 20,//
-
+      dialogDetail: false,
       dialogCreate: false,
-      dialogEdit: false,
       dialogDelete: false,
       headers: [
         { title: 'លេខ', key: 'id', sortable: false  },
@@ -250,6 +277,15 @@
 
     methods: {
 
+      async viewUser (item) {
+        this.dialogDetail = true
+        const user = await this.getSelectedUser(item.id);
+        this.createObject.forEach(field => {
+          field.value = user[field.key] || '';
+        });
+        
+      },
+
       openCreateDialog() {
         // Reset fields when creating a new user
         this.isEditMode = false;
@@ -283,62 +319,6 @@
         }
       },
 
-    //   async fetchUserData () {
-    //   // const fetch ({ page, itemsPerPage, sortBy }) => {
-    //   //   return new Promise(resolve => {
-    //   //     setTimeout(() => {
-    //   //       const start = (page - 1) * itemsPerPage
-    //   //       const end = start + itemsPerPage
-            
-    //   //       const items = this.fetchedData.slice()
-
-    //   //       if (sortBy.length) {
-    //   //         const sortKey = sortBy[0].key
-    //   //         const sortOrder = sortBy[0].order
-    //   //         items.sort((a, b) => {
-    //   //           const aValue = a[sortKey]
-    //   //           const bValue = b[sortKey]
-    //   //           return sortOrder === 'desc' ? bValue - aValue : aValue - bValue
-    //   //         })
-    //   //       }
-
-    //   //       const paginated = items.slice(start, end)
-
-    //   //       resolve({ items: paginated, total: items.length })
-    //   //     }, 500)
-    //   //   })
-    //   // },
-    //   const { data: { data } } = await getAllUsers()
-    //   const fetch = ({ page, itemsPerPage, sortBy }) => {
-    //     // const start = (page - 1) * itemsPerPage;
-    //     // const end = start + itemsPerPage;
-
-    //     const items = this.fetchedData.slice();
-
-    //     if (sortBy.length) {
-    //       const sortKey = sortBy[0].key;
-    //       const sortOrder = sortBy[0].order;
-    //       items.sort((a, b) => {
-    //         const aValue = a[sortKey];
-    //         const bValue = b[sortKey];
-    //         return sortOrder === 'desc' ? bValue - aValue : aValue - bValue;
-    //       });
-    //     }
-
-    //     // const paginated = items.slice(start, end);
-
-    //     return { items: data.item, total: data.meta.total };
-    //   };
-    // },
-
-      // async fetchUserData () {
-      //   const { data: { data } } = await getAllUsers()
-      //   console.log("data", data);
-        
-        
-      //   return data
-      // },
-
       async fetchUserData ({ page, itemsPerPage, search }) {
         const { data: { data } } = await getAllUsers()
         console.log("data", data);
@@ -356,39 +336,6 @@
       initialize () {
         this.fetchedData = []
       },
-
-      // async loadItems (params) {
-      //   if (params) {
-      //     const { page, itemsPerPage, sortBy } = params
-      //     this.loading = true
-      //     this.fetchUserData.fetch({ page, itemsPerPage, sortBy }).then(({ items, total }) => {
-      //       this.fetchedData = items
-      //       this.totalItems = total
-      //       this.loading = false
-      //     })
-      //   } else {
-      //     const data = await this.fetchUserData()
-          
-      //     this.fetchedData = data.items
-      //     this.totalItems = data.meta.total
-      //   }
-
-      //   this.loading = false
-      // },
-
-      // loadItems ({ page, itemsPerPage, sortBy }) {
-      //   this.loading = true
-      //   // Fetch data from your actual API, passing the current page and items per page
-      //   fetchUserData({ page, itemsPerPage }).then(({ items, meta }) => {
-      //     this.fetchedData = items // Update the items with the fetched result
-      //     this.totalItems = meta.total // Use the total number of items from the API
-      //     this.itemsPerPage = meta.itemsPerPage // Set items per page from the meta
-      //     this.loading = false // Turn off the loading state
-      //   }).catch(() => {
-      //     this.loading = false // Handle any errors, ensure loading stops
-      //   })
-      // },
-
 
       loadItems ({ page, itemsPerPage, sortBy }) {
         this.loading = true;
@@ -441,7 +388,7 @@
           const result = await deleteUserAPI(this.selectedUser.id)
           console.log("resuot after delete", result);
           
-          await this.loadItems()
+          this.loadItems()
 
         } catch (error) {
           console.log(error);
@@ -501,7 +448,7 @@
             phone_number: this.editedItem.phone_number
           };
           await updateUserAPI(updatedUser);
-          await this.loadItems();
+          this.loadItems();
         } catch (error) {
           console.log(error);
         }
