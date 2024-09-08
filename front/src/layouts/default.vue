@@ -49,6 +49,6 @@
   }
 
   const displayAsideMenu = computed(() => {
-    return route.fullPath !== '/login' && route.name !== '/Records/[id]'
+    return route.fullPath !== '/login' && route.name !== '/Records/[id]' && route.name !== 'NotFound'
   })
 </script>
