@@ -410,6 +410,7 @@
     createRecord as createRecordAPI,
     getRecord as getRecordAPI,
     updateRecord as updateRecordAPI,
+    deleteRecord as deleteRecordAPI
   } from '@/_api/document'
   import { getAllUsers as getAllUsersAPI } from '@/_api/user'
 
@@ -1060,13 +1061,20 @@
       },
 
       deleteItem (item) {
-        this.editedIndex = this.fetchedData.indexOf(item)
-        this.editedItem = Object.assign({}, item)
+        this.selectedRecord = item
         this.dialogDelete = true
       },
 
-      deleteItemConfirm () {
-        this.fetchedData.splice(this.editedIndex, 1)
+      async deleteItemConfirm () {
+        try {
+          const result = await deleteRecordAPI(this.selectedRecord.id)
+          console.log("result after delete", result);
+          
+          this.loadItems()
+
+        } catch (error) {
+          console.log(error);
+        }
         this.closeDelete()
       },
 
