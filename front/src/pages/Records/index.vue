@@ -433,13 +433,19 @@
       districtsFiltering: [],
       communesFiltering: [],
       usersList: [],
+      currentParams: {
+        page: 1,
+        sort: null,
+        filters: {},
+        keySearch: {}
+      },
 
       editingItem: [],
       selectedRecord: {},
 
       isEditingMode: false,
 
-      itemsPerPage: 5, //
+      itemsPerPage: 10, //
       search: '',
       fetchedData: [],
       loading: true,
@@ -850,6 +856,7 @@
           this.selectedUser = "";
           this.districtsFiltering = [];
           this.communesFiltering = [];
+          this.currentParams.filters = {};
           this.loadItems()
         },
 
@@ -963,8 +970,16 @@
 
 
       async fetchRecordData (params) {
+        console.log("params===", params);
+        
         const { data: { data } } = await getAllRecords(params)
-        return data
+        // return data
+        console.log("data", data);
+        
+        return {
+          items: data.items,
+          meta: data.meta
+        }
       },
 
       async fetchUsers () {
@@ -981,22 +996,23 @@
         this.fetchedData = []
       },
 
-      async loadItems (params) {
-        if (params) {
-          const { page, itemsPerPage, sortBy } = params
-        }
-        this.loading = true
-        // fetchRecordData.fetch({ page, itemsPerPage, sortBy }).then(({ items, total }) => {
-        //   this.fetchedData = items
-        //   console.log("in loaditem", this.fetchedData);
-          
-        //   this.totalItems = total
-        //   this.loading = false
-        // })
-        let data = await this.fetchRecordData(params || {})
-        this.fetchedData = data.items
-        this.totalItems = data.meta.total
-        this.loading = false
+      async loadItems(params = {}) {
+        this.loading = true;
+        
+        this.currentParams = {
+          ...this.currentParams,
+          ...params,
+          limit: this.itemsPerPage
+        }; 
+
+        this.fetchRecordData(this.currentParams).then(({ items, meta }) => {
+          this.fetchedData = items;
+          this.totalItems = meta.total;
+          this.itemsPerPage = meta.per_page;
+          this.loading = false;
+        }).catch(() => {
+          this.loading = false;
+        });
       },
 
       async editItem (item) {

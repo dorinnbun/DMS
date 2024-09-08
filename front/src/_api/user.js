@@ -1,4 +1,5 @@
 import axiosInstance from '../../axiosConfig';
+import {setParams} from '../utils/setParams.js';
 
 const token = localStorage.getItem('dms-token')
 
@@ -6,7 +7,7 @@ export const getAllUsers = async (params) => {
 
   try {
     return await axiosInstance.get(
-      `${ import.meta.env.VITE_API_BASE_URL }/user`,
+      `${ import.meta.env.VITE_API_BASE_URL }/user${ params ? '?' + setParams(params) : '' }`,
       {
         headers: {
           'Content-Type': 'application/json',

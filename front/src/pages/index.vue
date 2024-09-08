@@ -40,7 +40,7 @@
 
             <v-card>
               <v-card-title style="padding: 30px 0 0 30px !important;">
-                <span class="text-h5">{{ isEditMode ? 'Edit User' : 'Create New User' }}</span>
+                <span class="text-h5">{{ isEditMode ? 'កែប្រែទិន្នន័យអ្នកប្រេីប្រាស់' : 'បង្កេីតអ្នកប្រេីប្រាស់ថ្មី' }}</span>
               </v-card-title>
 
               <v-card-text>
@@ -98,7 +98,7 @@
                   @click="isEditMode ? updateUser() : createUser()"
                   :disabled="!createObject.every(item => item.value)"
                 >
-                  {{ isEditMode ? 'Update User' : 'រក្សាទុក' }}
+                  រក្សាទុក
                 </v-btn>
               </v-card-actions>
             </v-card>
@@ -111,7 +111,7 @@
               <v-card-actions style="padding-bottom: 30px">
                 <v-spacer></v-spacer>
                 <v-btn color="blue-darken-1 primary-btn" variant="text" @click="closeDelete">បោះបង់</v-btn>
-                <v-btn class="danger-btn" @click="deleteItemConfirm">លុបចោល</v-btn>
+                <v-btn class="danger-btn" @click="deleteUserConfirm">លុបចោល</v-btn>
                 <v-spacer></v-spacer>
               </v-card-actions>
             </v-card>
@@ -132,7 +132,7 @@
         </v-icon>
         <v-icon
           size="small"
-          @click="deleteItem(item)"
+          @click="deleteUser(item)"
           color="red"
         >
           mdi-delete
@@ -159,7 +159,7 @@
     data: () => ({
 
       showPassword: false,
-
+      selectedUser: {},
       isEditMode: false,
 
       itemsPerPage: 5, //
@@ -174,7 +174,7 @@
       headers: [
         { title: 'លេខ', key: 'id', sortable: false  },
         {
-          title: 'នាមគោត្តនាម',
+          title: 'គោត្តនាមនាម',
           align: 'start',
           key: 'name',
         },
@@ -197,13 +197,8 @@
       },
       createObject: [
         {
-          label: 'គោត្តនាម',
-          key: 'first_name',
-          value: '',
-          type: 'text'
-        }, {
-          label: 'នាម',
-          key: 'last_name',
+          label: 'គោត្តនាមនាម',
+          key: 'name',
           value: '',
           type: 'text'
         }, {
@@ -247,10 +242,10 @@
     },
 
     async created () {
-      this.initialize()
-      await this.fetchUserData()
+      // this.initialize()
+      // await this.fetchUserData()
       await this.getAllRoles()
-      console.log("this.loading", this.loading);
+      // console.log("this.loading", this.loading);
     },
 
     methods: {
@@ -288,36 +283,70 @@
         }
       },
 
-    //   fetchUserData {
-    //   async fetch ({ page, itemsPerPage, sortBy }) {
-    //     return new Promise(resolve => {
-    //       setTimeout(() => {
-    //         const start = (page - 1) * itemsPerPage
-    //         const end = start + itemsPerPage
+    //   async fetchUserData () {
+    //   // const fetch ({ page, itemsPerPage, sortBy }) => {
+    //   //   return new Promise(resolve => {
+    //   //     setTimeout(() => {
+    //   //       const start = (page - 1) * itemsPerPage
+    //   //       const end = start + itemsPerPage
             
-    //         const items = this.fetchedData.slice()
+    //   //       const items = this.fetchedData.slice()
 
-    //         if (sortBy.length) {
-    //           const sortKey = sortBy[0].key
-    //           const sortOrder = sortBy[0].order
-    //           items.sort((a, b) => {
-    //             const aValue = a[sortKey]
-    //             const bValue = b[sortKey]
-    //             return sortOrder === 'desc' ? bValue - aValue : aValue - bValue
-    //           })
-    //         }
+    //   //       if (sortBy.length) {
+    //   //         const sortKey = sortBy[0].key
+    //   //         const sortOrder = sortBy[0].order
+    //   //         items.sort((a, b) => {
+    //   //           const aValue = a[sortKey]
+    //   //           const bValue = b[sortKey]
+    //   //           return sortOrder === 'desc' ? bValue - aValue : aValue - bValue
+    //   //         })
+    //   //       }
 
-    //         const paginated = items.slice(start, end)
+    //   //       const paginated = items.slice(start, end)
 
-    //         resolve({ items: paginated, total: items.length })
-    //       }, 500)
-    //     })
-    //   },
-    // }
+    //   //       resolve({ items: paginated, total: items.length })
+    //   //     }, 500)
+    //   //   })
+    //   // },
+    //   const { data: { data } } = await getAllUsers()
+    //   const fetch = ({ page, itemsPerPage, sortBy }) => {
+    //     // const start = (page - 1) * itemsPerPage;
+    //     // const end = start + itemsPerPage;
 
-      async fetchUserData () {
+    //     const items = this.fetchedData.slice();
+
+    //     if (sortBy.length) {
+    //       const sortKey = sortBy[0].key;
+    //       const sortOrder = sortBy[0].order;
+    //       items.sort((a, b) => {
+    //         const aValue = a[sortKey];
+    //         const bValue = b[sortKey];
+    //         return sortOrder === 'desc' ? bValue - aValue : aValue - bValue;
+    //       });
+    //     }
+
+    //     // const paginated = items.slice(start, end);
+
+    //     return { items: data.item, total: data.meta.total };
+    //   };
+    // },
+
+      // async fetchUserData () {
+      //   const { data: { data } } = await getAllUsers()
+      //   console.log("data", data);
+        
+        
+      //   return data
+      // },
+
+      async fetchUserData ({ page, itemsPerPage, search }) {
         const { data: { data } } = await getAllUsers()
-        return data
+        console.log("data", data);
+        
+        return {
+          items: data.items,
+          meta: data.meta
+        }
       },
 
       togglePasswordVisibility() {
@@ -328,26 +357,70 @@
         this.fetchedData = []
       },
 
-      async loadItems (params) {
-        if (params) {
-          const { page, itemsPerPage, sortBy } = params
-        }
-        this.loading = true
-        // fetchUserData.fetch({ page, itemsPerPage, sortBy }).then(({ items, total }) => {
-        //   this.fetchedData = items
-        //   console.log("in loaditem", this.fetchedData);
+      // async loadItems (params) {
+      //   if (params) {
+      //     const { page, itemsPerPage, sortBy } = params
+      //     this.loading = true
+      //     this.fetchUserData.fetch({ page, itemsPerPage, sortBy }).then(({ items, total }) => {
+      //       this.fetchedData = items
+      //       this.totalItems = total
+      //       this.loading = false
+      //     })
+      //   } else {
+      //     const data = await this.fetchUserData()
           
-        //   this.totalItems = total
-        //   this.loading = false
-        // })
-        const data = await this.fetchUserData()
-        
-        this.fetchedData = data.items
-        this.totalItems = data.meta.total
+      //     this.fetchedData = data.items
+      //     this.totalItems = data.meta.total
+      //   }
 
-        this.loading = false
+      //   this.loading = false
+      // },
+
+      // loadItems ({ page, itemsPerPage, sortBy }) {
+      //   this.loading = true
+      //   // Fetch data from your actual API, passing the current page and items per page
+      //   fetchUserData({ page, itemsPerPage }).then(({ items, meta }) => {
+      //     this.fetchedData = items // Update the items with the fetched result
+      //     this.totalItems = meta.total // Use the total number of items from the API
+      //     this.itemsPerPage = meta.itemsPerPage // Set items per page from the meta
+      //     this.loading = false // Turn off the loading state
+      //   }).catch(() => {
+      //     this.loading = false // Handle any errors, ensure loading stops
+      //   })
+      // },
+
+
+      loadItems ({ page, itemsPerPage, sortBy }) {
+        this.loading = true;
+
+        const params = {
+          page,
+          limit: itemsPerPage,
+          sort: sortBy.length ? { key: sortBy[0].key, reverse: sortBy[0].order === 'desc' } : null,
+          // filters: {
+          //   calories: this.calories, // Example filter for calories
+          //   // Add other filters as needed
+          // },
+          // keySearch: {
+          //   name: this.name, // Example search for name
+          //   // Add other search fields as needed
+          // }
+        };
+
+        // Make the API call with the built parameters
+        this.fetchUserData(params).then(({ items, meta }) => {
+          console.log("items====", items);
+          
+          this.fetchedData = items; // Update the items with the fetched result
+          this.totalItems = meta.total; // Update total number of items from the meta
+          this.itemsPerPage = meta.itemsPerPage; // Optionally update itemsPerPage if needed
+          this.loading = false; // Turn off the loading state
+        }).catch(() => {
+          this.loading = false; // Handle any errors and stop loading
+        });
       },
 
+      
       async getSelectedUser (id) {
         try {
           const { data: { data: { item: user } } } = await getUserAPI(id)
@@ -358,25 +431,14 @@
         }
       },
 
-      // async editItem (item) {
-      //   const user = await this.getSelectedUser(item.id)
-      //   console.log("user to edit==", user);
-        
-      //   this.dialogCreate = true
-      // },
-
-      deleteItem (item) {
-        console.log("item to delete====", item);
-        
-        this.editedIndex = this.fetchedData.indexOf(item)
-        this.editedItem = Object.assign({}, item)
+      deleteUser (item) {
+        this.selectedUser = item
         this.dialogDelete = true
       },
 
-      async deleteItemConfirm () {
-        // this.fetchedData.splice(this.editedIndex, 1)
+      async deleteUserConfirm () {
         try {
-          const result = await deleteUserAPI(item.id)
+          const result = await deleteUserAPI(this.selectedUser.id)
           console.log("resuot after delete", result);
           
           await this.loadItems()
@@ -388,11 +450,9 @@
       },
 
       close () {
-        this.dialog = false
-        this.$nextTick(() => {
-          this.editedItem = Object.assign({}, this.defaultItem)
-          this.editedIndex = -1
-        })
+        console.log("close");
+        
+        this.dialogCreate = false
       },
 
       closeDelete () {
@@ -412,7 +472,7 @@
 
         try {
           await createUserAPI({
-            name: bodyObject.first_name + bodyObject.last_name,
+            name: bodyObject.name,
             email: bodyObject.email,
             role: bodyObject.role,
             password: bodyObject.password,
@@ -428,8 +488,24 @@
 
       },
 
-      updateUser() {
+      async updateUser() {
         // Handle update user logic
+        try {
+          const user = await this.getSelectedUser(this.editedItem.id);
+          const updatedUser = {
+            id: user.id,
+            name: this.editedItem.name,
+            email: this.editedItem.email,
+            role: this.editedItem.role,
+            password: this.editedItem.password,
+            phone_number: this.editedItem.phone_number
+          };
+          await updateUserAPI(updatedUser);
+          await this.loadItems();
+        } catch (error) {
+          console.log(error);
+        }
+        this.close();
       },
     },
   }
