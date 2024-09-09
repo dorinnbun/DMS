@@ -98,8 +98,24 @@ export const deleteRecord = async (id) => {
 
 export const restoreRecord = async (id) => {
   try {
-    return await axiosInstance.post(
-      `${ import.meta.env.VITE_API_BASE_URL }/document/${ id }`,
+    return await axiosInstance.get(
+      `${ import.meta.env.VITE_API_BASE_URL }/document/restore/${ id }`,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${ token }`
+        }
+      }
+    )
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+export const getAllDeletedRecords = async (params) => {
+  try {
+    return await axiosInstance.get(
+      `${ import.meta.env.VITE_API_BASE_URL }/document/getTrashList${ params ? '?' + setParams(params) : '' }`,
       {
         headers: {
           'Content-Type': 'application/json',

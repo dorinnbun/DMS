@@ -3,12 +3,9 @@
   <div style="padding: 0 15px">
     
     <v-data-table-server
-      v-model:items-per-page="itemsPerPage"
       :headers="headers"
-      :items="serverItems"
-      :items-length="totalItems"
+      :items="trashItems"
       :loading="loading"
-      :search="search"
       item-value="name"
       @update:options="loadItems"
     >
@@ -19,6 +16,7 @@
             type="text"
             placeholder="ស្វែករកឯកសារ..."
             v-model="search"
+            class="search"
           />
 
           <v-spacer></v-spacer>
@@ -42,10 +40,15 @@
       <template v-slot:item="{ item, index }">
         <tr @click="viewRecord(item)" style="cursor: pointer;">
 
-          <td v-for="key in Object.keys(item)">
-            {{ item[key] }}
+          <td v-for="header in headers" :key="index">
+            <template v-if="header.key === 'full_name'">
+              {{ item.first_name + ' ' + item.last_name }}
+            </template>
+            
+            <template v-else>
+              {{ item [header.key] }}
+            </template>
           </td>
-
           <td>
             <v-icon small color="green" @click.stop="restoreItem(item)">mdi-file-restore</v-icon>
           </td>
@@ -60,43 +63,28 @@
 
 <script>
 
-  const fetchDeletedData = {
-      async fetch ({ page, itemsPerPage, sortBy }) {
-        // return new Promise(resolve => {
-        //   setTimeout(() => {
-        //     const start = (page - 1) * itemsPerPage
-        //     const end = start + itemsPerPage
-            
-        //     const items = this.serverItems.slice()
+  import { 
+    getAllDeletedRecords as getAllDeletedRecordsAPI, 
+    restoreRecord as restoreRecordAPI 
+  } from '@/_api/document'
 
-        //     if (sortBy.length) {
-        //       const sortKey = sortBy[0].key
-        //       const sortOrder = sortBy[0].order
-        //       items.sort((a, b) => {
-        //         const aValue = a[sortKey]
-        //         const bValue = b[sortKey]
-        //         return sortOrder === 'desc' ? bValue - aValue : aValue - bValue
-        //       })
-        //     }
-
-        //     const paginated = items.slice(start, end)
-
-        //     resolve({ items: paginated, total: items.length })
-        //   }, 500)
-        // })
-      },
-    }
   export default {
     data: () => ({
 
-      itemsPerPage: 5, //
       search: '',
-      serverItems: [],
+      trashItems: [],
       loading: true,
-      totalItems: 20,//
 
       dialog: false,
       restoreDialog: false,
+      selectedItem: {},
+
+      currentParams: {
+        // sort: null,
+        // filters: {},
+        keySearch: {}
+      },
+
       headers: [
         { 
           title: 'លេខរៀង', 
@@ -105,12 +93,12 @@
         },
         { 
           title: 'លេខសៀវភៅ', 
-          key: 'bookID' 
+          key: 'book_id' 
         },
         {
           title: 'នាមគោត្តនាម',
           align: 'start',
-          key: 'name',
+          key: 'full_name',
         },
         { 
           title: '', 
@@ -128,65 +116,70 @@
       restoreDialog (val) {
         val || this.closeRestore()
       },
+      search(val) {
+        this.loadItems({
+          keySearch: {
+            first_name: val, 
+            last_name: val,
+            book_id: val,
+            number: val
+          }
+        })
+      }
     },
 
     created () {
       this.initialize()
-      console.log("this.loading", this.loading);
     },
 
     methods: {
       initialize () {
-        this.serverItems = [
-          {
-            id: 159,
-            bookID: 88,
-            name: 'David Lee'
-          },
-          {
-            id: 237,
-            bookID: 848,
-            name: 'Daniel Lee'
-          },
-          {
-            id: 262,
-            bookID: 888,
-            name: 'Neary Lee'
-          },
-          {
-            id: 305,
-            bookID: 188,
-            name: 'Bopha Lee'
-          },
-          {
-            id: 356,
-            bookID: 89,
-            name: 'Dyna Lee'
-          }
-        ]
+        this.trashItems = []
       },
 
-      loadItems ({ page, itemsPerPage, sortBy }) {
-        this.loading = true
-        // fetchDeletedData.fetch({ page, itemsPerPage, sortBy }).then(({ items, total }) => {
-        //   this.serverItems = items
-        //   console.log("in loaditem", this.serverItems);
-          
-        //   this.totalItems = total
-        //   this.loading = false
-        // })
-        this.loading = false
+      async fetchDeletedRecordData (params) {
+        try {
+          const { data: { data } } = await getAllDeletedRecordsAPI(params)
+          return data.item
+
+        } catch (error) {
+          console.log("error", error);
+        }
+      },
+
+
+      async loadItems(params = {}) {
+        this.loading = true;
+        
+        try {
+          this.currentParams = {
+            ...this.currentParams,
+            ...params
+          }; 
+          const data = await this.fetchDeletedRecordData(this.currentParams)
+          this.loading = false
+          this.trashItems = data
+
+        } catch (error) {
+          console.log("error", error);
+          this.loading = false
+        }
       },
 
       restoreItem (item) {
-        this.restoredIndex = this.serverItems.indexOf(item)
-        console.log("this.restoredIndex", this.restoredIndex);
         this.restoreDialog = true
+        this.selectedItem = item
       },
 
-      restoreItemConfirm () {
-        this.serverItems.splice(this.restoredIndex, 1)
-        this.closeRestore()
+      async restoreItemConfirm () {
+        try {
+          const result = await restoreRecordAPI(this.selectedItem.id)
+          this.loadItems()
+
+        } catch (error) {
+          console.log(error);
+        }
+        this.restoreDialog = false
       },
 
       close () {
@@ -204,8 +197,8 @@
       },
 
       viewRecord (item) {
-        const id = item.id;
-        console.log("id", id);
+        const uuid = item.uuid;
+        // this.$router.push("/records/" + uuid)
       }
     },
   }
