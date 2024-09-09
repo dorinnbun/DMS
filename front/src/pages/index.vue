@@ -46,7 +46,7 @@
               <v-card-text>
                 <v-container>
                   <v-row>
-                    <template v-for="key in createObject">
+                    <template v-for="key in isEditMode ? editObject : createObject">
                       <v-col cols="12" md="4" sm="6">
                         <v-text-field
                           v-if="key.type === 'text'"
@@ -104,6 +104,65 @@
             </v-card>
           </v-dialog>
 
+
+          <!-- Dialog reset password -->
+          <v-dialog
+            v-model="resetPasswordDialog"
+            max-width="50%"
+          >
+
+            <v-card>
+              <v-card-title style="padding: 30px 0 0 30px !important;">
+                <span class="text-h5">កំណត់លេខសម្ងាត់ឡើងវិញរបស់អ្នកប្រេីប្រាស់: {{ selectedUser.name }}</span>
+              </v-card-title>
+
+              <v-card-text>
+                <v-container>
+                  <v-row>
+                    <p style="color: red; font-weight: bold; margin-bottom: 12px;">
+                      ** លេខសម្ងាត់ត្រូវតែមានយ៉ាងហោចណាស់ 8 តួអក្សរ, យ៉ាងហោចណាស់ អក្សរពិសេស1តួ និង លេខ1តួ**
+                    </p>
+                    <template v-for="field in resetPasswordFields">
+                      <v-col cols="12" md="6" sm="12">
+                        <v-text-field
+                          v-model="field.value"
+                          :label="field.label"
+                          :type="showPassword ? 'text' : 'password'"
+                          persistent-hint="false"
+                          :rules="[v => !!v || 'ទិន្នន័យត្រូវបញ្ចូល', v => /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,}$/.test(v) || 'លេខសម្ងាត់ត្រូវតែមានយ៉ាងហោចណាស់ 8 តួអក្សរ, យ៉ាងហោចណាស់ អក្សរពិសេស1តួ និង លេខ1តួ']"
+                          @click:append-inner="togglePasswordVisibility"
+                          style="max-width: 300px;"
+                        >
+                          <template v-slot:append-inner>
+                            <v-icon @click="togglePasswordVisibility">
+                              {{ showPassword ? 'mdi-eye-off' : 'mdi-eye' }}
+                            </v-icon>
+                          </template>
+                        </v-text-field>
+                      </v-col>
+                    </template>
+                  </v-row>
+                </v-container>
+              </v-card-text>
+
+              <v-card-actions style="padding: 0 30px 30px 0 !important;">
+                <v-spacer></v-spacer>
+                <v-btn class="danger-btn" @click="resetPasswordDialog = false">
+                  បោះបង់
+                </v-btn>
+                <v-btn
+                  color="blue-darken-1 primary-btn"
+                  variant="text"
+                  @click="resetPasswordConfirm"
+                  :disabled="!resetPasswordFields.every(field => field.value)"
+                >
+                  រក្សាទុក
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+
+
           <!-- Delete user modal -->
           <v-dialog v-model="dialogDelete" max-width="40%">
             <v-card>
@@ -129,13 +188,14 @@
             </template>
             
             <template v-else>
-              {{ item [header.key] }}
+              {{ item[ header.key ] }}
             </template>
           </td>
 
           <td>
             <v-icon small color="blue" @click.stop="editItem(item)">mdi-pencil</v-icon>
-            <v-icon small color="red" @click.stop="deleteItem(item)">mdi-delete</v-icon>
+            <v-icon small color="red" @click.stop="deleteUser(item)">mdi-delete</v-icon>
+            <v-icon small color="orange" @click.stop="resetPassword(item)">mdi-lock-reset</v-icon>
           </td>
         </tr>
 
@@ -198,6 +258,7 @@
       dialogDetail: false,
       dialogCreate: false,
       dialogDelete: false,
+      resetPasswordDialog: false,
       headers: [
         { title: 'លេខ', key: 'id', sortable: false  },
         {
@@ -250,6 +311,43 @@
           value: "",
           type: "password"
         }
+      ],
+      editObject: [
+        {
+          label: 'គោត្តនាមនាម',
+          key: 'name',
+          value: '',
+          type: 'text'
+        }, {
+          key: 'email',
+          label: 'អ៊ីម៉ែល',
+          value: '',
+          type: 'text'
+        }, {
+          key: 'phone_number',
+          label: 'លេខទូរស័ព្ទ',
+          value: '',
+          type: 'text'
+        }, {
+          key: 'role',
+          label: 'តួនាទី',
+          value: '',
+          type: 'select',
+          items: []
+        }
+      ],
+      resetPasswordFields : [
+        {
+          key: "password",
+          label: "លេខសម្ងាត់",
+          value: "",
+          type: "password"
+        }, {
+          key: "confirm_password",
+          label: "បញ្ជាក់លេខសម្ងាត់ម្តងទៀត",
+          value: "",
+          type: "password"
+        }
       ]
     }),
 
@@ -257,6 +355,9 @@
       formTitle () {
         return this.editedIndex === -1 ? 'ពត័មានអ្នកប្រេីប្រាស់ថ្មី' : 'កែពត័មានអ្នកប្រេីប្រាស់'
       },
+      messages() {
+        return this.rules.map((rule) => rule(this.inputValue)).filter((msg) => msg !== true);
+      }
     },
 
     watch: {
@@ -296,8 +397,7 @@
       async editItem(item) {
         const user = await this.getSelectedUser(item.id);
 
-        // Assign user values to the fields
-        this.createObject.forEach(field => {
+        this.editObject.forEach(field => {
           field.value = user[field.key] || '';
         });
 
@@ -395,10 +495,36 @@
         }
         this.closeDelete()
       },
+      
+      async resetPassword (item) {
+        this.selectedUser = item
+        this.resetPasswordDialog = true
+      },
+
+      async resetPasswordConfirm () {
+        try {
+          const user = await this.getSelectedUser(this.selectedUser.id);
+          const updatedUser = {
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            role: user.role,
+            password: this.resetPasswordFields.find(field => field.key === 'password').value,
+            phone_number: user.phone_number
+          };
+          await updateUserAPI(updatedUser);
+          this.loadItems();
+          
+        } catch (error) {
+          console.log(error);
+        }
+        
+        this.resetPasswordDialog = false
+      },
+
+
 
       close () {
-        console.log("close");
-        
         this.dialogCreate = false
       },
 
@@ -444,7 +570,7 @@
             name: this.editedItem.name,
             email: this.editedItem.email,
             role: this.editedItem.role,
-            password: this.editedItem.password,
+            // password: this.editedItem.password,
             phone_number: this.editedItem.phone_number
           };
           await updateUserAPI(updatedUser);
