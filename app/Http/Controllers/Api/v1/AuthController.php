@@ -36,7 +36,8 @@ class AuthController extends ParentApiController
     try {
       $this->auth_service->request = $request;
 
-      $user = $this->auth_service->getByEmail($request->input("email",'')); //Get User FOR UPDATE
+      $user = $this->auth_service->getByEmail($request->input("email",''));
+      $token = $this->auth_service->login();
       
       if ( !$user ) throw_exception(__('messages.not_found', ['attribute' => 'USER']), 404);
 
@@ -50,7 +51,6 @@ class AuthController extends ParentApiController
       ];
       log_debug("enrollmentData", $enrollmentData);
       $user->notify(new OtpNotify($enrollmentData));
-      // $token = $this->auth_service->login();
 
       // if (!$token) return $this->errorResponse(__('messages.unauthorized'), 401);
 
