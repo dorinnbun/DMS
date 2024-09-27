@@ -14,7 +14,7 @@ export const getAddresses = async () => {
       )
 
     } catch (error) {
-      console.error(error)
+      throw error
     }
   }
 
@@ -31,7 +31,7 @@ export const getProvinces = async () => {
       }
     )
   } catch (error) {
-    console.error(error)
+    throw error
   }
 }
 
@@ -48,7 +48,7 @@ export const getDistricts = async (provinceId) => {
       }
     )
   } catch (error) {
-    console.error(error)
+    throw error
   }
 }
 
@@ -65,6 +65,6 @@ export const getCommunes = async (districtId) => {
       }
     )
   } catch (error) {
-    console.error(error)
+    throw error
   }
 }

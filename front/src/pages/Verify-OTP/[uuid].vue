@@ -1,18 +1,18 @@
 <template>
   <v-card class="px-6 py-8 form-container" max-width="30%">
 
-    <h4>បំពេញអ៊ីមែលរបស់អ្នកដើម្បីទទួលបានតំណភ្ជាប់សម្រាប់កំណត់ពាក្យសម្ងាត់ឡើងវិញ</h4>
+    <h4>អ៊ីមែលត្រូវបានផ្ញើទៅអ៊ីមែលរបស់អ្នកហើយ! <br>សូមពិនិត្យមើលអ៊ីមែលរបស់អ្នកសម្រាប់លេខកូដយកមកកំណត់ពាក្យសម្ងាត់ឡើងវិញ</h4>
 
     <v-form
       v-model="form"
-      @submit.prevent="submitResetPasswordEmail"
+      @submit.prevent="verifyOTP"
     >
       <v-text-field
-        v-model="email"
+        v-model="OTP"
         :readonly="loading"
-        :rules="[required, emailRule]"
+        :rules="[required]"
         class="mb-4"
-        label="អ៊ីមែល"
+        label="លេខកូដ6ខ្ទង់ដែលបានផ្ញើទៅអ៊ីមែលរបស់អ្នក"
       ></v-text-field>
 
       <v-alert
@@ -33,13 +33,9 @@
         variant="elevated"
         block
       >
-        ផ្ញើអ៊ីមែល
+        បញ្ជាក់
       </v-btn>
 
-      <p v-if="displayConfirmationMessage" class="mt-4" style="color: darkorange; font-size: 14px;">
-        **{{ confirmationMessage }}
-      </p>
-      
     </v-form>
   </v-card>
 </template>
@@ -47,50 +43,50 @@
 <script setup>
   import { ref } from 'vue'
   import { useAuthStore } from '@/stores/auth'
-  import { sendResetPasswordEmail } from '@/_api/user'
-  import { useRouter } from 'vue-router'
+  import { useTmpStore } from '@/stores/tmp';
+  import { verifyOTP as verifyOTPAPI } from '@/_api/user';
+  import { useRouter, useRoute } from 'vue-router';
+  import { storeToRefs } from 'pinia';
 
   const form = ref(false)
-  const email = ref(null)
+  const OTP = ref(null)
   const loading = ref(false)
   const errorMessage = ref('អ៊ីមែល ឬ ពាក្យសម្ងាត់ មិនត្រឹមត្រូវ')
   const displayConfirmationMessage = ref(false)
-  const confirmationMessage = ref ('អ៊ីមែលត្រូវបានផ្ញើទៅអ៊ីមែលរបស់អ្នកហើយ! សូមពិនិត្យមើលអ៊ីមែលរបស់អ្នកសម្រាប់តំណកំណត់ពាក្យសម្ងាត់ឡើងវិញ')
-  const anyError = ref(false)
 
+  const anyError = ref(false)
+  const route = useRoute()
   const router = useRouter()
 
-  const emailRule = (v) => {
-    if (!v) return true;
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(v) || 'អ៊ីមែលមិនត្រឹមត្រូវ';
-  };
+  console.log("route===", route);
+  
 
+  const tmpStore = useTmpStore()
 
-  // submitResetPasswordEmail
-  const submitResetPasswordEmail = async () => {
+  // get the params from the route 
+  const uuid = route.params.uuid
+
+  const verifyOTP = async () => {
       if (!form.value) return
       loading.value = true
       anyError.value = false
 
-
-
       try {
-        const { data } = await sendResetPasswordEmail(
-          email.value
-        )
-
+        const { data } = await verifyOTPAPI({
+          otp: OTP.value
+        }, uuid)
         console.log("data===", data);
         
         const { status, code } = data
 
         console.log("status===", status);
         console.log("code===", code);
-        
 
         if (status == 200 && code == 200) {
-          displayConfirmationMessage.value = true          
-          router.push({ path: `/verify-otp/${ data.data.item.uuid }` })
+          displayConfirmationMessage.value = true
+          tmpStore.$patch({ userUUID: uuid })
+          router.push({ path: '/reset-password' })
+
 
         } else if (code == 404) {
           anyError.value = true
@@ -100,6 +96,9 @@
           anyError.value = true
           errorMessage.value = data.message
         }
+
+        // router.push({ path: '/reset-password' })
+
 
       } catch (error) {
         console.log(error)

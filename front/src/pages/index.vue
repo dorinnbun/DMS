@@ -27,7 +27,7 @@
             v-model="dialogCreate"
             max-width="80%"
           >
-            <template v-slot:activator="{ props }">
+            <template v-slot:activator="{ props }" v-if="userRole !== 'user'">
               <v-btn
                 class="mb-2 primary-btn"
                 v-bind="props"
@@ -53,7 +53,11 @@
                           v-model="key.value"
                           :label="key.label"
                           persistent-hint="false"
-                          :rules="[v => !!v || 'ទិន្នន័យត្រូវបញ្ចូល']"
+                          :rules="[
+                            v => !!v || 'ទិន្នន័យត្រូវបញ្ចូល', 
+                            key.key === 'email' ? v => /.+@.+\..+/.test(v) || 'ទិន្នន័យអ៊ីម៉ែលមិនត្រឹមត្រូវ' : null,
+                            key.key === 'phone_number' ? v => /^(\+855|0)\d{8,9}$/.test(v) || 'ទិន្នន័យលេខទូរស័ព្ទមិនត្រឹមត្រូវ' : null
+                          ]"
                         ></v-text-field>
 
                         <v-text-field
@@ -62,6 +66,7 @@
                           :type="showPassword ? 'text' : 'password'"
                           :name="key.label"
                           :label="key.label"
+                          :rules="[v => !!v || 'ទិន្នន័យត្រូវបញ្ចូល', v => /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,}$/.test(v) || 'ត្រូវតែមានយ៉ាងហោចណាស់8តួ, អក្សរពិសេស1តួ និង លេខ1តួ']"
                           @click:append-inner="togglePasswordVisibility"
                         >
                           <template v-slot:append-inner>
@@ -96,7 +101,7 @@
                   color="blue-darken-1 primary-btn"
                   variant="text"
                   @click="isEditMode ? updateUser() : createUser()"
-                  :disabled="!createObject.every(item => item.value)"
+                  :disabled="isEditMode ? !editObject.every(item => item.value) : !createObject.every(item => item.value)"
                 >
                   រក្សាទុក
                 </v-btn>
@@ -104,6 +109,26 @@
             </v-card>
           </v-dialog>
 
+          <!-- Error Dialog -->
+            <v-dialog v-model="errorDialog" max-width="350px">
+            <v-card style="color: red; font-weight: bold;">
+              <v-card-title class="headline">
+              <v-icon left color="red" style="margin-right: 12px;">mdi-alert-circle</v-icon>
+                Error
+              </v-card-title>
+              <v-card-text>{{ errorMessage }}</v-card-text>
+            </v-card>
+            </v-dialog>
+
+            <!-- Success Dialog -->
+            <v-dialog v-model="successDialog" max-width="400px">
+            <v-card style="font-weight: bold; text-align: center;">
+              <v-card-text>
+                <v-icon left color="green" style="margin-right: 12px;">mdi-check-circle</v-icon>
+                {{ successMessage }}
+              </v-card-text>
+            </v-card>
+            </v-dialog>
 
           <!-- Dialog reset password -->
           <v-dialog
@@ -154,7 +179,7 @@
                   color="blue-darken-1 primary-btn"
                   variant="text"
                   @click="resetPasswordConfirm"
-                  :disabled="!resetPasswordFields.every(field => field.value)"
+                  :disabled="disableResetPasswordBtn"
                 >
                   រក្សាទុក
                 </v-btn>
@@ -192,14 +217,13 @@
             </template>
           </td>
 
-          <td>
+          <td v-if="userRole === 'admin' || userRole === 'manager'">
             <v-icon small color="blue" @click.stop="editItem(item)">mdi-pencil</v-icon>
-            <v-icon small color="red" @click.stop="deleteUser(item)">mdi-delete</v-icon>
-            <v-icon small color="orange" @click.stop="resetPassword(item)">mdi-lock-reset</v-icon>
+            <v-icon small color="red" @click.stop="deleteUser(item)" v-if="userRole === 'admin'">mdi-delete</v-icon>
+            <v-icon small color="orange" @click.stop="resetPassword(item)" v-if="userRole === 'admin'">mdi-lock-reset</v-icon>
           </td>
         </tr>
 
-        
         <v-dialog v-model="dialogDetail" max-width="80%">
           <v-card>
             <v-card-title style="padding: 30px !important;" class="text-h5">ពត័មានអ្នកប្រេីប្រាស់</v-card-title>
@@ -229,6 +253,18 @@
   
     </v-data-table-server>
 
+    <v-dialog v-model="displaySpinner" max-width="400px" persistent>
+      <v-card style="background-color: transparent; box-shadow: none;">
+        <v-card-text class="d-flex justify-center">
+          <v-progress-circular
+            color="red"
+            indeterminate
+            size="64"
+          ></v-progress-circular>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
+
   </div>
 </template>
 
@@ -241,10 +277,20 @@
     updateUser as updateUserAPI,
     deleteUser as deleteUserAPI
   } from '../_api/user.js'
+
   import { getAllRoles as getAllRolesAPI } from '../_api/role.js'
+
+  import { useUserStore } from '@/stores/user.js';
 
   export default {
     data: () => ({
+
+      errorDialog: false,
+      errorMessage: 'មានបញ្ហាបច្ចេកទេសកើតឡើង',
+      successDialog: false,
+      successMessage: 'ប្រតិបត្តិការជោគជ័យ',
+
+      displaySpinner: false,
 
       showPassword: false,
       selectedUser: {},
@@ -259,24 +305,31 @@
       dialogCreate: false,
       dialogDelete: false,
       resetPasswordDialog: false,
+
+      currentParams: {
+        page: 1
+      },
+      itemsPerPage: 10, //
+
       headers: [
         { title: 'លេខ', key: 'id', sortable: false  },
         {
           title: 'គោត្តនាមនាម',
           align: 'start',
           key: 'name',
+          sortable: false
         },
         { title: 'អ៊ីម៉ែល', key: 'email', sortable: false  },
         { title: 'តួនាទី', key: 'role', sortable: false  },
         { title: '', key: 'actions', sortable: false },
       ],
       editedIndex: -1,
-      editedItem: {
-        name: '',
-        id: 0,
-        email: "",
-        role: "",
-      },
+      // editedItem: {
+      //   name: '',
+      //   id: 0,
+      //   email: "",
+      //   role: "",
+      // },
       defaultItem: {
         name: '',
         id: 0,
@@ -336,7 +389,7 @@
           items: []
         }
       ],
-      resetPasswordFields : [
+      resetPasswordFields: [
         {
           key: "password",
           label: "លេខសម្ងាត់",
@@ -351,12 +404,32 @@
       ]
     }),
 
+    created () {
+      this.initialize()
+      if (this.userRole === 'user') {
+        this.$router.push('/')
+      }
+    },
+
     computed: {
+
+      userRole () {
+        return useUserStore().user.role
+      },
       formTitle () {
         return this.editedIndex === -1 ? 'ពត័មានអ្នកប្រេីប្រាស់ថ្មី' : 'កែពត័មានអ្នកប្រេីប្រាស់'
       },
       messages() {
-        return this.rules.map((rule) => rule(this.inputValue)).filter((msg) => msg !== true);
+        return this.rules.map(rule => rule(this.inputValue)).filter((msg) => msg !== true);
+      },
+      userStore() {
+        return useUserStore();
+      },
+      userRole() {
+        return this.userStore.user.role;
+      },
+      disableResetPasswordBtn () {
+        return !this.resetPasswordFields.every(field => field.value) || this.resetPasswordFields[0].value !== this.resetPasswordFields[1].value
       }
     },
 
@@ -370,13 +443,25 @@
     },
 
     async created () {
-      // this.initialize()
-      // await this.fetchUserData()
       await this.getAllRoles()
-      // console.log("this.loading", this.loading);
     },
 
     methods: {
+
+      async showSuccessMessage () {
+        this.successDialog = true
+        setTimeout(() => {
+          this.successDialog = false;
+        }, 2500);
+      },
+
+      async showErrorMessage (message) {
+        this.errorMessage = message
+        this.errorDialog = true
+        setTimeout(() => {
+          this.errorDialog = false;
+        }, 5000);
+      },
 
       async viewUser (item) {
         this.dialogDetail = true
@@ -395,11 +480,21 @@
       },
 
       async editItem(item) {
+
         const user = await this.getSelectedUser(item.id);
+        const roles = await this.getAllRoles();
+
+        this.selectedUser = user;
 
         this.editObject.forEach(field => {
-          field.value = user[field.key] || '';
+          if (field.key === 'role') {
+            field.value = roles.find (role => role.name === user.role).id
+          } else {
+            field.value = user[field.key] || '';
+          }
         });
+
+        console.log("this.editObject", this.editObject);
 
         this.isEditMode = true;
         this.dialogCreate = true;
@@ -413,16 +508,27 @@
               item.items = items
             }
           })
+
+          this.editObject.map (item => {
+            if (item.key === 'role') {
+              item.items = items
+            }
+          })
+
+          return items
           
         } catch (error) {
           console.log("error", error);
         }
       },
 
-      async fetchUserData ({ page, itemsPerPage, search }) {
-        const { data: { data } } = await getAllUsers()
-        console.log("data", data);
+      async fetchUserData ({ page, itemsPerPage, sortBy }) {
         
+        const { data: { data } } = await getAllUsers({ 
+          page, 
+          limit: itemsPerPage,
+          sort: sortBy
+        })
         return {
           items: data.items,
           meta: data.meta
@@ -437,40 +543,25 @@
         this.fetchedData = []
       },
 
-      loadItems ({ page, itemsPerPage, sortBy }) {
-        this.loading = true;
-
-        const params = {
-          page,
-          limit: itemsPerPage,
-          sort: sortBy.length ? { key: sortBy[0].key, reverse: sortBy[0].order === 'desc' } : null,
-          // filters: {
-          //   calories: this.calories, // Example filter for calories
-          //   // Add other filters as needed
-          // },
-          // keySearch: {
-          //   name: this.name, // Example search for name
-          //   // Add other search fields as needed
-          // }
-        };
-
-        // Make the API call with the built parameters
-        this.fetchUserData(params).then(({ items, meta }) => {
-          console.log("items====", items);
-          
-          this.fetchedData = items; // Update the items with the fetched result
-          this.totalItems = meta.total; // Update total number of items from the meta
-          this.itemsPerPage = meta.itemsPerPage; // Optionally update itemsPerPage if needed
-          this.loading = false; // Turn off the loading state
+      loadItems ({ page, itemsPerPage, sortBy }) {  
+        console.log('sortBy', sortBy);
+            
+        this.fetchUserData({ page, itemsPerPage, sortBy }).then(({ items, meta }) => {
+          this.fetchedData = items;
+          this.totalItems = meta.total;
+          this.itemsPerPage = itemsPerPage;
+          this.loading = false;
         }).catch(() => {
-          this.loading = false; // Handle any errors and stop loading
+          this.loading = false;
         });
       },
 
       
       async getSelectedUser (id) {
+
         try {
-          const { data: { data: { item: user } } } = await getUserAPI(id)
+          const result = await getUserAPI(id);
+          const user = result?.data?.data?.item;
           return user
           
         } catch (error) {
@@ -486,9 +577,7 @@
       async deleteUserConfirm () {
         try {
           const result = await deleteUserAPI(this.selectedUser.id)
-          console.log("resuot after delete", result);
-          
-          this.loadItems()
+          this.loadItems({ page: 1, itemsPerPage: this.itemsPerPage, sortBy: [] })
 
         } catch (error) {
           console.log(error);
@@ -502,24 +591,35 @@
       },
 
       async resetPasswordConfirm () {
+        this.displaySpinner = true
+
         try {
-          const user = await this.getSelectedUser(this.selectedUser.id);
+
+          const user = await this.getSelectedUser(this.selectedUser.id); // @TODO: optimize?
+
+          const _roles = await this.getAllRoles()
+          const roleID = _roles.find(role => role.name === user.role).id
+
           const updatedUser = {
             id: user.id,
             name: user.name,
             email: user.email,
-            role: user.role,
+            role: roleID,
             password: this.resetPasswordFields.find(field => field.key === 'password').value,
             phone_number: user.phone_number
           };
           await updateUserAPI(updatedUser);
-          this.loadItems();
+          this.loadItems({ page: 1, itemsPerPage: this.itemsPerPage, sortBy: [] });
+          this.resetPasswordFields.forEach(field => field.value = '');
+
+          this.showSuccessMessage()
           
         } catch (error) {
           console.log(error);
         }
         
         this.resetPasswordDialog = false
+        this.displaySpinner = false
       },
 
 
@@ -531,12 +631,13 @@
       closeDelete () {
         this.dialogDelete = false
         this.$nextTick(() => {
-          this.editedItem = Object.assign({}, this.defaultItem)
           this.editedIndex = -1
         })
       },
 
       async createUser () {
+
+        this.displaySpinner = true
 
         let bodyObject = {}
         this.createObject.map (item => {
@@ -551,34 +652,51 @@
             password: bodyObject.password,
             phone_number: bodyObject.phone_number
           })
-          await this.loadItems()
+
+          this.showSuccessMessage()
           
         } catch (error) {
           console.log(error);
+          const errorMessage = error?.response?.data?.message;
+          if (errorMessage) {
+            console.log("errorMessaage", errorMessage);
+            
+            this.showErrorMessage(errorMessage);
+          }
         }
         
         this.close()
+        this.loadItems({ page: 1, itemsPerPage: this.itemsPerPage, sortBy: [] })
+
+        this.displaySpinner = false
 
       },
 
       async updateUser() {
-        // Handle update user logic
+
+        this.displaySpinner = true
+
         try {
-          const user = await this.getSelectedUser(this.editedItem.id);
           const updatedUser = {
-            id: user.id,
-            name: this.editedItem.name,
-            email: this.editedItem.email,
-            role: this.editedItem.role,
-            // password: this.editedItem.password,
-            phone_number: this.editedItem.phone_number
+            id: this.selectedUser.id,
+            name: this.editObject.find(item => item.key === 'name').value,
+            email: this.editObject.find(item => item.key === 'email').value,
+            role: this.editObject.find(item => item.key === 'role').value,
+            phone_number: this.editObject.find(item => item.key === 'phone_number').value
           };
           await updateUserAPI(updatedUser);
-          this.loadItems();
+          this.showSuccessMessage()
+          this.loadItems({ page: 1, itemsPerPage: this.itemsPerPage, sortBy: [] })
+          
         } catch (error) {
           console.log(error);
+          const errorMessage = error?.response?.data?.message;
+          if (errorMessage) {
+            this.showErrorMessage(errorMessage);
+          }
         }
         this.close();
+        this.displaySpinner = false
       },
     },
   }

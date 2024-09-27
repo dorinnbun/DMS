@@ -45,13 +45,20 @@
   }
 
   if (!isLoggedIn.value) {
-    router.push({ path: '/login' })
+    console.log('isLoggedIn', isLoggedIn.value);
+    
+    // router.push({ path: '/login' })
   }
 
   const displayAsideMenu = computed(() => {
     return route.fullPath !== '/login' 
       && route.name !== '/Records/[id]' 
       && route.name !== 'NotFound'
-      && route.fullPath !==  '/forgot-password'
+      && route.fullPath !== '/forgot-password'
+      && route.fullPath !== '/reset-password'
+      && route.fullPath !== '/verify-otp'
+      && route.fullPath !== '/verify-login-otp'
+      && route.fullPath !== '/send-email'
+
   })
 </script>

@@ -128,12 +128,12 @@
                         ></v-text-field>
 
                         <template v-else>
-                          <img v-if="isEditingMode && field.value" :src="field.value" alt="ស្នាមម្រាមដៃ" style="width: 100px; height: auto;">
+                          <img v-if="isEditingMode && field.value && typeof field.value === 'string'" :src="field.value" alt="ស្នាមម្រាមដៃ" style="width: 100px; height: auto;">
                           <v-file-input
                             v-model="field.value"
                             :label="field.label" 
                             :rules="[v => !!v || 'ទិន្នន័យត្រូវបញ្ចូល']"
-                            accept=".jpg,.png,.pdf"
+                            accept=".jpg,.jpeg,.pdf,.png,.gif"
                             @change="handleFileChange($event, field)"
                           ></v-file-input>
                         </template>
@@ -176,11 +176,11 @@
 
                     <!-- page 1 files input -->
                       <v-col class="column-5" cols="12" sm="6" v-for="field in fingerPrintsFileInput">
-                        <img v-if="isEditingMode && field.value" :src="field.value" alt="ស្នាមម្រាមដៃ" style="width: 100px; height: 100px;">
+                        <img v-if="isEditingMode && field.value && typeof field.value === 'string'" :src="field.value" alt="ស្នាមម្រាមដៃ" style="width: 100px; height: 100px;">
                         <v-file-input 
                           v-model="field.value" 
                           :label="field.label" 
-                          accept=".jpg,.png,.pdf"
+                          accept=".jpg,.png,.pdf,.jpeg"
                           :rules="[v => !!v || 'ឯកសារត្រូវបញ្ចូល']"
                           @change="handleFileChange($event, field)"
                         ></v-file-input>
@@ -190,11 +190,11 @@
                     <!-- Full fingers prints file input -->
                     <!-- to follow the original template ==> use statically -->
                     <v-col cols="12" sm="4">
-                      <img v-if="isEditingMode && fullFingersPrintFileInput[0].value" :src="fullFingersPrintFileInput[0].value" alt="ស្នាមម្រាមដៃ" style="width: 100px; height: 100px;">
+                      <img v-if="isEditingMode && fullFingersPrintFileInput[0].value && typeof fullFingersPrintFileInput[0].value === 'string'" :src="fullFingersPrintFileInput[0].value" alt="ស្នាមម្រាមដៃ" style="width: 100px; height: 100px;">
                       <v-file-input 
                         v-model="fullFingersPrintFileInput[0].value" 
                         :label="fullFingersPrintFileInput[0].label" 
-                        accept=".jpg,.png,.pdf"
+                        accept=".jpg,.png,.pdf,.jpeg"
                         :rules="[v => !!v || 'ឯកសារត្រូវបញ្ចូល']"
                         @change="handleFileChange($event, field)"
                       ></v-file-input>
@@ -207,21 +207,25 @@
                       <v-row>
 
                         <v-col cols="12" sm="6">
-                          <img v-if="isEditingMode && fullFingersPrintFileInput[1].value" :src="fullFingersPrintFileInput[1].value" alt="ស្នាមម្រាមដៃ" style="width: 100px; height: 100px;">
+                          <img 
+                            v-if="isEditingMode && fullFingersPrintFileInput[1].value && typeof fullFingersPrintFileInput[1].value === 'string'" 
+                            :src="fullFingersPrintFileInput[1].value" 
+                            alt="ស្នាមម្រាមដៃ" style="width: 100px; height: 100px;"
+                          >
                           <v-file-input 
                             v-model="fullFingersPrintFileInput[1].value" 
                             :label="fullFingersPrintFileInput[1].label" 
-                            accept=".jpg,.png,.pdf"
+                            accept=".jpg,.png,.pdf,.jpeg"
                             :rules="[v => !!v || 'ឯកសារត្រូវបញ្ចូល']"
                           ></v-file-input>
                         </v-col>
 
                         <v-col cols="12" sm="6">
-                          <img v-if="isEditingMode && fullFingersPrintFileInput[2].value" :src="fullFingersPrintFileInput[2].value" alt="ស្នាមម្រាមដៃ" style="width: 100px; height: 100px;">
+                          <img v-if="isEditingMode && fullFingersPrintFileInput[2].value && typeof fullFingersPrintFileInput[2].value === 'string'" :src="fullFingersPrintFileInput[2].value" alt="ស្នាមម្រាមដៃ" style="width: 100px; height: 100px;">
                           <v-file-input 
                             v-model="fullFingersPrintFileInput[2].value" 
                             :label="fullFingersPrintFileInput[2].label" 
-                            accept=".jpg,.png,.pdf"
+                            accept=".jpg,.png,.pdf,.jpeg"
                             :rules="[v => !!v || 'ឯកសារត្រូវបញ្ចូល']"
                             @change="handleFileChange($event, field)"
                           ></v-file-input>
@@ -231,11 +235,13 @@
                     </v-col>
 
                     <v-col cols="12" sm="4">
-                      <img v-if="isEditingMode && fullFingersPrintFileInput[3].value" :src="fullFingersPrintFileInput[3].value" alt="ស្នាមម្រាមដៃ" style="width: 100px; height: 100px;">
+                      <img 
+                        v-if="isEditingMode && fullFingersPrintFileInput[3].value && typeof fullFingersPrintFileInput[3].value === 'string'" :src="fullFingersPrintFileInput[3].value" alt="ស្នាមម្រាមដៃ" style="width: 100px; height: 100px;"
+                      >
                       <v-file-input 
                         v-model="fullFingersPrintFileInput[3].value" 
                         :label="fullFingersPrintFileInput[3].label" 
-                        accept=".jpg,.png,.pdf"
+                        accept=".jpg,.png,.pdf,.jpeg"
                         :rules="[v => !!v || 'ឯកសារត្រូវបញ្ចូល']"
                         @change="handleFileChange($event, field)"
                       ></v-file-input>
@@ -245,11 +251,11 @@
                     <!-- Full body pictures -->
                     <template v-for="field in fullBodyPhotoFileInput">
                       <v-col cols="12" sm="4">
-                        <img v-if="isEditingMode && field.value" :src="field.value" alt="ស្នាមម្រាមដៃ" style="width: 100px; height: 100px;">
+                        <img v-if="isEditingMode && field.value && typeof field.value === 'string'" :src="field.value" alt="ស្នាមម្រាមដៃ" style="width: 100px; height: 100px;">
                         <v-file-input 
                           v-model="field.value" 
                           :label="field.label" 
-                          accept=".jpg,.png,.pdf"
+                          accept=".jpg,.png,.pdf,.jpeg"
                           :rules="[v => !!v || 'ឯកសារត្រូវបញ្ចូល']"
                           @change="handleFileChange($event, field)"
                         ></v-file-input>
@@ -286,11 +292,11 @@
                     </v-col>
 
                     <v-col cols="12" sm="6" v-for="field in palmPrintFileInput">
-                      <img v-if="isEditingMode && field.value" :src="field.value" alt="ស្នាមម្រាមដៃ" style="width: 100px; height: 100px;">
+                      <img v-if="isEditingMode && field.value && typeof field.value === 'string'" :src="field.value" alt="ស្នាមម្រាមដៃ" style="width: 100px; height: 100px;">
                       <v-file-input 
                         v-model="field.value" 
                         :label="field.label" 
-                        accept=".jpg,.png,.pdf"
+                        accept=".jpg,.png,.pdf,.jpeg"
                         :rules="[v => !!v || 'ឯកសារត្រូវបញ្ចូល']"
                         @change="handleFileChange($event, field)"
                       ></v-file-input>
@@ -305,11 +311,11 @@
                       sm="4"
                       class="special-mark-item"
                     >
-                    <img v-if="isEditingMode && field.value" :src="field.value" alt="ស្នាមម្រាមដៃ" style="width: 100px; height: 100px;">
+                    <img v-if="isEditingMode && field.value && typeof field.value === 'string'" :src="field.value" alt="ស្នាមម្រាមដៃ" style="width: 100px; height: 100px;">
                       <v-file-input 
                         v-model="field.value" 
                         :label="field.label" 
-                        accept=".jpg,.png,.pdf"
+                        accept=".jpg,.png,.pdf,.jpeg"
                         :rules="[v => !!v || 'ឯកសារត្រូវបញ្ចូល']"
                         @change="handleFileChange($event, field)"
                       ></v-file-input>
@@ -322,11 +328,11 @@
                       sm="3"
                       class="special-mark-item"
                     >
-                      <img v-if="isEditingMode && formTemplate.value" :src="formTemplate.value" alt="ស្នាមម្រាមដៃ" style="width: 100px; height: 100px;">
+                      <img v-if="isEditingMode && formTemplate.value && typeof formTemplate.value === 'string'" :src="formTemplate.value" alt="ស្នាមម្រាមដៃ" style="width: 100px; height: 100px;">
                       <v-file-input 
                         v-model="formTemplate.value" 
                         :label="formTemplate.label" 
-                        accept=".jpg,.png,.pdf"
+                        accept=".jpg,.png,.pdf,.jpeg"
                         @change="handleFileChange($event, field)"
                       ></v-file-input>
                     </v-col>
@@ -385,7 +391,7 @@
           </td>
 
           <td>
-            <v-icon small color="blue" @click.stop="editItem(item)">mdi-pencil</v-icon>
+            <v-icon small color="blue" @click.stop="editItem(item)" v-if="userRole !== 'user'">mdi-pencil</v-icon>
             <v-icon small color="red" @click.stop="deleteItem(item)">mdi-delete</v-icon>
           </td>
 
@@ -393,6 +399,34 @@
       </template>
   
     </v-data-table-server>
+
+    <!-- Error Dialog -->
+    <v-dialog v-model="errorDialog" max-width="400px">
+      <v-card style="background-color: red; color: white; font-weight: bold;">
+      <v-card-title class="headline">Error</v-card-title>
+      <v-card-text>{{ errorMessage }}</v-card-text>
+      </v-card>
+    </v-dialog>
+
+    <!-- Success Dialog -->
+    <v-dialog v-model="successDialog" max-width="400px">
+      <v-card style="background-color: green; color: white; font-weight: bold;">
+      <v-card-title class="headline">ជោគជ័យ</v-card-title>
+      <v-card-text>{{ successMessage }}</v-card-text>
+      </v-card>
+    </v-dialog>
+
+    <v-dialog v-model="displaySpinner" max-width="400px" persistent>
+      <v-card style="background-color: transparent; box-shadow: none;">
+        <v-card-text class="d-flex justify-center">
+          <v-progress-circular
+            color="red"
+            indeterminate
+            size="64"
+          ></v-progress-circular>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
 
   </div>
 </template>
@@ -413,9 +447,15 @@
     deleteRecord as deleteRecordAPI
   } from '@/_api/document'
   import { getAllUsers as getAllUsersAPI } from '@/_api/user'
+  import { useUserStore } from '@/stores/user'
 
   export default {
     data: () => ({
+
+      errorDialog: false,
+      errorMessage: 'មានបញ្ហាបច្ចេកទេសកើតឡើង',
+      successDialog: false,
+      successMessage: 'ប្រតិបត្តិការជោគជ័យ',
 
       filterOptions: [
         { text: 'កាលបរិច្ឆេទ', value: 'filtering_date' },
@@ -436,7 +476,6 @@
       usersList: [],
       currentParams: {
         page: 1,
-        sort: null,
         filters: {},
         keySearch: {}
       },
@@ -450,14 +489,15 @@
       search: '',
       fetchedData: [],
       loading: true,
+      displaySpinner: false,
       totalItems: 20,//
 
       dialog: false,
       dialogDelete: false,
       headers: [
-          { title: 'លេខរៀង', key: 'id', sortable: false },
-          { title: 'លេខសៀវភៅ', key: 'book_id' },
-          { title: 'នាមគោត្តនាម', align: 'start', key: 'full_name' },
+          { title: 'លេខរៀង', key: 'id', sortable: true },
+          { title: 'លេខសៀវភៅ', key: 'book_id', sortable: true },
+          { title: 'នាមគោត្តនាម', align: 'start', key: 'full_name', sortable: true },
           { title: 'អាសយដ្ឋាន', key: 'current_address', sortable: false },
           { title: '', key: 'actions', sortable: false }
         ],
@@ -493,6 +533,7 @@
           value: ""
         },  {
           key: "book_id",
+          name: "book_id",
           label: "លេខសៀវភៅ",
           type: "text",
           value: ""
@@ -726,7 +767,7 @@
           { key: "specialMark3", label: "ស្លាកសញ្ញាពិសេស", type: "file", value: "", name: "special_mark3" },
         ],
 
-        formTemplate: {key: "formTemplate", label: 'រូបភាពឯកសារ (បេីមាន)', type: 'file', value: "", name: "form_template" },
+        formTemplate: { key: "formTemplate", label: 'រូបភាពឯកសារ (បេីមាន)', type: 'file', value: "", name: "form_template" },
 
     }),
 
@@ -758,6 +799,10 @@
           }
         })
       },
+
+      userRole () {
+        return useUserStore().user.role
+      }
     },
 
     watch: {
@@ -766,6 +811,17 @@
       },
       dialogDelete (val) {
         val || this.closeDelete()
+      },
+      startDate(val) {
+        if (this.startDate && this.endDate) {
+          this.loadItems({
+            others: {
+              between: 'madeAt',
+              min: this.startDate,
+              max: this.endDate
+            }
+          })
+        }
       },
       endDate(val) {
         if (this.startDate && this.endDate) {
@@ -796,6 +852,21 @@
     },
 
     methods: {
+
+      async showErrorMessage (message) {
+        this.errorMessage = message
+        this.errorDialog = true
+        setTimeout(() => {
+          this.errorDialog = false;
+        }, 5000);
+      },
+
+      async showSuccessMessage () {
+        this.successDialog = true
+        setTimeout(() => {
+          this.successDialog = false;
+        }, 5000);
+      },
 
       saveAction () {
         if (this.isEditingMode) {
@@ -971,11 +1042,25 @@
 
 
       async fetchRecordData (params) {
-        console.log("params===", params);
+
+        let { sortBy } = params
+
+        if (sortBy.length > 0) {
+          sortBy.map (sort => {
+            if (sort.key === 'full_name') {
+              // sort.key = 'first_name'
+              // sort.order = sort.order
+              sortBy.push({
+                key: 'first_name',
+                order: sort.order
+              })
+            }
+            
+          })
+        }
         
         const { data: { data } } = await getAllRecords(params)
         // return data
-        console.log("data", data);
         
         return {
           items: data.items,
@@ -996,16 +1081,17 @@
       initialize () {
         this.fetchedData = []
       },
-
+      
       async loadItems(params = {}) {
+        
         this.loading = true;
         
         this.currentParams = {
           ...this.currentParams,
           ...params,
           limit: this.itemsPerPage
-        }; 
-
+        };
+        
         this.fetchRecordData(this.currentParams).then(({ items, meta }) => {
           this.fetchedData = items;
           this.totalItems = meta.total;
@@ -1016,6 +1102,18 @@
         });
       },
 
+      // async sortItems(column) {
+      //   const sortDirection = this.currentParams.sort_direction === 'asc' ? 'desc' : 'asc';
+      //   this.loadItems({
+      //     sort_column: column,
+      //     sort_direction: sortDirection
+      //   });
+      // },
+
+      // getValue(item, column) {
+      //   return item[column];
+      // },
+
       async editItem (item) {
         this.isEditingMode = true
         const { data } = await getRecordAPI(item.uuid)
@@ -1024,7 +1122,7 @@
           this.selectedRecord = record;
 
 
-          console.log("record", record);
+          // console.log("record", record);
 
           // const fieldsToUpdate = [
           //   ...this.inputFields.map(field => ({ ...field })),
@@ -1051,10 +1149,10 @@
           });
 
           this.editingItem = fieldsToUpdate;
-          console.log("this.inputfields===", this.inputFields);
+          // console.log("this.inputfields===", this.inputFields);
           
           
-          console.log("fieldsToUpdate", fieldsToUpdate);
+          // console.log("fieldsToUpdate", fieldsToUpdate);
           
           this.dialog = true
         }
@@ -1068,12 +1166,18 @@
       async deleteItemConfirm () {
         try {
           const result = await deleteRecordAPI(this.selectedRecord.id)
-          console.log("result after delete", result);
+          // console.log("result after delete", result);
           
           this.loadItems()
+          this.showSuccessMessage()
 
         } catch (error) {
           console.log(error);
+          const errorMessage = error?.response?.data?.message;
+          if (errorMessage) {
+            this.showErrorMessage(errorMessage);
+          }
+
         }
         this.closeDelete()
       },
@@ -1116,6 +1220,7 @@
             ...this.fullBodyPhotoFileInput,
             ...this.palmPrintFileInput,
             ...this.specialMark,
+            this.formTemplate
           ];
           
 
@@ -1135,15 +1240,23 @@
           });
           
           await this.loadItems()
+          this.showSuccessMessage()
+          this.dialog = false
           
         } catch (error) {
           console.log(error);
+          const errorMessage = error?.response?.data?.message;
+          if (errorMessage) {
+            this.showErrorMessage(errorMessage);
+          }
         }
         
         
       },
 
       async createRecord () {
+
+        this.displaySpinner = true
 
         let formData = new FormData();
 
@@ -1179,11 +1292,47 @@
           }
           
           await this.loadItems()
+          this.showSuccessMessage()
+
+          this.dialog = false
+          this.resetFieldValue()
           
         } catch (error) {
           console.log(error);
+          const errorMessage = error?.response?.data?.message;
+          if (errorMessage) {
+            this.showErrorMessage(errorMessage);
+          }
         }
+
+        this.displaySpinner = false
       },
+
+
+      resetFieldValue () {
+        this.inputFields.forEach(field => {
+          field.value = ""
+        })
+        this.personalInfoInputFields.forEach(field => {
+          field.value = ""
+        })
+        this.fingerPrintsFileInput.forEach(field => {
+          field.value = ""
+        })
+        this.fullFingersPrintFileInput.forEach(field => {
+          field.value = ""
+        })
+        this.fullBodyPhotoFileInput.forEach(field => {
+          field.value = ""
+        })
+        this.palmPrintFileInput.forEach(field => {
+          field.value = ""
+        })
+        this.specialMark.forEach(field => {
+          field.value = ""
+        })
+        this.formTemplate.value = ""
+      }
     },
   }
 </script>

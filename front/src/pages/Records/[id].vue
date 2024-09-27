@@ -2,6 +2,11 @@
 import { defineComponent } from 'vue'
 import { useRoute } from 'vue-router'
 import { getRecord as getRecordAPI } from '../../_api/document'
+import { 
+    getProvinces as getProvincesAPI,  
+    getDistricts as getDistrictsAPI,
+    getCommunes as getCommunesAPI
+  } from '@/_api/address'
 
 export default defineComponent({
   name: 'RecordDetail',
@@ -22,7 +27,7 @@ export default defineComponent({
         type: "file",
         value: ""
       }, {
-        key: "bookID",
+        key: "book_id",
         label: "លេខសៀវភៅ",
         type: "text",
         value: ""
@@ -216,16 +221,30 @@ export default defineComponent({
   }),
 
   methods: {
+    // check file extension 
+    isImage(url) {
+      return /\.(jpg|jpeg|png|bmp|tiff)$/i.test(url);
+    },
+    isPdf(url) {
+      return /\.pdf$/i.test(url);
+    },
+    isGif(url) {
+      return /\.gif$/i.test(url);
+    },
 
     getFieldDisplayValue(field) {
       if (this.record) {
         
+        
         switch (field.key) {
+          case 'full_name': 
+            return `${ this.record?.last_name } ${ this.record?.first_name }`;
+
           case 'pob':
             return `${ this.record?.pob_province } ${ this.record?.pob_district } ${ this.record?.pob_commune }`;
 
           case 'current_address':
-            return `${ this.record?.current_address } ${ this.record?.pob_province } ${ this.record?.pob_district } ${ this.record?.pob_commune }`;
+            return `${ this.record?.current_address } ${ this.record?.province } ${ this.record?.district } ${ this.record?.commune }`;
             
           default:
             return field.value;
@@ -241,6 +260,7 @@ export default defineComponent({
 
         if (record) {
           [
+            this.inputFields,
             this.personalInfoInputFields, 
             this.fingerPrintsFileInput, 
             this.fullBodyPhotoFileInput, 
@@ -260,8 +280,6 @@ export default defineComponent({
         console.error('Error fetching record:', error)
       }
     },
-
-    
   },
 
   async created() {
@@ -288,7 +306,11 @@ export default defineComponent({
             <div class="field-container">
               <strong class="field-label">{{ field.label }}:</strong>
               <div v-if="field.type === 'file'">
-                <img :src="field.value" alt="file" class="field-image">
+                <img v-if="isImage(field.value)" :src="field.value" alt="file" class="field-image">
+                <iframe v-else-if="isPdf(field.value)" :src="field.value" class="file-viewer-pdf"></iframe>
+                <div v-else-if="isGif(field.value)">
+                  <v-img :src="field.value" class="file-viewer-image"></v-img>
+                </div>
               </div>
               <span v-else>{{ field.value }}</span>
             </div>
@@ -319,7 +341,11 @@ export default defineComponent({
         >
           <div class="field-container center-align">
             <p><strong class="field-label">{{ field.label }}:</strong></p>
-            <img :src="field.value" alt="file" class="field-image">
+            <img v-if="isImage(field.value)" :src="field.value" alt="file" class="field-image">
+            <iframe v-else-if="isPdf(field.value)" :src="field.value" class="file-viewer-pdf"></iframe>
+            <div v-else-if="isGif(field.value)">
+              <v-img :src="field.value" class="file-viewer-image"></v-img>
+            </div>
           </div>
         </v-col>
 
@@ -327,7 +353,11 @@ export default defineComponent({
         <v-col cols="12" sm="4">
           <div class="field-container center-align">
             <p><strong class="field-label">{{ fullFingersPrintFileInput[0].label }}:</strong></p>
-            <img :src="fullFingersPrintFileInput[0].value" alt="file" class="field-image">
+            <img v-if="isImage(fullFingersPrintFileInput[0].value)" :src="fullFingersPrintFileInput[0].value" alt="file" class="field-image">
+            <iframe v-else-if="isPdf(fullFingersPrintFileInput[0].value)" :src="fullFingersPrintFileInput[0].value" class="file-viewer-pdf"></iframe>
+            <div v-else-if="isGif(fullFingersPrintFileInput[0].value)">
+              <v-img :src="fullFingersPrintFileInput[0].value" class="file-viewer-image"></v-img>
+            </div>
           </div>
         </v-col>
 
@@ -340,17 +370,27 @@ export default defineComponent({
 
             <v-col cols="12" sm="6" style="border-top: 1px solid grey; border-right: 1px solid grey; margin: 0;">
               <div class="field-container center-align" style="margin: 0;">
-                <p><strong class="field-label">{{ fullFingersPrintFileInput[1].label }}:</strong>
-                </p> 
-                <img :src="fullFingersPrintFileInput[1].value" alt="file" class="field-image">
+                <p>
+                  <strong class="field-label">{{ fullFingersPrintFileInput[1].label }}:</strong>
+                </p>
+                <img v-if="isImage(fullFingersPrintFileInput[1].value)" :src="fullFingersPrintFileInput[1].value" alt="file" class="field-image">
+                <iframe v-else-if="isPdf(fullFingersPrintFileInput[1].value)" :src="fullFingersPrintFileInput[1].value" class="file-viewer-pdf"></iframe>
+                <div v-else-if="isGif(fullFingersPrintFileInput[1].value)">
+                  <v-img :src="fullFingersPrintFileInput[1].value" class="file-viewer-image"></v-img>
+                </div>
               </div>
             </v-col>
 
             <v-col cols="12" sm="6" style="border-top: 1px solid grey">
               <div class="field-container center-align">
-                <p><strong class="field-label">{{ fullFingersPrintFileInput[2].label }}:</strong>
+                <p>
+                  <strong class="field-label">{{ fullFingersPrintFileInput[2].label }}:</strong>
                 </p>
-                <img :src="fullFingersPrintFileInput[2].value" alt="file" class="field-image">
+                <img v-if="isImage(fullFingersPrintFileInput[2].value)" :src="fullFingersPrintFileInput[2].value" alt="file" class="field-image">
+                <iframe v-else-if="isPdf(fullFingersPrintFileInput[2].value)" :src="fullFingersPrintFileInput[2].value" class="file-viewer-pdf"></iframe>
+                <div v-else-if="isGif(fullFingersPrintFileInput[2].value)">
+                  <v-img :src="fullFingersPrintFileInput[2].value" class="file-viewer-image"></v-img>
+                </div>
               </div>
             </v-col>
 
@@ -360,7 +400,11 @@ export default defineComponent({
         <v-col cols="12" sm="4">
           <div class="field-container center-align">
             <p><strong class="field-label">{{ fullFingersPrintFileInput[3].label }}:</strong></p>
-            <img :src="fullFingersPrintFileInput[3].value" alt="file" class="field-image">
+            <img v-if="isImage(fullFingersPrintFileInput[3].value)" :src="fullFingersPrintFileInput[3].value" alt="file" class="field-image">
+            <iframe v-else-if="isPdf(fullFingersPrintFileInput[3].value)" :src="fullFingersPrintFileInput[3].value" class="file-viewer-pdf"></iframe>
+            <div v-else-if="isGif(fullFingersPrintFileInput[3].value)">
+              <v-img :src="fullFingersPrintFileInput[3].value" class="file-viewer-image"></v-img>
+            </div>
           </div>
         </v-col>
 
@@ -377,7 +421,11 @@ export default defineComponent({
             <div class="center-align">
               <strong>{{ field.label }}</strong>
               <div>
-                <img :src="field.value" alt="file" class="full-body-image">
+                <img v-if="isImage(field.value)" :src="field.value" alt="file" class="full-body-image">
+                <iframe v-else-if="isPdf(field.value)" :src="field.value" class="file-viewer-pdf"></iframe>
+                <div v-else-if="isGif">
+                  <v-img :src="field.value" class="file-viewer-image"></v-img>
+                </div>
               </div>
             </div>
           </v-col>
@@ -395,7 +443,11 @@ export default defineComponent({
           <div class="palm-print-container">
             <strong>{{ palmPrintFileInput[0].label }}</strong>
             <div>
-              <img :src="palmPrintFileInput[0].value" alt="file" class="palm-print-image">
+              <img v-if="isImage(palmPrintFileInput[0].value)" :src="palmPrintFileInput[0].value" alt="file" class="palm-print-image">
+              <iframe v-else-if="isPdf(palmPrintFileInput[0].value)" :src="palmPrintFileInput[0].value" class="file-viewer-pdf"></iframe>
+              <div v-else-if="isGif(palmPrintFileInput[0].value)">
+                <v-img :src="palmPrintFileInput[0].value" class="file-viewer-image"></v-img>
+              </div>
             </div>
           </div>
         </v-col>
@@ -417,7 +469,11 @@ export default defineComponent({
           <div class="palm-print-container">
             <strong>{{ palmPrintFileInput[1].label }}</strong>
             <div>
-              <img :src="palmPrintFileInput[1].value" alt="file" class="palm-print-image">
+              <img v-if="isImage(palmPrintFileInput[1].value)" :src="palmPrintFileInput[1].value" alt="file" class="palm-print-image">
+              <iframe v-else-if="isPdf(palmPrintFileInput[1].value)" :src="palmPrintFileInput[1].value" class="file-viewer-pdf"></iframe>
+              <div v-else-if="isGif(palmPrintFileInput[1].value)">
+                <v-img :src="palmPrintFileInput[1].value" class="file-viewer-image"></v-img>
+              </div>
             </div>
           </div>
         </v-col>
@@ -434,7 +490,11 @@ export default defineComponent({
             <div class="center-align">
               <strong>{{ field.label }}</strong>
               <div>
-                <img :src="field.value" alt="file" class="field-image">
+                <img v-if="isImage(field.value)" :src="field.value" alt="file" class="field-image">
+                <iframe v-else-if="isPdf(field.value)" :src="field.value" class="file-viewer-pdf"></iframe>
+                <div v-else-if="isGif(field.value)">
+                  <v-img :src="field.value" class="file-viewer-image"></v-img>
+                </div>
               </div>
             </div>
           </v-col>

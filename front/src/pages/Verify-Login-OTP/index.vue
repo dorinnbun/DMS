@@ -1,18 +1,18 @@
 <template>
   <v-card class="px-6 py-8 form-container" max-width="30%">
 
-    <h4>បំពេញអ៊ីមែលរបស់អ្នកដើម្បីទទួលបានតំណភ្ជាប់សម្រាប់កំណត់ពាក្យសម្ងាត់ឡើងវិញ</h4>
+    <h4>OTPត្រូវបានផ្ញើទៅអ៊ីមែលរបស់អ្នកហើយ! <br>សូមពិនិត្យមើលអ៊ីមែលរបស់អ្នកសម្រាប់លេខកូដ</h4>
 
     <v-form
       v-model="form"
-      @submit.prevent="submitResetPasswordEmail"
+      @submit.prevent="verifyOTP"
     >
       <v-text-field
-        v-model="email"
+        v-model="OTP"
         :readonly="loading"
-        :rules="[required, emailRule]"
+        :rules="[required]"
         class="mb-4"
-        label="អ៊ីមែល"
+        label="លេខកូដ6ខ្ទង់ដែលបានផ្ញើទៅអ៊ីមែលរបស់អ្នក"
       ></v-text-field>
 
       <v-alert
@@ -33,13 +33,9 @@
         variant="elevated"
         block
       >
-        ផ្ញើអ៊ីមែល
+        បញ្ជាក់
       </v-btn>
 
-      <p v-if="displayConfirmationMessage" class="mt-4" style="color: darkorange; font-size: 14px;">
-        **{{ confirmationMessage }}
-      </p>
-      
     </v-form>
   </v-card>
 </template>
@@ -47,50 +43,64 @@
 <script setup>
   import { ref } from 'vue'
   import { useAuthStore } from '@/stores/auth'
-  import { sendResetPasswordEmail } from '@/_api/user'
-  import { useRouter } from 'vue-router'
+  import { useUserStore } from '@/stores/user'
+  import { useTmpStore } from '@/stores/tmp'
+  import { verifyOtp as verifyOTPAPI } from '@/_api/auth';
+  import { useRouter, useRoute } from 'vue-router';
+  import { storeToRefs } from 'pinia';
 
   const form = ref(false)
-  const email = ref(null)
+  const OTP = ref(null)
   const loading = ref(false)
   const errorMessage = ref('អ៊ីមែល ឬ ពាក្យសម្ងាត់ មិនត្រឹមត្រូវ')
-  const displayConfirmationMessage = ref(false)
-  const confirmationMessage = ref ('អ៊ីមែលត្រូវបានផ្ញើទៅអ៊ីមែលរបស់អ្នកហើយ! សូមពិនិត្យមើលអ៊ីមែលរបស់អ្នកសម្រាប់តំណកំណត់ពាក្យសម្ងាត់ឡើងវិញ')
-  const anyError = ref(false)
 
+  const anyError = ref(false)
   const router = useRouter()
 
-  const emailRule = (v) => {
-    if (!v) return true;
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(v) || 'អ៊ីមែលមិនត្រឹមត្រូវ';
-  };
+  const authStore = useAuthStore()
+  const userStore = useUserStore()
+  const tmpStore = useTmpStore()
 
+  const { tmpObject } = storeToRefs(tmpStore)
 
-  // submitResetPasswordEmail
-  const submitResetPasswordEmail = async () => {
+  const verifyOTP = async () => {
       if (!form.value) return
       loading.value = true
       anyError.value = false
 
-
-
       try {
-        const { data } = await sendResetPasswordEmail(
-          email.value
-        )
+        const result = await verifyOTPAPI({
+          otp: OTP.value,
+          email: tmpObject.value.email,
+          password: tmpObject.value.password
+        })
 
-        console.log("data===", data);
+        console.log("result===", result);
         
-        const { status, code } = data
+
+        const data = result?.data
+        const code = data?.code
+        const status = data?.status
+        // const { status, code } = data
+        console.log("data===", data);
 
         console.log("status===", status);
         console.log("code===", code);
         
+        
 
-        if (status == 200 && code == 200) {
-          displayConfirmationMessage.value = true          
-          router.push({ path: `/verify-otp/${ data.data.item.uuid }` })
+        if (status == 201 && code == 201) {
+
+          const user = data?.data?.item
+          const token = user?.authorisation?.token
+          localStorage.setItem('dms-token', token)
+          delete user?.authorisation
+          tmpStore.$reset()
+
+          authStore.$patch({ isLoggedIn: true })
+          router.push({ path: '/' })
+
+          userStore.$patch({ user: user })
 
         } else if (code == 404) {
           anyError.value = true
@@ -99,6 +109,9 @@
         } else if (code == 401) {
           anyError.value = true
           errorMessage.value = data.message
+        } else {
+          anyError.value = true
+          errorMessage.value = 'សូមព្យាយាមម្តងទៀត!'
         }
 
       } catch (error) {

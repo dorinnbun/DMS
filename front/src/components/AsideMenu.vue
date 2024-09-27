@@ -9,14 +9,14 @@
       <v-list-item
         lines="two"
         prepend-icon="mdi-account-circle"
-        :title="'Admin'"
+        :title="user.name"
       ></v-list-item>
     </template>
 
     <v-divider></v-divider>
     
     <v-list color="transparent">
-      <v-list-item prepend-icon="mdi-account-multiple">
+      <v-list-item prepend-icon="mdi-account-multiple" v-if="user.role !== 'user'">
         <RouterLink to="/">អ្នកប្រេីប្រាស់</RouterLink>
       </v-list-item>
 
@@ -24,7 +24,7 @@
         <RouterLink to="/records">ឯកសារ</RouterLink>
       </v-list-item>
 
-      <v-list-item prepend-icon="mdi-delete-outline">
+      <v-list-item prepend-icon="mdi-delete-outline" v-if="user.role !== 'user'">
         <RouterLink to="/trashbin">ធុងសម្រាម</RouterLink>
       </v-list-item>
     </v-list>
@@ -44,9 +44,13 @@
   import { ref } from 'vue'
   import { useRouter } from 'vue-router'
   import { useAuthStore } from '@/stores/auth'
+  import { useUserStore } from '@/stores/user'
+  import { storeToRefs } from 'pinia'
 
   const router = useRouter()
   const authStore = useAuthStore()
+  const userStore = useUserStore()
+  const { user } = storeToRefs(userStore)
 
   const logout = () => {
     authStore.$patch({

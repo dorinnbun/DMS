@@ -1,4 +1,5 @@
-export const setParams = ({ filters, keySearch, limit, page, sort, others }) => {
+export const setParams = ({ filters, keySearch, limit, page, sortBy, others }) => {
+  
 
   const params = [];
   if (limit) {
@@ -9,8 +10,10 @@ export const setParams = ({ filters, keySearch, limit, page, sort, others }) => 
     params.push(`page=${ page }`);
   }
 
-  if (sort) {
-    params.push(`orders[${ sort.key }]=${ sort.reverse ? 'asc' : 'dsc' }`);
+  if (sortBy) {
+    sortBy.forEach((item, index) => {
+      params.push(`orders[${ item.key }]=${ item.order }`);
+    })
   }
 
   if (filters) {
@@ -30,6 +33,6 @@ export const setParams = ({ filters, keySearch, limit, page, sort, others }) => 
       params.push(`${ key }=${ others[key] }`);
     });
   }
-
+  
   return params.join('&');
 }

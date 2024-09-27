@@ -1,7 +1,8 @@
 import axiosInstance from '../../axiosConfig';
-import {setParams} from '../utils/setParams.js';
+import { setParams } from '../utils/setParams.js';
 
 const token = localStorage.getItem('dms-token')
+
 
 export const getAllUsers = async (params) => {
 
@@ -16,7 +17,7 @@ export const getAllUsers = async (params) => {
       }
     )
   } catch (error) {
-    console.error(error)
+    throw error
   }
 }
 
@@ -34,7 +35,7 @@ export const getUser = async (id) => {
       }
     )
   } catch (error) {
-    console.error(error)
+    throw error
   }
 }
 
@@ -52,7 +53,7 @@ export const createUser = async (body) => {
       }
     )
   } catch (error) {
-    console.error(error)
+    throw error
   }
 }
 
@@ -70,7 +71,7 @@ export const updateUser = async (body) => {
       }
     )
   } catch (error) {
-    console.error(error)
+    throw error
   }
 }
 
@@ -87,6 +88,55 @@ export const deleteUser = async (id) => {
       }
     )
   } catch (error) {
-    console.error(error)
+    throw error
+  }
+}
+
+
+export const sendResetPasswordEmail = async (email) => {
+  try {
+    return await axiosInstance.post(
+      `${ import.meta.env.VITE_API_BASE_URL }/user/forget_password`,
+      { email },
+      {
+        headers: { 'Content-Type': 'application/json' }
+      }
+    ) 
+  } catch (error) {
+    throw error
+  }
+}
+
+
+export const verifyOTP = async (body, uuid) => {
+  try {
+    return await axiosInstance.post(
+      `${ import.meta.env.VITE_API_BASE_URL }/user/verify_otp/${ uuid }`,
+      body,
+      {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }
+    )
+  } catch (error) {
+    throw error
+  }
+}
+
+
+export const resetPassword = async (body, uuid) => {
+  try {
+    return await axiosInstance.post(
+      `${ import.meta.env.VITE_API_BASE_URL }/user/resetPassword/${ uuid }`,
+      body,
+      {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }
+    )
+  } catch (error) {
+    throw error
   }
 }

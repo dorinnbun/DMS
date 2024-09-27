@@ -7,7 +7,9 @@
       :items="trashItems"
       :loading="loading"
       item-value="name"
+      :pagination="false"
       @update:options="loadItems"
+      hide-default-footer="true"
     >
       <template v-slot:top>
         <v-toolbar flat >
@@ -33,6 +35,19 @@
               </v-card-actions>
             </v-card>
           </v-dialog>
+
+          <!-- Hard delete record confirmation modal -->
+          <v-dialog v-model="hardDeleteConfirmationDialog" max-width="40%">
+            <v-card>
+              <v-card-title style="padding: 30px 0 30px 30px;" class="text-h5">តើអ្នកប្រាកដថាចង់លុបឯកសារ(hard delete)នេះទេ?</v-card-title>
+              <v-card-actions style="padding-bottom: 30px">
+                <v-spacer></v-spacer>
+                <v-btn class="danger-btn" variant="text" @click="closeHardDeleteDialog">បោះបង់</v-btn>
+                <v-btn class="primary-btn" variant="text" @click="hardDeleteItemConfirm">លុប(hard delete)</v-btn>
+                <v-spacer></v-spacer>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
           
         </v-toolbar>
       </template>
@@ -46,11 +61,13 @@
             </template>
             
             <template v-else>
-              {{ item [header.key] }}
+              {{ item [ header.key ] }}
             </template>
           </td>
+
           <td>
             <v-icon small color="green" @click.stop="restoreItem(item)">mdi-file-restore</v-icon>
+            <v-icon small color="red" @click.stop="hardDeleteItem(item)" v-if="userRole === 'admin'">mdi-delete</v-icon>
           </td>
 
         </tr>
@@ -65,8 +82,11 @@
 
   import { 
     getAllDeletedRecords as getAllDeletedRecordsAPI, 
-    restoreRecord as restoreRecordAPI 
+    restoreRecord as restoreRecordAPI,
+    hardDeleteRecord as hardDeleteRecordAPI
   } from '@/_api/document'
+
+  import { useUserStore } from '@/stores/user'
 
   export default {
     data: () => ({
@@ -75,7 +95,7 @@
       trashItems: [],
       loading: true,
 
-      dialog: false,
+      hardDeleteConfirmationDialog: false,
       restoreDialog: false,
       selectedItem: {},
 
@@ -110,8 +130,8 @@
     }),
 
     watch: {
-      dialog (val) {
-        val || this.close()
+      hardDeleteConfirmationDialog (val) {
+        val || this.closeHardDeleteDialog()
       },
       restoreDialog (val) {
         val || this.closeRestore()
@@ -130,6 +150,15 @@
 
     created () {
       this.initialize()
+      if (this.userRole === 'user') {
+        this.$router.push('/')
+      }
+    },
+
+    computed : {
+      userRole () {
+        return useUserStore().user.role
+      }
     },
 
     methods: {
@@ -138,6 +167,7 @@
       },
 
       async fetchDeletedRecordData (params) {
+        
         try {
           const { data: { data } } = await getAllDeletedRecordsAPI(params)
           return data.item
@@ -174,6 +204,7 @@
       async restoreItemConfirm () {
         try {
           const result = await restoreRecordAPI(this.selectedItem.id)
+          console.log("result", result);
           this.loadItems()
 
         } catch (error) {
@@ -182,8 +213,26 @@
         this.restoreDialog = false
       },
 
-      close () {
-        this.dialog = false
+      hardDeleteItem (item) {
+        this.hardDeleteConfirmationDialog = true
+        this.selectedItem = item
+      },
+
+      async hardDeleteItemConfirm () {
+        try {
+          const result = await hardDeleteRecordAPI(this.selectedItem.id)
+          console.log("result", result);
+          
+          this.loadItems()
+
+        } catch (error) {
+          console.log(error);
+        }
+        this.hardDeleteConfirmationDialog = false
+      },
+
+      closeHardDeleteDialog () {
+        this.hardDeleteConfirmationDialog = false
         this.$nextTick(() => {
           this.restoredIndex = -1
         })

@@ -9,7 +9,7 @@ const axiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('dms-token'); // Replace with your token storage mechanism
+    const token = localStorage.getItem('dms-token');
     if (token) {
       config.headers['Authorization'] = `Bearer ${token}`;
     }
@@ -31,8 +31,7 @@ axiosInstance.interceptors.response.use(
       // Optionally refresh the token or redirect to login
       console.error('Token expired. Please login again.');
       
-      // For example, redirect to login
-      window.location.href = '/login'; // Update this based on your app's route
+      window.location.href = '/login';
 
       return Promise.reject(error);
     }

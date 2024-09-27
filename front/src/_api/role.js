@@ -16,6 +16,6 @@ export const getAllRoles = async (params) => {
       }
     )
   } catch (error) {
-    console.error(error)
+    throw error
   }
 }

@@ -1,18 +1,18 @@
 <template>
   <v-card class="px-6 py-8 form-container" max-width="344">
 
-    <h2>ចូលគណនីរបស់អ្នក</h2>
+    <h2>Reset your password</h2>
 
     <v-form
       v-model="form"
-      @submit.prevent="login"
+      @submit.prevent="resetPassword"
     >
       <v-text-field
-        v-model="email"
+        v-model="OTP"
         :readonly="loading"
         :rules="[required]"
         class="mb-4"
-        label="អ៊ីមែល"
+        label="OTP"
       ></v-text-field>
 
       <v-text-field
@@ -25,12 +25,12 @@
       ></v-text-field>
 
       <v-alert
-        v-if="isLoginError"
+        v-if="wrongCredential"
         type="error"
         dismissible
         class="mt-3"
       >
-        {{ errorMessage }}
+        {{ loginError }}
       </v-alert>
 
       <br>
@@ -60,76 +60,42 @@
   import { ref } from 'vue'
   import { useRouter } from 'vue-router'
   import { useAuthStore } from '@/stores/auth'
-  import { useUserStore } from '@/stores/user'
-  import { useTmpStore } from '@/stores/tmp'
 
   import { login as loginAPI } from '@/_api/auth'
+  import { resetPassword as resetPasswordAPI } from '@/_api/user'
 
   const form = ref(false)
-  const email = ref(null)
+  const OTP = ref(null)
   const password = ref(null)
+  const confirmPassword = ref(null)
   const loading = ref(false)
-  const isLoginError = ref(false)
+  const passwordNotMatched = ref(true)
   const errorMessage = ref('អ៊ីមែល ឬ ពាក្យសម្ងាត់ មិនត្រឹមត្រូវ')
 
   const router = useRouter()
   const authStore = useAuthStore()
-  const userStore = useUserStore()
-  const tmpStore = useTmpStore()
+  
 
+  const resetPassword = async () => {
+    try {
+      const { data } = await resetPasswordAPI({
+        otp: OTP.value,
+        password: password.value,
+        confirm_password: confirmPassword.value
+      })
+      const { status, code } = data
 
-  // login
-  const login = async () => {
-      if (!form.value) return
-      loading.value = true
-
-      try {
-        const result = await loginAPI({
-          email: email.value,
-          password: password.value
-        })
-
-        const { status, code } = result?.data
-        console.log("status", status);
-        console.log("code", code);
-        
-
-        if (status == 201 && code == 201) {
-
-          tmpStore.$patch({
-            tmpObject: {
-              email: email.value,
-              password: password.value
-            }
-          })
-
-          router.push({ path: `/verify-login-otp` })
-
-        } else if (code == 401) {
-          isLoginError.value = true
-          console.log('====1');
-          
-
-        } else if (code == 404) {
-          isLoginError.value = true
-          errorMessage.value = 'User មិនមាននៅក្នុងប្រព័ន្ធទេ'
-          console.log('====2');
-
-        } else {
-          console.log("error", result);
-          
-        }
-
-      } catch (error) {
-        console.log(error)
-        const errorMsg = error?.response?.data?.message
-        isLoginError.value = true
-        errorMessage.value = errorMsg ?? 'សូមព្យាយាមម្តងទៀត។'
+      if (status == 200 && code == 200) {
+        router.push({ path: '/login' })
+      } else {
+        errorMessage.value = 'សូមព្យាយាមម្តងទៀត។'
       }
 
-      loading.value = false
-
+    } catch (error) {
+      console.log(error)
+      errorMessage.value = 'សូមព្យាយាមម្តងទៀត។'
     }
+  }
 
   const required = (v) => {
     return !!v || 'សូមបំពេញទិន្នន័យខាងលេី'
