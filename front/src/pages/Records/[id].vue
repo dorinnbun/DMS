@@ -500,10 +500,10 @@ export default defineComponent({
           </v-col>
         </v-row>
         
-        <v-container v-if="record.formTemplate" class="form-image-container">
+        <v-container v-if="record.form_template" class="form-image-container">
           <p>ឯកសារ</p>
           <v-img
-            :src="record.formTemplate ?? ''"
+            :src="record.form_template ?? ''"
             @click="openFormTemplatePreview = true"
             max-width="50"
             class="my-2 cursor-pointer"
@@ -511,7 +511,7 @@ export default defineComponent({
 
           <v-dialog v-model="openFormTemplatePreview" max-width="800">
             <v-card>
-              <v-img :src="record.formTemplate ?? ''"></v-img>
+              <v-img :src="record.form_template ?? ''"></v-img>
             </v-card>
           </v-dialog>
         </v-container>

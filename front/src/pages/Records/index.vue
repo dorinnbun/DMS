@@ -148,7 +148,7 @@
                       <v-row>
                         <template v-for="field in personalInfoInputFields.slice(0, 21)" >
                           <v-col cols="12" :sm="field.col" :offset-md="field.offset || 0">
-
+                    
                             <v-select
                               v-if="field.type === 'select'"
                               v-model="field.value"
@@ -816,7 +816,7 @@
         if (this.startDate && this.endDate) {
           this.loadItems({
             others: {
-              between: 'madeAt',
+              between: 'created_at',
               min: this.startDate,
               max: this.endDate
             }
@@ -827,7 +827,7 @@
         if (this.startDate && this.endDate) {
           this.loadItems({
             others: {
-              between: 'madeAt',
+              between: 'created_at',
               min: this.startDate,
               max: this.endDate
             }
@@ -1185,7 +1185,7 @@
       close () {
         this.dialog = false
         this.$nextTick(() => {
-          this.editedItem = Object.assign({}, this.defaultItem)
+          this.editedItem = Object.assign({}, this.defaultItem) //
           this.editedIndex = -1
         })
       },
@@ -1193,7 +1193,7 @@
       closeDelete () {
         this.dialogDelete = false
         this.$nextTick(() => {
-          this.editedItem = Object.assign({}, this.defaultItem)
+          this.editedItem = Object.assign({}, this.defaultItem) //
           this.editedIndex = -1
         })
       },
