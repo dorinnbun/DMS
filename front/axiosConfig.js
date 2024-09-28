@@ -28,11 +28,10 @@ axiosInstance.interceptors.response.use(
   async (error) => {
     if (error.response && error.response.status === 401) {
       // Handle token expiration (401 Unauthorized)
-      // Optionally refresh the token or redirect to login
-      console.error('Token expired. Please login again.');
-      
-      window.location.href = '/login';
-
+      const originalRequest = error.config;
+      if (!originalRequest?.url?.includes('/login')) {
+        window.location.href = '/login';
+      }
       return Promise.reject(error);
     }
     return Promise.reject(error);

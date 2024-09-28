@@ -107,13 +107,10 @@
 
         } else if (code == 401) {
           isLoginError.value = true
-          console.log('====1');
-          
 
         } else if (code == 404) {
           isLoginError.value = true
           errorMessage.value = 'User មិនមាននៅក្នុងប្រព័ន្ធទេ'
-          console.log('====2');
 
         } else {
           console.log("error", result);
@@ -124,7 +121,12 @@
         console.log(error)
         const errorMsg = error?.response?.data?.message
         isLoginError.value = true
-        errorMessage.value = errorMsg ?? 'សូមព្យាយាមម្តងទៀត។'
+        if (error?.response?.data?.code == 401) {
+          errorMessage.value = 'អ៊ីមែល ឬ ពាក្យសម្ងាត់ មិនត្រឹមត្រូវ'
+        } else {
+          errorMessage.value = errorMsg ?? 'សូមព្យាយាមម្តងទៀត។'
+        }
+
       }
 
       loading.value = false
