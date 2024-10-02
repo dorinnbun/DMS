@@ -405,8 +405,7 @@
     }),
 
     created () {
-      this.initialize()
-      if (this.userRole === 'user') {
+      if (this.userRole === 'user' || localStorage.getItem('dms_token') === null) {
         this.$router.push('/')
       }
     },
