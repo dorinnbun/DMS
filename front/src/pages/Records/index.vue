@@ -352,7 +352,7 @@
                   color="blue-darken-1 primary-btn" 
                   variant="text" 
                   @click="saveAction"
-                  :disabled="formNotSubmitable"
+                  :disabled="!formSubmitable"
                 >
                   រក្សាទុក
                 </v-btn>
@@ -663,7 +663,7 @@
       }, {
         key: "height",
         label: "កម្ពស់ (ម៉ែត្រ)",
-        type: "text", // number
+        type: "number",
         col: 2,
         value: ""
       }, {
@@ -776,11 +776,14 @@
         return this.editedIndex === -1 ? 'ពត័មានអ្នកប្រេីប្រាស់ថ្មី' : 'កែពត័មានអ្នកប្រេីប្រាស់'
       },
 
-      formNotSubmitable() {
-        return !this.inputFields.every(item => item.value) 
-          && !this.personalInfoInputFields.every(item => item.value) 
-          && !this.fingerPrintsFileInput.every(item => item.value) 
-          && !this.palmPrintFileInput.every(item => item.value)
+      formSubmitable() {
+        return this.inputFields.every(item => item.value) 
+          && this.personalInfoInputFields.every(item => item.value) 
+          && this.fingerPrintsFileInput.every(item => item.value) 
+          && this.fullFingersPrintFileInput.every(item => item.value)
+          && this.fullBodyPhotoFileInput.every(item => item.value)
+          && this.palmPrintFileInput.every(item => item.value)
+          && this.specialMark.every(item => item.value)
       },
 
       async getProvincesID () {
