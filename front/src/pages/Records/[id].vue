@@ -241,10 +241,10 @@ export default defineComponent({
             return `${ this.record?.last_name } ${ this.record?.first_name }`;
 
           case 'pob':
-            return `${ this.record?.pob_province } ${ this.record?.pob_district } ${ this.record?.pob_commune }`;
+            return `ខេត្ត/ក្រុង៖${ this.record?.pob_province } ស្រុក/ខណ្ឌ៖${ this.record?.pob_district } ភូមិ/សង្កាត់៖${ this.record?.pob_commune }`;
 
           case 'current_address':
-            return `${ this.record?.current_address } ${ this.record?.province } ${ this.record?.district } ${ this.record?.commune }`;
+            return `${ this.record?.current_address } ខេត្ត/ក្រុង៖${ this.record?.province } ស្រុក/ខណ្ឌ៖${ this.record?.district } ភូមិ/សង្កាត់៖${ this.record?.commune }`;
             
           default:
             return field.value;
