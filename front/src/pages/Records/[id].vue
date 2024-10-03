@@ -16,201 +16,66 @@ export default defineComponent({
     record: {},
     formName: 'សលាកប័ត្រឯកកត្តជន',
     inputFields: [
-      {
-        key: "number",
-        label: "លេខ",
-        type: "text",
-        value: ""
-      }, {
-        key: "identity_photo",
-        label: "រូបថត 4x6",
-        type: "file",
-        value: ""
-      }, {
-        key: "book_id",
-        label: "លេខសៀវភៅ",
-        type: "text",
-        value: ""
-      }, {
-        key: "madeAt",
-        label: "ធ្វេីនៅ",
-        type: "text",
-        value: ""
-      }
+        { key: "number",           label: "លេខ",        type: "text",  value: "" },
+        { key: "identity_photo",   label: "រូបថត 4x6",    type: "file",  value: "" },
+        { key: "book_id",          label: "លេខសៀវភៅ",   type: "text",  value: "" },
+        { key: "madeAt",           label: "ធ្វេីនៅ",        type: "text",  value: "" }
+      ],
+
+    personalInfoInputFields: [
+      { key: "formula",                     label: "រូបមន្ត",              type: "text",   col: 6,      value: "", offset: 6 },
+      { key: "full_name",                   label: "គោត្តនាមនាម",         type: "text",   col: 6,      value:  "" },
+      { key: "nickname",                    label: "ឈ្មោះហៅក្រៅ",        type: "text",   col: 6,      value:  "" },
+      { key: "dob",                         label: "ថ្ងៃខែឆ្នាំកំណេីត",        type: "date",   col: 6,      value:  "" },
+      { key: "pob",                         label: "ភូមិកំណេីត",           type: "text",   col: 6,      value:  "" },
+      { key: "ethnicity",                   label: "ជនជាតិ",             type: "text",   col: 4,      value:  "" },
+      { key: "nationality",                 label: "សញ្ជាតិ",             type: "text",   col: 4,      value:  "" },
+      { key: "religion",                    label: "សាសនា",            type: "text",   col: 4,      value:  "" },
+      { key: "previous_occupation",         label: "មុខរបរធ្លាប់ធ្វេីពីមុន",      type: "text",   col: 12,     value:  "" },
+      { key: "occupation",                  label: "មុខរបរបច្ចុប្បន្ន",         type: "text",   col: 12,     value:  "" },
+      { key: "current_address",             label: "អាស័យដ្ឋានបច្ចុប្បន្ន",      type: "text",   col: 12,     value:  "" },
+      { key: "identity",                    label: "ភិនភាគ",             type: "text",   col: 8,      value:  "" },
+      { key: "height",                      label: "កម្ពស់(ម៉ែត្រ)",         type: "text",   col: 4,      value: "" },
+      { key: "spouse",                      label: "ប្តី ឬ ប្រពន្ធ",          type: "text",   col: 6,      value: "" },
+      { key: "spouse_address",              label: "នៅ",               type: "text",   col: 6,      value:  "" },
+      { key: "father_name",                 label: "ឪពុកឈ្មោះ",          type: "text",   col: 12,     value:  "" },
+      { key: "father_address",              label: "នៅ",               type: "text",   col: 12,     value:  "" },
+      { key: "mother_name",                 label: "ម្តាយឈ្មោះ",          type: "text",   col: 12,     value:  "" },
+      { key: "mother_address",              label: "នៅ",               type: "text",   col: 12,     value:  "" },
+      { key: "private_certificate_officer", label: "មន្ត្រីធ្វេីឯកសារ",        type: "text",   col: 12,     value:  "" },
+      { key: "supervision_officer",         label: "មន្ត្រីបែងចែកត្រួតពិនិត្យ",  type: "text",   col: 12,      value:  "" },
+      { key: "scheduling_research_officer", label: "មន្ត្រីស្រាវជ្រាវរៀបតារាង", type: "text",    col: 12,     value: "" }
     ],
 
-    personalInfoInputFields: [{
-      key: "formula",
-      label: "រូបមន្ត",
-      type: "text",
-      col: 6,
-      offset: 6,
-      value: ""
-    }, {
-      key: "full_name",
-      label: "គោត្តនាមនាម",
-      type: "text",
-      col: 6,
-      value: ""
-    }, {
-      key: "nickname",
-      label: "ឈ្មោះហៅក្រៅ",
-      type: "text",
-      col: 6,
-      value: ""
-    }, {
-      key: "dob",
-      label: "ថ្ងៃខែឆ្នាំកំណេីត",
-      type: "date",
-      col: 6,
-      value: ""
-    }, {
-      key: "pob",
-      label: "ភូមិកំណេីត",
-      type: "text",
-      col: 6,
-      value: ""
-    },
-    {
-      key: "ethnicity",
-      label: "ជនជាតិ",
-      type: "text",
-      col: 4,
-      value: ""
-    }, {
-      key: "nationality",
-      label: "សញ្ជាតិ",
-      type: "text",
-      col: 4,
-      value: ""
-    }, {
-      key: "religion",
-      label: "សាសនា",
-      type: "text",
-      col: 4,
-      value: ""
-    }, {
-      key: "previous_occupation",
-      label: "មុខរបរធ្លាប់ធ្វេីពីមុន",
-      type: "text",
-      col: 12,
-      value: ""
-    }, {
-      key: "occupation",
-      label: "មុខរបរបច្ចុប្បន្ន",
-      type: "text",
-      col: 12,
-      value: ""
-    }, {
-      key: "current_address",
-      label: "អាស័យដ្ឋានបច្ចុប្បន្ន",
-      type: "text",
-      col: 12,
-      value: ""
-    },
-    {
-      key: "identity",
-      label: "ភិនភាគ",
-      type: "text",
-      col: 8,
-      value: ""
-    }, {
-      key: "height",
-      label: "កម្ពស់ (ម៉ែត្រ)",
-      type: "text",
-      col: 4,
-      value: ""
-    }, {
-      key: "spouse",
-      label: "ប្តី ឬ ប្រពន្ធ",
-      type: "text",
-      col: 6,
-      value: ""
-    }, {
-      key: "spouse_address",
-      label: "នៅ",
-      type: "text",
-      col: 6,
-      value: ""
-    },
-
-    // parents info
-    {
-      key: "father_name",
-      label: "ឪពុកឈ្មោះ",
-      type: "text",
-      col: 12,
-      value: ""
-    }, {
-      key: "father_address",
-      label: "នៅ",
-      type: "text",
-      col: 12,
-      value: ""
-    }, {
-      key: "mother_name",
-      label: "ម្តាយឈ្មោះ",
-      type: "text",
-      col: 12,
-      value: ""
-    }, {
-      key: "mother_address",
-      label: "នៅ",
-      type: "text",
-      col: 12,
-      value: ""
-    },
-
-    // officers in charge
-    {
-      key: "private_certificate_officer",
-      label: "មន្ត្រីធ្វេីឯកសារ",
-      type: "text",
-      col: 12,
-      value: ""
-    }, {
-      key: "supervision_officer",
-      label: "មន្ត្រីបែងចែកត្រួតពិនិត្យ",
-      type: "text",
-      col: 12,
-      value: ""
-    }, {
-      key: "scheduling_research_officer",
-      label: "មន្ត្រីស្រាវជ្រាវ រៀបតារាង",
-      type: "text",
-      col: 12,
-      value: ""
-    }],
-
     fingerPrintsFileInput: [
-      { key: "right_thumb_print", label: "មេដៃស្តាំ", type: "file", value: "" },
-      { key: "right_index_print", label: "ចង្អុលដៃស្តាំ", type: "file", value: "" },
-      { key: "right_middle_print", label: "ដៃកណ្តាលស្តាំ", type: "file", value: "" },
-      { key: "right_ring_print", label: "នាងដៃស្តាំ", type: "file", value: "" },
-      { key: "right_pinky_print", label: "កូនដៃស្តាំ", type: "file", value: "" },
-      { key: "left_thumb_print", label: "មេដៃឆ្វេង", type: "file", value: "" },
-      { key: "left_index_print", label: "ចង្អុលដៃឆ្វេង", type: "file", value: "" },
-      { key: "left_middle_print", label: "ដៃកណ្តាលឆ្វេង", type: "file", value: "" },
-      { key: "left_ring_print", label: "នាងដៃឆ្វេង", type: "file", value: "" },
-      { key: "left_pinky_print", label: "កូនដៃឆ្វេង", type: "file", value: "" },
+      { key: "right_thumb_print",   label: "មេដៃស្តាំ",     type: "file",  value: "" },
+      { key: "right_index_print",   label: "ចង្អុលដៃស្តាំ",   type: "file", value: "" },
+      { key: "right_middle_print",  label: "ដៃកណ្តាលស្តាំ", type: "file", value: "" },
+      { key: "right_ring_print",    label: "នាងដៃស្តាំ",    type: "file", value: "" },
+      { key: "right_pinky_print",   label: "កូនដៃស្តាំ",    type: "file", value: "" },
+      { key: "left_thumb_print",    label: "មេដៃឆ្វេង",    type: "file", value: "" },
+      { key: "left_index_print",    label: "ចង្អុលដៃឆ្វេង",  type: "file", value: "" },
+      { key: "left_middle_print",   label: "ដៃកណ្តាលឆ្វេង", type: "file", value: "" },
+      { key: "left_ring_print",     label: "នាងដៃឆ្វេង",    type: "file", value: "" },
+      { key: "left_pinky_print",    label: "កូនដៃឆ្វេង",    type: "file", value: "" },
     ],
 
     fullBodyPhotoFileInput: [
-      { key: "front_body_photo", label: "រូបមួយជំហរ", type: "file", value: "" },
+      { key: "front_body_photo",    label: "រូបមួយជំហរ",    type: "file", value: "" },
       { key: "right_profile_photo", label: "រូបចំហៀងស្តាំ", type: "file", value: "" },
-      { key: "left_profile_photo", label: "រូបចំហៀងឆ្វេង", type: "file", value: "" },
+      { key: "left_profile_photo",  label: "រូបចំហៀងឆ្វេង", type: "file", value: "" },
     ],
 
     fullFingersPrintFileInput: [
-      { key: "four_left_fingers_print", label: "ផ្តិតម្រាមដៃឆ្វេងទាំងបួន", type: "file", value: "" },
-      { key: "left_thumb_print01", label: "មេដៃឆ្វេង", type: "file", value: "" },
-      { key: "right_thumb_print01", label: "មេដៃស្តាំ", type: "file", value: "" },
-      { key: "four_right_fingers_print", label: "ផ្តិតម្រាមដៃស្តាំទាំងបួន", type: "file", value: "" },
+      { key: "four_left_fingers_print",  label: "ផ្តិតម្រាមដៃឆ្វេងទាំងបួន", type: "file", value: "" },
+      { key: "left_thumb_print01",       label: "មេដៃឆ្វេង",         type: "file", value: "" },
+      { key: "right_thumb_print01",      label: "មេដៃស្តាំ",          type: "file", value: "" },
+      { key: "four_right_fingers_print", label: "ផ្តិតម្រាមដៃស្តាំទាំងបួន",  type: "file", value: "" },
     ],
 
     palmPrintFileInput: [
-      { key: "left_palm_print", label: "បាតដៃឆ្វេង", type: "file", value: "" },
-      { key: "right_palm_print", label: "បាតដៃស្តាំ", type: "file", value: "" },
+      { key: "left_palm_print",   label: "បាតដៃឆ្វេង", type: "file", value: "" },
+      { key: "right_palm_print",  label: "បាតដៃស្តាំ",  type: "file", value: "" },
     ],
 
     specialMark: [
@@ -234,7 +99,6 @@ export default defineComponent({
 
     getFieldDisplayValue(field) {
       if (this.record) {
-        
         
         switch (field.key) {
           case 'full_name': 
