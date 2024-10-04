@@ -213,12 +213,12 @@
             </template>
             
             <template v-else>
-              {{ item[ header.key ] }}
+              {{ item [ header.key ] }}
             </template>
           </td>
 
           <td v-if="userRole === 'admin' || userRole === 'manager'">
-            <v-icon small color="blue" @click.stop="editItem(item)">mdi-pencil</v-icon>
+            <v-icon small color="blue" @click.stop="editItem(item)" :disabled="item.role === 'user' && userRole === 'manager'">mdi-pencil</v-icon>
             <v-icon small color="red" @click.stop="deleteUser(item)" v-if="userRole === 'admin'">mdi-delete</v-icon>
             <v-icon small color="orange" @click.stop="resetPassword(item)" v-if="userRole === 'admin'">mdi-lock-reset</v-icon>
           </td>
