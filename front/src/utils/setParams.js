@@ -12,7 +12,7 @@ export const setParams = ({ filters, keySearch, limit, page, sortBy, others }) =
 
   if (sortBy) {
     sortBy.forEach((item, index) => {
-      params.push(`orders[${ item.key }]=${ item.order }`);
+      params.push(`orderBy[${ item.key }]=${ item.order }`);
     })
   }
 

@@ -99,16 +99,16 @@ export default defineComponent({
 
     getFieldDisplayValue(field) {
       if (this.record) {
-        
+
         switch (field.key) {
           case 'full_name': 
             return `${ this.record?.last_name } ${ this.record?.first_name }`;
 
           case 'pob':
-            return `ខេត្ត/ក្រុង៖${ this.record?.pob_province } ស្រុក/ខណ្ឌ៖${ this.record?.pob_district } ភូមិ/សង្កាត់៖${ this.record?.pob_commune }`;
+            return `ខេត្ត/ក្រុង៖${ this.record?.pob_province?.name } ស្រុក/ខណ្ឌ៖${ this.record?.pob_district?.name } ភូមិ/សង្កាត់៖${ this.record?.pob_commune?.name }`;
 
           case 'current_address':
-            return `${ this.record?.current_address } ខេត្ត/ក្រុង៖${ this.record?.province } ស្រុក/ខណ្ឌ៖${ this.record?.district } ភូមិ/សង្កាត់៖${ this.record?.commune }`;
+            return `${ this.record?.current_address } ខេត្ត/ក្រុង៖${ this.record?.province?.name } ស្រុក/ខណ្ឌ៖${ this.record?.district?.name } ភូមិ/សង្កាត់៖${ this.record?.commune?.name }`;
             
           default:
             return field.value;
