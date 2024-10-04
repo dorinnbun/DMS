@@ -364,18 +364,30 @@ export default defineComponent({
           </v-col>
         </v-row>
         
-        <v-container v-if="record.form_template" class="form-image-container">
+        <v-container v-if="record?.form_template" class="form-image-container">
           <p>ឯកសារ</p>
-          <v-img
-            :src="record.form_template ?? ''"
-            @click="openFormTemplatePreview = true"
-            max-width="50"
-            class="my-2 cursor-pointer"
-          ></v-img>
+          
+            <template v-if="isPdf(record?.form_template)">
+              <v-btn @click="openFormTemplatePreview = true" style="margin-top: 6px;">មេីលឯកសារ</v-btn>
+            </template>
 
-          <v-dialog v-model="openFormTemplatePreview" max-width="800">
+            <template v-else>
+              <v-img
+                :src="record?.form_template ?? ''"
+                @click="openFormTemplatePreview = true"
+                max-width="50"
+                class="my-2 cursor-pointer"
+              ></v-img>
+            </template>
+
+          <v-dialog v-model="openFormTemplatePreview" :class="isPdf(record.form_template) ? 'pdfPreview' : 'imgFormTemplatePreview'">
             <v-card>
-              <v-img :src="record.form_template ?? ''"></v-img>
+              <template v-if="isPdf(record.form_template)">
+                <iframe :src="record.form_template" width="100%" height="1000px"></iframe>
+              </template>
+              <template v-else>
+                <v-img :src="record.form_template ?? ''"></v-img>
+              </template>
             </v-card>
           </v-dialog>
         </v-container>
@@ -388,3 +400,14 @@ export default defineComponent({
 
 <style scoped src="../../styles/records.scss"></style>
 <style scoped src="../../styles/details.scss"></style>
+
+<style lang="css" scoped>
+  .pdfPreview {
+    max-width: 100%;
+    height: 100%;
+  }
+
+  .imgFormTemplatePreview {
+    max-width: 100%;
+  }
+</style>
