@@ -10,7 +10,7 @@
       <v-text-field
         v-model="email"
         :readonly="loading"
-        :rules="[required]"
+        :rules="[required, emailRule]"
         class="mb-4"
         label="អ៊ីមែល"
       ></v-text-field>
@@ -77,6 +77,10 @@
   const userStore = useUserStore()
   const tmpStore = useTmpStore()
 
+  const emailRule = (v) => {
+    const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    return pattern.test(v) || 'អ៊ីមែលមិនត្រឹមត្រូវ'
+  }
 
   // login
   const login = async () => {
@@ -126,7 +130,6 @@
         } else {
           errorMessage.value = errorMsg ?? 'សូមព្យាយាមម្តងទៀត។'
         }
-
       }
 
       loading.value = false
