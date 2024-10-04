@@ -244,7 +244,7 @@
 
             <v-card-actions style="padding: 0 30px 30px 0 !important;">
               <v-spacer></v-spacer>
-              <v-btn class="danger-btn" @click="dialogDetail = false">បឹទ</v-btn>
+              <v-btn class="danger-btn" @click="dialogDetail = false">បិទ</v-btn>
             </v-card-actions>
           </v-card>
         </v-dialog>
@@ -404,12 +404,6 @@
       ]
     }),
 
-    created () {
-      if (this.userRole === 'user' || localStorage.getItem('dms_token') === null) {
-        this.$router.push('/')
-      }
-    },
-
     computed: {
 
       userRole () {
@@ -442,6 +436,16 @@
     },
 
     async created () {
+
+      const token = localStorage.getItem('dms_token');
+      if (!token) {
+        this.$router.push('/');
+      }
+
+      if (this.userRole === 'user') {
+        this.$router.push('/records');
+      }
+      
       await this.getAllRoles()
     },
 
@@ -574,14 +578,24 @@
       },
 
       async deleteUserConfirm () {
+        this.displaySpinner = true
         try {
           const result = await deleteUserAPI(this.selectedUser.id)
           this.loadItems({ page: 1, itemsPerPage: this.itemsPerPage, sortBy: [] })
+          this.showSuccessMessage()
 
         } catch (error) {
           console.log(error);
+
+          const errorMessage = error?.response?.data?.message;
+          if (errorMessage) {
+            console.log("errorMessaage", errorMessage);
+            
+            this.showErrorMessage(errorMessage);
+          }
         }
         this.closeDelete()
+        this.displaySpinner = false
       },
       
       async resetPassword (item) {
@@ -615,6 +629,13 @@
           
         } catch (error) {
           console.log(error);
+
+          const errorMessage = error?.response?.data?.message;
+          if (errorMessage) {
+            console.log("errorMessaage", errorMessage);
+            
+            this.showErrorMessage(errorMessage);
+          }
         }
         
         this.resetPasswordDialog = false
