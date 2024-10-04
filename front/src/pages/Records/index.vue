@@ -382,7 +382,7 @@
 
           <td v-for="header in headers" :key="index">
             <template v-if="header.key === 'full_name'">
-              {{ item.first_name + ' ' + item.last_name }}
+              {{ item.last_name + ' ' + item.first_name }}
             </template>
             
             <template v-else>
@@ -1049,10 +1049,23 @@
         console.log("fieldsToUpdate==========", fieldsToUpdate);
 
         try {
+
+          this.displaySpinner = true
+
           const formData = new FormData();
           fieldsToUpdate.forEach(item => {
-            formData.append(item.key, item.value);
+
+            if (["commune", "district", "province", "pob_commune", "pob_district", "pob_province"].includes(item.key) && typeof item.value === 'object') {
+              formData.append(item.key, item.value.id);
+            } else {
+              formData.append(item.key, item.value);
+            }
+
+            // for (var pair of formData.entries()) {
+            //     console.log("===", pair[0]+ ', ' + pair[1]); 
+            // }
           });
+          
 
           const result = await updateRecordAPI(this.selectedRecord.id, formData)
           console.log("result====", result);
@@ -1072,6 +1085,8 @@
             this.showErrorMessage(errorMessage);
           }
         }
+
+        this.displaySpinner = false
         
         
       },
