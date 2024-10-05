@@ -10,9 +10,9 @@
       <v-text-field
         v-model="email"
         :readonly="loading"
-        :rules="[required, emailRule]"
+        :rules="[required]"
         class="mb-4"
-        label="អ៊ីមែល"
+        label="អ៊ីមែល ឬ ឈ្មោះអ្នកប្រើប្រាស់"
       ></v-text-field>
 
       <v-text-field
@@ -34,12 +34,6 @@
       </v-alert>
 
       <br>
-
-      <v-row class="mb-4">
-        <v-col cols="12" class="text-right">
-          <router-link to="/forgot-password">ភ្លេចពាក្យសម្ងាត់?</router-link>
-        </v-col>
-      </v-row>
 
       <v-btn
         :disabled="!form"
@@ -77,6 +71,7 @@
   const userStore = useUserStore()
   const tmpStore = useTmpStore()
 
+
   const emailRule = (v) => {
     const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     return pattern.test(v) || 'អ៊ីមែលមិនត្រឹមត្រូវ'
@@ -94,20 +89,21 @@
         })
 
         const { status, code } = result?.data
+        const data = result?.data
         console.log("status", status);
         console.log("code", code);
-        
 
         if (status == 201 && code == 201) {
 
-          tmpStore.$patch({
-            tmpObject: {
-              email: email.value,
-              password: password.value
-            }
-          })
+          const user = data?.data?.item
+          const token = user?.authorisation?.token
+          localStorage.setItem('dms-token', token)
+          delete user?.authorisation
 
-          router.push({ path: `/verify-login-otp` })
+          authStore.$patch({ isLoggedIn: true })
+          router.push({ path: '/' })
+
+          userStore.$patch({ user: user })
 
         } else if (code == 401) {
           isLoginError.value = true

@@ -54,11 +54,5 @@
     return route.fullPath !== '/login' 
       && route.name !== '/Records/[id]' 
       && route.name !== 'NotFound'
-      && route.fullPath !== '/forgot-password'
-      && route.fullPath !== '/reset-password'
-      && route.fullPath !== '/verify-otp'
-      && route.fullPath !== '/verify-login-otp'
-      && route.fullPath !== '/send-email'
-
   })
 </script>

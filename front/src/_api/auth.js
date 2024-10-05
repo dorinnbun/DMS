@@ -19,24 +19,6 @@ export const login = async (body) => {
 }
 
 
-export const verifyOtp = async (body) => {
-
-  try {
-    return await axiosInstance.post(
-      `${ import.meta.env.VITE_API_BASE_URL }/auth/verifyOtp`,
-      body,
-      {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      }
-    )
-  } catch (error) {
-    throw error
-  }
-}
-
-
 export const logout = async (body) => {
 
   try {
