@@ -388,6 +388,13 @@
             <template v-if="header.key === 'full_name'">
               {{ item.last_name + ' ' + item.first_name }}
             </template>
+
+            <template v-if="['created_by', 'updated_by'].includes(header.key)">
+              <div v-if="item [ header.key ].name && item [ header.key ].role">
+                {{ item [ header.key ].name }} ({{ item [ header.key ].role }})
+              </div>
+              <p v-else>គ្មាន</p>
+            </template>
             
             <template v-else>
               {{ item [header.key] }}
@@ -503,7 +510,9 @@
           { title: 'លេខសៀវភៅ', key: 'book_id', sortable: true },
           { title: 'នាមគោត្តនាម', align: 'start', key: 'full_name', sortable: true },
           { title: 'អាសយដ្ឋាន', key: 'current_address', sortable: false },
-          { title: '', key: 'actions', sortable: false }
+          { title: 'បង្កេីតដោយ', key: 'created_by', sortable: false },
+          { title: 'កែដោយ', key: 'updated_by', sortable: false },
+          { title: '', key: 'actions', sortable: false }, 
         ],
       editedIndex: -1,
       editedItem: {

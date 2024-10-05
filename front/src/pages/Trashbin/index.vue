@@ -59,6 +59,10 @@
             <template v-if="header.key === 'full_name'">
               {{ item.first_name + ' ' + item.last_name }}
             </template>
+
+            <template v-if="header.key === 'deleted_by'">
+              {{ item [ header.key ].name }} ({{ item [ header.key ].role }})
+            </template>
             
             <template v-else>
               {{ item [ header.key ] }}
@@ -100,31 +104,14 @@
       selectedItem: {},
 
       currentParams: {
-        // sort: null,
-        // filters: {},
         keySearch: {}
       },
-
       headers: [
-        { 
-          title: 'លេខរៀង', 
-          key: 'id', 
-          sortable: false  
-        },
-        { 
-          title: 'លេខសៀវភៅ', 
-          key: 'book_id' 
-        },
-        {
-          title: 'នាមគោត្តនាម',
-          align: 'start',
-          key: 'full_name',
-        },
-        { 
-          title: '', 
-          key: 'actions', 
-          sortable: false 
-        },
+        { title: 'លេខរៀង', key: 'id', sortable: false },
+        { title: 'លេខសៀវភៅ', key: 'book_id' },
+        { title: 'នាមគោត្តនាម', align: 'start', key: 'full_name' },
+        { title: 'ត្រូវបានលុបដោយ', key: 'deleted_by', sortable: false },
+        { title: '', key: 'actions', sortable: false },
       ],
       restoredIndex: -1
     }),
