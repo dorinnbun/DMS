@@ -17,7 +17,7 @@
             <input class="search" type="text" placeholder="ស្វែករកឯកសារ..." v-model="search"/>
             <v-select
               v-model="filterCategory"
-              :items="filterOptions"
+              :items="userRole === 'user' ? filterOptions.slice(0, 3) : filterOptions"
               :item-title="item => item.text"
               :item-value="item => item.value"
               label="ស្វែងរកតាមរយ:"
