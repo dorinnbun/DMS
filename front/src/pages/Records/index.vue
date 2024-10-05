@@ -967,6 +967,7 @@
             ...this.fullBodyPhotoFileInput,
             ...this.palmPrintFileInput,
             ...this.specialMark,
+            this.formTemplate
           ];
 
           fieldsToUpdate.forEach(field => {
