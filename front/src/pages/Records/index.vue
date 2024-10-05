@@ -328,13 +328,17 @@
                       sm="3"
                       class="special-mark-item"
                     >
-                      <img v-if="isEditingMode && formTemplate.value && typeof formTemplate.value === 'string'" :src="formTemplate.value" alt="ស្នាមម្រាមដៃ" style="width: 100px; height: 100px;">
-                      <v-file-input 
-                        v-model="formTemplate.value" 
-                        :label="formTemplate.label" 
-                        accept=".jpg,.png,.pdf,.jpeg"
-                        @change="handleFileChange($event, field)"
-                      ></v-file-input>
+                    <!-- form template -->
+                    <template v-if="isEditingMode && formTemplate.value && typeof formTemplate.value === 'string'">
+                      <img v-if="isImage(formTemplate.value) || isGif(formTemplate.value)" :src="formTemplate.value" alt="form scan" style="width: 100px; height: 100px;">
+                      <a v-else :href="formTemplate.value" target="_blank">{{ formTemplate.label }}</a>
+                    </template>
+                    <v-file-input 
+                      v-model="formTemplate.value" 
+                      :label="formTemplate.label" 
+                      accept=".jpg,.png,.pdf,.jpeg"
+                      @change="handleFileChange($event, 'formTemplate')"
+                    ></v-file-input>
                     </v-col>
                     
                   </v-row>
@@ -686,6 +690,16 @@
     },
 
     methods: {
+        // check file extension 
+      isImage(url) {
+        return /\.(jpg|jpeg|png|bmp|tiff)$/i.test(url);
+      },
+      isPdf(url) {
+        return /\.pdf$/i.test(url);
+      },
+      isGif(url) {
+        return /\.gif$/i.test(url);
+      },
 
       async showErrorMessage (message) {
         this.errorMessage = message
