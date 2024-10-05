@@ -220,7 +220,7 @@
           <td v-if="userRole === 'admin' || userRole === 'manager'">
             <v-icon small color="blue" @click.stop="editItem(item)" :disabled="item.role === 'user' && userRole === 'manager'">mdi-pencil</v-icon>
             <v-icon small color="red" @click.stop="deleteUser(item)" v-if="userRole === 'admin'">mdi-delete</v-icon>
-            <v-icon small color="orange" @click.stop="resetPassword(item)" v-if="userRole === 'admin'">mdi-lock-reset</v-icon>
+            <v-icon small color="orange" @click.stop="resetPassword(item)" :disabled="item.role === 'user' && userRole === 'manager'">mdi-lock-reset</v-icon>
           </td>
         </tr>
 
