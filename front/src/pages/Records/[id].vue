@@ -99,20 +99,19 @@ export default defineComponent({
 
     getFieldDisplayValue(field) {
       if (this.record) {
+      switch (field.key) {
+        case 'full_name': 
+        return `${ this.record?.last_name } ${ this.record?.first_name }`;
 
-        switch (field.key) {
-          case 'full_name': 
-            return `${ this.record?.last_name } ${ this.record?.first_name }`;
+        case 'pob':
+        return `<strong>ខេត្ត/ក្រុង៖</strong>${ this.record?.pob_province?.name } <strong>ស្រុក/ខណ្ឌ៖</strong>${ this.record?.pob_district?.name } <strong>ភូមិ/សង្កាត់៖</strong>${ this.record?.pob_commune?.name }`;
 
-          case 'pob':
-            return `ខេត្ត/ក្រុង៖${ this.record?.pob_province?.name } ស្រុក/ខណ្ឌ៖${ this.record?.pob_district?.name } ភូមិ/សង្កាត់៖${ this.record?.pob_commune?.name }`;
-
-          case 'current_address':
-            return `${ this.record?.current_address } ខេត្ត/ក្រុង៖${ this.record?.province?.name } ស្រុក/ខណ្ឌ៖${ this.record?.district?.name } ភូមិ/សង្កាត់៖${ this.record?.commune?.name }`;
-            
-          default:
-            return field.value;
-        }
+        case 'current_address':
+        return `${ this.record?.current_address } <strong>ខេត្ត/ក្រុង៖</strong>${ this.record?.province?.name } <strong>ស្រុក/ខណ្ឌ៖</strong>${ this.record?.district?.name } <strong>ភូមិ/សង្កាត់៖</strong>${ this.record?.commune?.name }`;
+        
+        default:
+        return field.value;
+      }
       }
     },
 
@@ -184,11 +183,11 @@ export default defineComponent({
         <!-- Personal Information -->
         <v-col cols="12" sm="9" md="10">
           <v-row>
-            <template v-for="field in personalInfoInputFields.slice(0, 14)" :key="field.key">
+            <template v-for="field in personalInfoInputFields.slice(0, 15)" :key="field.key">
               <v-col cols="12" :sm="field.col" :offset-sm="field.offset || 0" style="padding: 0;">
                 <div class="field-container">
                   <strong class="field-label">{{ field.label }}:</strong>
-                  <span class="field-value">{{ getFieldDisplayValue(field) }}</span>
+                  <span class="field-value" v-html="getFieldDisplayValue(field)"></span>
                 </div>
               </v-col>
             </template>
