@@ -251,7 +251,7 @@
                     <!-- Full body pictures -->
                     <template v-for="field in fullBodyPhotoFileInput">
                       <v-col cols="12" sm="4">
-                        <img v-if="isEditingMode && field.value && typeof field.value === 'string'" :src="field.value" alt="ស្នាមម្រាមដៃ" style="width: 100px; height: 100px;">
+                        <img v-if="isEditingMode && field.value && typeof field.value === 'string'" :src="field.value" alt="full profile" style="width: 100px; height: 100px;">
                         <v-file-input 
                           v-model="field.value" 
                           :label="field.label" 
@@ -292,7 +292,7 @@
                     </v-col>
 
                     <v-col cols="12" sm="6" v-for="field in palmPrintFileInput">
-                      <img v-if="isEditingMode && field.value && typeof field.value === 'string'" :src="field.value" alt="ស្នាមម្រាមដៃ" style="width: 100px; height: 100px;">
+                      <img v-if="isEditingMode && field.value && typeof field.value === 'string'" :src="field.value" alt="officers" style="width: 100px; height: 100px;">
                       <v-file-input 
                         v-model="field.value" 
                         :label="field.label" 
@@ -311,7 +311,7 @@
                       sm="4"
                       class="special-mark-item"
                     >
-                    <img v-if="isEditingMode && field.value && typeof field.value === 'string'" :src="field.value" alt="ស្នាមម្រាមដៃ" style="width: 100px; height: 100px;">
+                    <img v-if="isEditingMode && field.value && typeof field.value === 'string'" :src="field.value" alt="special mark" style="width: 100px; height: 100px;">
                       <v-file-input 
                         v-model="field.value" 
                         :label="field.label" 
@@ -690,6 +690,7 @@
     },
 
     methods: {
+
         // check file extension 
       isImage(url) {
         return /\.(jpg|jpeg|png|bmp|tiff)$/i.test(url);
@@ -890,28 +891,8 @@
 
 
       async fetchRecordData (params) {
-
-        let { sortBy } = params
-
-        if (sortBy.length > 0) {
-          sortBy.map (sort => {
-            if (sort.key === 'full_name') {
-              // sort.key = 'first_name'
-              // sort.order = sort.order
-              sortBy.push({
-                key: 'first_name',
-                order: sort.order
-              })
-            }
-            
-          })
-        }
-
-        // console.log(params.sortBy);
-        
         
         const { data: { data } } = await getAllRecords(params)
-        // return data
         
         return {
           items: data.items,
@@ -960,19 +941,6 @@
           const record = data?.data?.item;
           this.selectedRecord = record;
 
-
-          // console.log("record", record);
-
-          // const fieldsToUpdate = [
-          //   ...this.inputFields.map(field => ({ ...field })),
-          //   ...this.personalInfoInputFields.map(field => ({ ...field })),
-          //   ...this.fingerPrintsFileInput.map(field => ({ ...field })),
-          //   ...this.fullFingersPrintFileInput.map(field => ({ ...field })),
-          //   ...this.fullBodyPhotoFileInput.map(field => ({ ...field })),
-          //   ...this.palmPrintFileInput.map(field => ({ ...field })),
-          //   ...this.specialMark.map(field => ({ ...field })),
-          // ];
-
           let fieldsToUpdate = [
             ...this.inputFields,
             ...this.personalInfoInputFields,
@@ -989,10 +957,6 @@
           });
 
           this.editingItem = fieldsToUpdate;
-          // console.log("this.inputfields===", this.inputFields);
-          
-          
-          // console.log("fieldsToUpdate", fieldsToUpdate);
           
           this.dialog = true
         }
@@ -1165,16 +1129,22 @@
 
 
       resetFieldValue () {
+
         const resetFields = (fields) => {
-          fields.forEach(field => { field.value = "" })
-        }
-        resetFields(this.inputFields)
-        resetFields(this.personalInfoInputFields)
-        resetFields(this.fingerPrintsFileInput)
-        resetFields(this.fullFingersPrintFileInput)
-        resetFields(this.fullBodyPhotoFileInput)
-        resetFields(this.palmPrintFileInput)
-        resetFields(this.specialMark)
+          fields.forEach(field => field.value = "");
+        };
+
+        const allFields = [
+          ...this.inputFields,
+          ...this.personalInfoInputFields,
+          ...this.fingerPrintsFileInput,
+          ...this.fullFingersPrintFileInput,
+          ...this.fullBodyPhotoFileInput,
+          ...this.palmPrintFileInput,
+          ...this.specialMark
+        ];
+
+        resetFields(allFields);
         this.formTemplate.value = ""
       }
     },
