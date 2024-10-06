@@ -497,8 +497,6 @@
           }
         });
 
-        console.log("this.editObject", this.editObject);
-
         this.isEditMode = true;
         this.dialogCreate = true;
       },
@@ -547,7 +545,6 @@
       },
 
       loadItems ({ page, itemsPerPage, sortBy }) {  
-        console.log('sortBy', sortBy);
             
         this.fetchUserData({ page, itemsPerPage, sortBy }).then(({ items, meta }) => {
           this.fetchedData = items;

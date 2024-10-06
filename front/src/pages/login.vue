@@ -90,8 +90,6 @@
 
         const { status, code } = result?.data
         const data = result?.data
-        console.log("status", status);
-        console.log("code", code);
 
         if (status == 201 && code == 201) {
 

@@ -987,7 +987,6 @@
       async deleteItemConfirm () {
         try {
           const result = await deleteRecordAPI(this.selectedRecord.id)
-          // console.log("result after delete", result);
           
           this.loadItems()
           this.showSuccessMessage()
@@ -1024,7 +1023,6 @@
       },
 
       async updateRecord () {
-        console.log("this.editingItem==========", this.editingItem);
         let fieldsToUpdate = [
             ...this.inputFields,
             ...this.personalInfoInputFields,
@@ -1035,9 +1033,6 @@
             ...this.specialMark,
             this.formTemplate
           ];
-          
-
-        console.log("fieldsToUpdate==========", fieldsToUpdate);
 
         try {
 
@@ -1052,18 +1047,14 @@
               formData.append(item.key, item.value);
             }
 
-            // for (var pair of formData.entries()) {
-            //     console.log("===", pair[0]+ ', ' + pair[1]); 
-            // }
           });
           
 
           const result = await updateRecordAPI(this.selectedRecord.id, formData)
-          console.log("result====", result);
           
-          formData.forEach((value, key) => {
-            console.log(`${key}:`, value);
-          });
+          // formData.forEach((value, key) => {
+          //   console.log(`${key}:`, value);
+          // });
           
           await this.loadItems()
           this.showSuccessMessage()
@@ -1099,22 +1090,15 @@
           this.formTemplate
         ]
 
-        console.log("createObject", createObject);
-
         createObject.forEach(item => {
           formData.append(item.key, item.value);
         });
 
-        console.log("formData", formData);
 
-        formData.forEach((value, key) => {
-          console.log(`${key}:`, value);
-        });
 
         try {
 
           const result = await createRecordAPI(formData, createObject)
-          console.log("result====", result.data);
           if (result.data.code === "200") {
             this.dialog = false
           }

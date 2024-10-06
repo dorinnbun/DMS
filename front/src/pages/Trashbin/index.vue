@@ -208,7 +208,6 @@
       async hardDeleteItemConfirm () {
         try {
           const result = await hardDeleteRecordAPI(this.selectedItem.id)
-          console.log("result", result);
           
           this.loadItems()
 
