@@ -2,8 +2,10 @@
 
 namespace App\Exceptions;
 
-use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
+use Illuminate\Database\QueryException;
+
+use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 
 class Handler extends ExceptionHandler
 {
@@ -25,6 +27,13 @@ class Handler extends ExceptionHandler
     {
         $this->reportable(function (Throwable $e) {
             //
+        });
+        $this->renderable(function (QueryException $e, $request) {
+            if ($e->getCode() == 23000) { // Integrity constraint violation (duplicate entry)
+                return response()->json([
+                    'message' => 'Duplicate entry detected!'
+                ], 400); // Custom error response
+            }
         });
     }
 }

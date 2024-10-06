@@ -33,19 +33,28 @@ class UploadImageJob implements ShouldQueue
     public function handle(): void
     {
 
-        $media_service       = new MediaService();
-        $media_service->disk = "space";
-        // $media_service->disk = "public";
-        $document_model      = Document::find($this->id);
+        try {
 
-        foreach ($this->images as $key => $imgs) {
-            $file_content     = Storage::disk('public')->get($imgs);
-            $url[$key]        = $media_service->upload_to_do($imgs, $file_content);
-            // Remove tmp img store in local
-            // $delete_local_img = Storage::disk('public')->delete($imgs);
+            $media_service       = new MediaService();
+            // $media_service->disk = "space";
+            $media_service->disk = "public";
+            $document_model      = Document::find($this->id);
+    
+            $url=[];
+            foreach ($this->images as $key => $imgs) {
+                $file_content     = Storage::disk('public')->get($imgs);
+                $url[$key]        = $media_service->upload_to_do($imgs, $file_content);
+                // Remove tmp img store in local
+                // $delete_local_img = Storage::disk('public')->delete($imgs);
+            }
+            log_debug("url list -->", $url, "queue_log");
+            if ( empty($url) ) throw new \Exception("Unable to upload image");
+            $result = $document_model->fill($url);
+            $result = $result->update();
+            
+        } catch (\Throwable $th) {
+            log_error($th->getMessage(),[],"queue_log");
         }
-        $result = $document_model->fill($url);
-        $result = $result->update();
 
     }
 }

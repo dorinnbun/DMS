@@ -24,7 +24,7 @@ class AddressController extends ParentApiController
     $this->service = $provinceService;
   }
 
-  public function dataTable(Request $request, $query = null): JsonResponse
+  public function dataTable(Request $request, $query = null)
   {
     $query = $this->service->getProvinceLists();
     return parent::dataTable($request, $query);

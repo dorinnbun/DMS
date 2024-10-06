@@ -121,7 +121,7 @@ class BaseService
   public function permanentDelete($id)
   {
     $result = $this->model->withTrashed()->find($id);
-    $result->forceDelete();
+    $result = $result->forceDelete();
     return $result;
   }
 

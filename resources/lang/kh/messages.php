@@ -15,9 +15,11 @@ return [
   
   "forbidden_action" => "អ្នកប្រើប្រាស់នេះមិនអាចអនុវត្តសកម្មភាពបានទេ",
   "not_able"         => ":attribute មិនអាចធ្វើបច្ចុប្បន្នភាពបានទេ",
+  "not_able_delete"  => ":attribute មិនអាចលុបបានទេ",
   "not_found"        => ":attribute រកមិនឃើញ",
   "invalide"         => ":attribute មិនត្រឹមត្រូវ",
   "expire_otp"       => "ផុតកំណត់ :attribute",
+  "verify_otp"       => "ផ្ទៀងផ្ទាត់ :attribute",
   "unauthorized"     => "គ្មានការអនុញ្ញាត",
   "successfully"     => "ដោយជោគជ័យ",
   

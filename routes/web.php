@@ -1,8 +1,11 @@
 <?php
 
 use App\Models\Medias;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\Auth\RegisterController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,7 +22,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/test', function () {
+/* Route::get('/test', function () {
     $files = Storage::disk('space')->allFiles();
     dd($files);
     if ($files === false) {
@@ -35,4 +38,13 @@ Route::get("add-media", function() {
         "photo1" => "1_XcE0wR1ZmWLFbdF2dE5WuA",
         "photo2" => "modified",
     ])->addMedia(storage_path("demo/1_XcE0wR1ZmWLFbdF2dE5WuA-modified.png"))->toMediaCollection();
-});
+}); */
+
+Route::get('/home', [HomeController::class, 'index'])->name('home');
+Auth::routes();
+
+Route::post('/2fa', function () {
+    return view('/home');
+})->name('2fa')->middleware('2fa');
+
+Route::get("/complete-registration", [RegisterController::class, "completeRegistration"])->name("complete.registration");

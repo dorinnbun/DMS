@@ -1,4 +1,4 @@
-composer create-project laravel/laravel upload_image_backend
+learcomposer create-project laravel/laravel upload_image_backend
 php artisan migrate
 
 #install
@@ -36,6 +36,20 @@ composer require symfony/mailgun-mailer
 composer require symfony/http-client
 # config/services.php
 # config/mail.php
+
+# Install Google 2fa
+composer require pragmarx/google2fa-laravel
+php artisan vendor:publish --provider="PragmaRX\Google2FA\Vendor\Laravel\ServiceProvider"
+ref: https://dev.to/roxie/how-to-add-google-s-two-factor-authentication-to-a-laravel-8-application-4jjp
+php artisan vendor:publish --provider="PragmaRX\Google2FALaravel\ServiceProvider"
+
+
+composer require pragmarx/google2fa-qrcode
+composer require bacon/bacon-qr-code
+
+php artisan ui bootstrap --auth
+npm install
+npm run build
 
 
 curl -s --user 'api:826eddfb-6b9b4547' \

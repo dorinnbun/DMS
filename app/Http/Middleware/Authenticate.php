@@ -13,11 +13,11 @@ class Authenticate extends Middleware
 {
     use HasHttpResponse;
 
-    /*protected function redirectTo(Request $request)
+    protected function redirectTo(Request $request)
         {
             return $request->expectsJson() ? null : route('login');
         }
-    */
+    
 
     protected function unauthenticated($request, array $guards)
     {

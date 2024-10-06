@@ -10,6 +10,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * @OA\SecurityScheme(
@@ -68,7 +69,7 @@ class ParentApiController extends Controller
    * @param string $description The description to be included in the response. Default is an empty string.
    * @return \Illuminate\Http\JsonResponse The generated JSON response.
    */
-  public function response_json($data, $msg, $code = 200, $description = "")
+  public function response_json($data, $msg, $code = Response::HTTP_CREATED, $description = "")
   {
     $rsp = $this->httpResponse();
 
@@ -93,20 +94,20 @@ class ParentApiController extends Controller
   public function successBulkResponse($rsp)
   {
     return $this->httpResponse()
-      ->setStatus(200)
+      ->setStatus(Response::HTTP_CREATED)
       ->setItems($rsp['data'])
       ->setMeta($rsp['meta'])
       ->toApiResponse();
   }
 
-  public function errorResponse($error, $code = "400")
+  public function errorResponse($error, $code = Response::HTTP_BAD_REQUEST)
   {
     log_emergency($error);
     return $this
       ->httpResponse()
       ->setError(true)
       ->setCode($code)
-      // ->setStatus($code)
+      ->setStatus($code)
       ->setMessage($error);
   }
 }

@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\AuthUpdateRequest;
 use App\Http\Resources\Api\AuthResource;
+use Symfony\Component\HttpFoundation\Response;
 use App\Http\Controllers\Api\v1\ParentApiController;
 
 class AuthController extends ParentApiController
@@ -37,26 +38,29 @@ class AuthController extends ParentApiController
       $this->auth_service->request = $request;
 
       $user = $this->auth_service->getByEmail($request->input("email",''));
+      $this->auth_service->request->merge(['email' => $user['email']]);
       $token = $this->auth_service->login();
+
+      if ( !$token ) return $this->errorResponse(__('messages.unauthorized'), Response::HTTP_UNAUTHORIZED);
       
-      if ( !$user ) throw_exception(__('messages.not_found', ['attribute' => 'USER']), 404);
+      if ( !$user ) throw_exception(__('messages.not_found', ['attribute' => 'USER']), Response::HTTP_NOT_FOUND);
 
-      $this->otp->setUser($user);
-      $otp = $this->otp->sendOtp();
-      $enrollmentData = [
-        "body" => "You received OTP for recovery",
-        "enrollmentText" => $otp,
-        "url" => url('/'),
-        "thankyou" => "You have 5 minutes."
-      ];
-      log_debug("enrollmentData", $enrollmentData);
-      $user->notify(new OtpNotify($enrollmentData));
+      // $this->otp->setUser($user);
+      // $otp = $this->otp->sendOtp();
+      // $enrollmentData = [
+      //   "body" => "You received OTP for recovery",
+      //   "enrollmentText" => $otp,
+      //   "url" => url('/'),
+      //   "thankyou" => "You have 5 minutes."
+      // ];
+      // log_debug("enrollmentData", $enrollmentData);
+      // $user->notify(new OtpNotify($enrollmentData));
 
-      // if (!$token) return $this->errorResponse(__('messages.unauthorized'), 401);
+      if (!$token) return $this->errorResponse(__('messages.unauthorized'), Response::HTTP_UNAUTHORIZED);
 
-      // $user = AuthResource::make($this->auth_service->auth_user(), $token);
+      $user = AuthResource::make($this->auth_service->auth_user(), $token);
 
-      return $this->response_json([], __('messages.successfully_otp'));
+      return $this->response_json($user, __('messages.successfully_otp'));
 
     } catch (\Throwable $th) {
       return $this->errorResponse($th->getMessage(), $th->getCode());
@@ -71,17 +75,17 @@ class AuthController extends ParentApiController
 
       $user = $this->auth_service->getByEmail($request->input("email",'')); //Get User FOR UPDATE
       
-      if ( !$user ) throw_exception(__('messages.not_found', ['attribute' => 'USER']), 404);
+      if ( !$user ) throw_exception(__('messages.not_found', ['attribute' => 'USER']), Response::HTTP_NOT_FOUND);
       
       $token = $this->auth_service->login();
       
       $this->otp->setUser($user);
 
-      if ( !$this->otp->getUserOtp() ) throw_exception(__("messages.expire_otp", ["attribute" => "OTP" ]), 401);
+      if ( !$this->otp->getUserOtp() ) throw_exception(__("messages.expire_otp", ["attribute" => "OTP" ]), Response::HTTP_UNAUTHORIZED);
 
-      if ( $this->otp->getUserOtp() != $request->otp ) throw_exception(__("messages.invalide", ["attribute" => "OTP" ]), 401);
+      if ( $this->otp->getUserOtp() != $request->otp ) throw_exception(__("messages.invalide", ["attribute" => "OTP" ]), Response::HTTP_UNAUTHORIZED);
 
-      if (!$token) return $this->errorResponse(__('messages.unauthorized'), 401);
+      if (!$token) return $this->errorResponse(__('messages.unauthorized'), Response::HTTP_UNAUTHORIZED);
 
       $user = AuthResource::make($this->auth_service->auth_user(), $token);
 
@@ -98,7 +102,7 @@ class AuthController extends ParentApiController
 
       $user = auth()->user();
       if ( !$user->can("create user") ){
-        throw_exception(__('messages.forbidden_action'), 401);
+        throw_exception(__('messages.forbidden_action'), Response::HTTP_UNAUTHORIZED);
       }
 
       $user_arr = [

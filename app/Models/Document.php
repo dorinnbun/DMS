@@ -12,12 +12,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Ramsey\Uuid\Nonstandard\Uuid;
 
 
-class Document extends Model implements HasMedia
+class Document extends Model
 {
-  use HasFactory, SoftDeletes, InteractsWithMedia;
+  use HasFactory, SoftDeletes;
 
   protected $fillable = [
-    "bookID",
+    "book_id",
     "madeAt",
     "formula",
     "last_name",
@@ -71,7 +71,11 @@ class Document extends Model implements HasMedia
     "special_mark1",
     "special_mark2",
     "special_mark3",
-    "number"
+    "number",
+    "form_template",
+    "dir_name",
+    "dir_name_updated",
+    "deleted_by",
   ];
 
   protected static function boot()
@@ -90,10 +94,10 @@ class Document extends Model implements HasMedia
     return static::all()->last();
   }
 
-  public function getMedias()
-  {
-    $medias = $this->morphMany(Medias::class, 'model');
-    return $medias;
-    // dd($medias->toSql(), $medias->getBindings());
-  }
+  // public function getMedias()
+  // {
+  //   $medias = $this->morphMany(Medias::class, 'model');
+  //   return $medias;
+  //   // dd($medias->toSql(), $medias->getBindings());
+  // }
 }

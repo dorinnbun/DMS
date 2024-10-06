@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Cache;
 use App\Http\Resources\Api\UserResource;
+use Symfony\Component\HttpFoundation\Response;
 use App\Http\Controllers\Api\v1\ParentApiController;
 
 class UserController extends ParentApiController
@@ -51,8 +52,15 @@ class UserController extends ParentApiController
 
   public function getUser($id)
   {
-    $docu = $this->service->getById($id);
-    return $this->response_json(UserResource::make($docu,""), __("messages.successfully_updated", ["attribute" => "user" ]));
+    try {
+      $user = auth()->user();
+      if ( $user->can("view user") ){
+        $docu = $this->service->getById($id);
+        return $this->response_json(UserResource::make($docu,""), __("messages.successfully_updated", ["attribute" => "user" ]));
+      }
+    } catch (\Throwable $th) {
+      return $this->errorResponse($th->getMessage(), $th->getCode());
+    }
   }
 
   public function update(Request $request, $id)
@@ -63,24 +71,26 @@ class UserController extends ParentApiController
       if ( $user->can("edit user") ){
         // User update
         $user = $this->service->getById($id);
-        if ( !$user ) throw_exception(__("messages.not_found", ["attribute" => "user" ]), 403);
+        if ( !$user ) throw_exception(__("messages.not_found", ["attribute" => "user" ]), Response::HTTP_UNAUTHORIZED);
 
-        $user_arr = [
-          'name'     => $request->name,
-          'email'    => $request->email,
-          'password' => Hash::make($request->password),
-          'role_id'  => $request->role ?? 3
-        ];
+        $user_arr = [];
+        if ( $request->filled('name') ) $user_arr['name'] = $request->name;
+        if ( $request->filled('email') ) $user_arr['email'] = $request->email;
+        if ( $request->filled('phone_number') ) $user_arr['phone_number'] = $request->phone_number;
+        if ( $request->filled('password') ) $user_arr['password'] = Hash::make($request->password);
+        if ( $request->filled('role') ) $user_arr['role_id'] = $request->role ?? 3;
         $user->fill($user_arr);
         $updated_user = $user->update();
-        if ( !$updated_user ) throw_exception(__("messages.not_able", ["attribute" => "user" ]), 401);
+        if ( !$updated_user ) throw_exception(__("messages.not_able", ["attribute" => "user" ]), Response::HTTP_UNAUTHORIZED);
 
         // Role update
-        $this->userRoleService->model=new Role();
-        $role_remove = $this->userRoleService->remove_role($user);
-        $role_assign = $this->userRoleService->assign_role($user,$request->all()['role']);
+        if (  $request->role ){
+          $this->userRoleService->model=new Role();
+          $role_remove = $this->userRoleService->remove_role($user);
+          $role_assign = $this->userRoleService->assign_role($user,$request->all()['role']);
+        }
         DB::commit();
-        return $this->response_json($role_assign, __("messages.successfully_updated", ["attribute" => "user" ]));
+        return $this->response_json([], __("messages.successfully_updated", ["attribute" => "user" ]));
 
       }
     } catch (\Throwable $th) {
@@ -100,7 +110,7 @@ class UserController extends ParentApiController
 
       $user = $this->service->getByEmail($request->input('email','')); //Get User FOR UPDATE
       
-      if ( $user->email != $request->email ) throw_exception(__("messages.invalide", ["attribute" => "EMAIL" ]), 401);
+      if ( $user->email != $request->email ) throw_exception(__("messages.invalide", ["attribute" => "EMAIL" ]), Response::HTTP_UNAUTHORIZED);
       
       $this->otp->setUser($user);
 
@@ -133,15 +143,15 @@ class UserController extends ParentApiController
 
       $user = $this->service->getByUuid($uuid); //Get User FOR UPDATE
 
-      if ( !$user ) throw_exception(__('messages.not_found', ['attribute' => 'USER']), 404);
+      if ( !$user ) throw_exception(__('messages.not_found', ['attribute' => 'USER']), Response::HTTP_UNAUTHORIZED);
 
       $this->otp->setUser($user);
-      if ( !$this->otp->getUserOtp() ) throw_exception(__("messages.expire_otp", ["attribute" => "OTP" ]), 401);
+      if ( !$this->otp->getUserOtp() ) throw_exception(__("messages.expire_otp", ["attribute" => "OTP" ]), Response::HTTP_UNAUTHORIZED);
 
-      if ( $this->otp->getUserOtp() != $request->otp ) throw_exception(__("messages.invalide", ["attribute" => "OTP" ]), 401);
+      if ( $this->otp->getUserOtp() != $request->otp ) throw_exception(__("messages.invalide", ["attribute" => "OTP" ]), Response::HTTP_UNAUTHORIZED);
 
       DB::commit();
-      return $this->response_json([], __("messages.successfully_updated", ["attribute" => "user" ]));
+      return $this->response_json([], __("messages.verify_otp", ["attribute" => "user" ]));
 
     } catch (\Throwable $th) {
       DB::rollBack();
@@ -156,19 +166,19 @@ class UserController extends ParentApiController
 
       $user = $this->service->getByUuid($uuid); //Get User FOR UPDATE
 
-      if ( !$user ) throw_exception(__('messages.not_found', ['attribute' => 'USER']), 404);
+      if ( !$user ) throw_exception(__('messages.not_found', ['attribute' => 'USER']), Response::HTTP_UNAUTHORIZED);
 
       $this->otp->setUser($user);
-      if ( !$this->otp->getUserOtp() ) throw_exception(__("messages.expire_otp", ["attribute" => "OTP" ]), 401);
+      if ( !$this->otp->getUserOtp() ) throw_exception(__("messages.expire_otp", ["attribute" => "OTP" ]), Response::HTTP_UNAUTHORIZED);
 
-      if ( $request->password != $request->confirm_password ) throw_exception(__("messages.invalide", ["attribute" => "CONFIRM PASSWORD" ]), 401);
+      if ( $request->password != $request->confirm_password ) throw_exception(__("messages.invalide", ["attribute" => "CONFIRM PASSWORD" ]), Response::HTTP_UNAUTHORIZED);
 
       $user_arr = [
         'password' => Hash::make($request->password),
       ];
       $user->fill($user_arr);
       $updated_user = $user->update();
-      if ( !$updated_user ) throw_exception(__("messages.not_able", ["attribute" => "user" ]), 401);
+      if ( !$updated_user ) throw_exception(__("messages.not_able", ["attribute" => "user" ]), Response::HTTP_UNAUTHORIZED);
       
       Auth::logout();
       // Cache::forget('OTP_for_' . $user->id); // Remove Cache OTP
@@ -188,7 +198,7 @@ class UserController extends ParentApiController
       if ( $user->can("delete user") ){
         DB::beginTransaction();
         $role_service = new UserRoleService();
-        $user         = $this->service->getById($id); // Get User
+        $user         = $this->service->getById((int)$id); // Get User
         $role_id      = $user->roles->pluck('pivot.role_id')[0]; // Get User Role ID
         $detach_role  = $role_service->detachRole($user, $role_id); // Detach Role From role_user table
         $user         = $this->service->delete($id); // Soft Delete user
@@ -196,7 +206,7 @@ class UserController extends ParentApiController
         return $this->response_json($user, __("messages.successfully_move_to_trash", ["attribute" => "user" ]));
       }
     } catch (\Throwable $th) {
-      // throw_exception("This user not able to performance action", 401);
+      // throw_exception("This user not able to performance action", Response::HTTP_UNAUTHORIZED);
       DB::rollBack();
       return $this->errorResponse($th->getMessage(), $th->getCode());
     }

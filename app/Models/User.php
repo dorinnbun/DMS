@@ -7,10 +7,12 @@ namespace App\Models;
 
 use App\Models\Role;
 use App\Models\Permission;
+
 use Ramsey\Uuid\Nonstandard\Uuid;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -29,6 +31,8 @@ class User extends Authenticatable implements JWTSubject
     'email',
     'password',
     'phone_number',
+    'role_id',
+    'google2fa_secret',
   ];
 
   /**
@@ -39,6 +43,7 @@ class User extends Authenticatable implements JWTSubject
   protected $hidden = [
     'password',
     'remember_token',
+    'google2fa_secret'
   ];
 
   /**
@@ -97,5 +102,21 @@ class User extends Authenticatable implements JWTSubject
     return $this->belongsToMany(Permission::class);
   }
 
+  // protected function google2faSecret(): Attribute
+  // {
+  //   return new Attribute(
+  //     get: fn($value) => decrypt($value),
+  //     set: fn($value) => encrypt($value)
+  //   );
+  // }
 
+  public function setGoogle2faSecretAttribute($value)
+  {
+    $this->attributes['google2fa_secret'] = encrypt($value);
+  }
+
+  public function getGoogle2faSecretAttribute($value)
+  {
+    return decrypt($value);
+  }
 }

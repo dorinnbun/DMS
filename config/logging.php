@@ -132,6 +132,12 @@ return [
             'level' => env('LOG_LEVEL', 'debug'),
             'permission' => 0777,
         ],
+        'queue_log' => [
+            'driver' => 'daily',
+            'path'  => storage_path('logs/queue_log/queue_log.log'),
+            'level' => env('LOG_LEVEL', 'debug'),
+            'permission' => 0777,
+        ],
     ],
 
 ];

@@ -23,13 +23,13 @@ class AuthService extends BaseService
   public function login()
   {
     $credentials = $this->request->only('email', 'password');
-    $token = Auth::attempt($credentials);
+    $token = Auth::guard("api")->attempt($credentials);
     return $token;
   }
 
   public function getByEmail($email)
   {
-    $user = $this->model->where('email', $email)->first();
+    $user = $this->model->where('email', $email)->orWhere('name', $email)->first();
     if (!$user)
       return throw_exception(__('messages.not_found', ['attribute' => 'USER']), 404);
     return $user;
@@ -45,7 +45,7 @@ class AuthService extends BaseService
 
   public function logout()
   {
-    Auth::logout();
+    Auth::guard("api")->logout();
   }
 
   public function refresh()
@@ -55,11 +55,11 @@ class AuthService extends BaseService
 
   public function auth_user()
   {
-    return Auth::user();
+    return Auth::guard("api")->user();
   }
 
   public function get_token(User $user)
   {
-    return Auth::login($user);
+    return Auth::guard("api")->login($user);
   }
 }

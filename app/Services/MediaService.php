@@ -14,7 +14,8 @@ class MediaService
   {
     $do_path = Storage::disk($this->disk)->put($do_file_dir, $file_content);
     if (!$do_path) return false;
-    return Storage::disk($this->disk)->url($do_file_dir) ?? false;
+    $url_img = Storage::disk($this->disk)->url($do_file_dir) ?? false;
+    return basename($url_img);
   }
 
   public function uploadImage($file, $id, $name)
@@ -22,7 +23,7 @@ class MediaService
     $file_content      = file_get_contents($file);
     $original_filename = $file->getClientOriginalName();
     $extension         = $file->getClientOriginalExtension();
-    $do_file_dir       = $id."_".$name."/".$original_filename;
+    $do_file_dir       = $name."/".$original_filename;
 
     log_info("img directory ==>" . $do_file_dir);
     log_info("img extension ==>" . $extension);
@@ -41,6 +42,7 @@ class MediaService
 
   public function deleteImage($file)
   {
+    // $file = 1_juju/hello_world.jpg : Storage::disk($this->disk) --> will return storage/app/public/1_juju/hello_world.jpg
     return Storage::disk($this->disk)->delete($file);
   }
 
@@ -53,17 +55,34 @@ class MediaService
     // return Storage::disk($this->disk)->deleteDirectory($dir);
   }
 
-  public function renameDirecotry($dir)
+  public function getDirectory($dir)
   {
-
     $dir_string = explode("_", $dir); // Split string via underscore Ex: file_name_tmp.jpg
+    $index      = count($dir_string)-1; // Get last element "tmp"
+    unset($dir_string[$index]); // Unset tmp
+    $newPath = implode("_", $dir_string); // Rebuild string Ex: file_name.jpg
+    return $newPath;
+  }
+
+  public function renameFileTrailing($filename)
+  {
+    $dir_string = explode("_", $filename); // Split string via underscore Ex: file_name_tmp.jpg
     $index      = count($dir_string)-1; // Get last element "tmp"
     unset($dir_string[$index]); // Unset tmp
     $newPath = file_dir(implode("_", $dir_string)); // Rebuild string Ex: file_name.jpg
 
-    $old_dir = file_dir($dir);// Old directory
+    $old_dir = file_dir($filename);// Old directory
     if (File::exists($old_dir)) {
       return File::move($old_dir, $newPath);
+    }
+  }
+
+  public function renameFile($filename, $new_filename)
+  {
+
+    $old_dir = file_dir($filename);// Old directory
+    if (File::exists($old_dir)) {
+      return File::move($old_dir, file_dir($new_filename));
     }
   }
 

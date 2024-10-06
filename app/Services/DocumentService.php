@@ -31,17 +31,21 @@ class DocumentService extends BaseService
     try {
       $attribute = array_merge(['upload_by' => (int)auth()->user()->id], $attribute);
       $created   = $this->create($attribute);
-      $name      = $created->first_name . '_' . $created->last_name;
+      $name      = $created->id."_".$created->first_name . '_' . $created->last_name;
+      
       // Create Media
       $created_media=[];
       $img_list = config("mediaKey");
       foreach ($img_list as $key => $value) {
         log_debug("media file",[$media->file($value)]);
         if ($media->file($value)) {
+          log_info("key ==>" . $key);
           $created_media[$key] = $this->media_service->uploadImage($media->file($value), $created->id, $name);
           // $created_media[$value] = $this->media->addMediaReturnUrl($media->file($value), "1234");
         }
       }
+      // Update column dir_name
+      $update_dir_name = $this->updateById($created->id, ['dir_name' => $name, 'dir_name_updated' => $name]);
 
       UploadImageJob::dispatch($created->id, $created_media);
       DB::commit();
@@ -54,30 +58,53 @@ class DocumentService extends BaseService
 
   public function updateDocMedia($id, $attribute, $media)
   {
+    
     DB::beginTransaction();
+    
     try {
+
+      $attribute = array_merge(['updated_by' => (int)auth()->user()->id], $attribute);
       $this->updateById($id, $attribute); // Find UserID & Update Attributes EXCEPT Image 
-      $doc     = $this->getById($id);
-      $name    = $id."_".$doc->first_name . '_' . $doc->last_name.'_'.$doc->updated_at->format("Y-m-d:H-i-s");
-      $url_img = $doc->identity_photo; // Get any image url. Purpose to get DIRECTORY of folder
+      
+      $doc      = $this->getById($id);
+      // generate updated_directory
+      $new_name = $this->media_service->getDirectory($doc->dir_name).'_'.$doc->updated_at->format("Y-m-d:His");
+      // Rename current directory to updated_directory
+      $updated_directory = $this->media_service->renameFile($doc->dir_name_updated, $new_name);
+      
       // Create Media
       $img_list = config("mediaKey");
+      $created_media = [];
+      $list_to_remove = [];
+      
       foreach ($img_list as $key => $value) {
         if ($media->file($value)) {
-          $created_media[$key] = $this->media_service->uploadImage($media->file($value), $doc->id, $name);
-          // $created_media[$value] = $this->media->addMediaReturnUrl($media->file($value), "1234");
+          log_info("key ==>" . $key);
+          $created_media[$key] = $this->media_service->uploadImage($media->file($value), $doc->id, $new_name);
+          $list_to_remove[] = $key;
         }
       }
+      log_debug("List to remove --> ", $list_to_remove);
+
+      $remove_names = $doc->only($list_to_remove);
+      log_debug("list colum to remove -->", $remove_names);
       // Delete Old Document folder
-      $delete_dir = getFileNameFromUrl($url_img);// Get DIRECTORY from URL. EX: storage/app/public/first_name_id/
-      $is_delete = $this->media_service->deleteDirectory(file_dir($delete_dir));// Delete DIRECTORY
+      foreach ($remove_names as $remove_value) {
+        $path = $new_name."/".$remove_value;
+        log_debug("path --> ", $path);
+        $is_delete = $this->media_service->deleteImage($path);// Delete file
+        log_debug("is_delete --> ", $is_delete);
+      }
+      // $is_delete = $this->media_service->deleteDirectory(file_dir($delete_dir));// Delete DIRECTORY
 
       UploadImageJob::dispatch($doc->id, $created_media);
+      $this->updateById($id, ['dir_name_updated' => $new_name]); // update dir_name_update
       DB::commit();
       return $doc;
-    } catch (\Throwable $th) {
-      DB::rollBack();
 
+    } catch (\Throwable $th) {
+
+      DB::rollBack();
       return $th->getMessage();
     }
   }
@@ -86,44 +113,19 @@ class DocumentService extends BaseService
   {
     $document = $this->model->where('uuid', $uuid)->first();
     if (!$document)
-      return $this->notFound();
+      throw_exception(__('messages.not_found', ['attribute' => 'document']), 401);
 
     return $document;
   }
 
   public function hardDelete($id)
   {
-    $selected = [
-      "all_left_fingers",
-      "all_right_fingers",
-      "right_thumb_print",
-      // "right_index_print",
-      // "right_middle_print",
-      // "right_ring_print",
-      // "right_pinky_print",
-      // "left_thumb_print",
-      // "left_index_print",
-      // "left_middle_print",
-      // "left_ring_print",
-      // "left_pinky_print",
-      // "front_body_photo",
-      // "right_profile_photo",
-      // "left_profile_photo",
-      // "four_left_fingers_print",
-      // "left_thumb_print01",
-      // "right_thumb_print01",
-      // "four_right_fingers_print",
-      // "left_palm_print",
-      // "right_palm_print",
-      // "special_mark1",
-      // "special_mark2",
-      // "special_mark3"
-    ];
+    $selected = config("mediaKey");
     try {
 
       DB::beginTransaction();
 
-      $image_list = $this->getOnlySoftDeleteSelectFieldById($id, $selected);
+      $image_list = $this->getOnlySoftDeleteSelectFieldById((int)$id, array_keys($selected));
 
       if ( !$image_list ) throw_exception("Record not able to delete", 401);
 
@@ -131,17 +133,18 @@ class DocumentService extends BaseService
       
       if ( $this->getOnlySoftDeleteById($id) ) throw_exception("Unable to Delete", 401);
       
-      foreach ($image_list->toArray() as $key => $value) {
-        $this->media_service->disk = "space";
-        $deleted[] = $this->media_service->deleteImage($value);
-      }
+      // foreach ($image_list->toArray() as $key => $value) {
+      //   $this->media_service->disk = "space";
+      //   $deleted[] = $this->media_service->deleteImage($value);
+      // }
 
-      if ( count($deleted) > 0 ) DB::commit();
+      // if ( count($deleted) > 0 ) DB::commit();
+      DB::commit();
       
     } catch (\Throwable $th) {
 
       DB::rollBack();
-      throw_exception($th->getMessage(), $th->getCode());
+      throw_exception($th->getMessage(), 401);
 
     }
   }

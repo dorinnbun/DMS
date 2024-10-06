@@ -26,7 +26,6 @@ class AuthRequest extends BaseRequest// FormRequest
       'email' => [
         'required',
         'string',
-        'email',
         'max:255'
       ],
       'password' => [
@@ -40,7 +39,8 @@ class AuthRequest extends BaseRequest// FormRequest
       $rules['name'] = [
         'required',
         'string',
-        'max:255'
+        'max:255',
+        'unique:users'
       ];
       $rules['email'] = [
         'required',

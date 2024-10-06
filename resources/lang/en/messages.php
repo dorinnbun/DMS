@@ -15,9 +15,11 @@ return [
   
   "forbidden_action" => "This user not able to performance action",
   "not_able"         => "Not able to update :attribute",
+  "not_able_delete"  => "Not able to delete :attribute",
   "not_found"        => ":attribute Not Found",
   "invalide"         => "Invalide :attribute",
   "expire_otp"       => "Expire :attribute",
+  "verify_otp"       => "Verified :attribute",
   "unauthorized"     => "unauthorized",
   "successfully"     => "Successfully",
   
