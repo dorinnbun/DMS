@@ -124,7 +124,10 @@
                           v-if="field.type === 'text'"
                           v-model="field.value"
                           :label="field.label"
-                          :rules="field.required !== false ? [v => !!v || 'ទិន្នន័យត្រូវបញ្ចូល'] : []"
+                          :rules="[
+                            ...(field.required !== false ? [requiredRule] : []),
+                            noSpecialCharactersRule
+                          ]"
                         ></v-text-field>
 
                         <template v-else>
@@ -156,7 +159,10 @@
                               :items="field.options"
                               :item-title="item => item.name"
                               :item-value="item => item.id"
-                              :rules="field.required !== false ? [v => !!v || 'ទិន្នន័យត្រូវបញ្ចូល'] : []"
+                              :rules="[
+                                ...(field.required !== false ? [requiredRule] : []),
+                                noSpecialCharactersRule
+                              ]"
                               @update:model-value="updateAddressSelection(field, null)"
                             ></v-select>
 
@@ -165,7 +171,10 @@
                               v-model="field.value"
                               :label="field.label"
                               :type="field.type"
-                              :rules="field.required !== false ? [v => !!v || 'ទិន្នន័យត្រូវបញ្ចូល'] : []"
+                              :rules="[
+                                ...(field.required !== false ? [requiredRule] : []),
+                                noSpecialCharactersRule
+                              ]"
                             ></v-text-field>
 
                           </v-col>
@@ -274,7 +283,10 @@
                             v-model="field.value"
                             :label="field.label"
                             :type="field.type"
-                            :rules="[v => !!v || 'ទិន្នន័យត្រូវបញ្ចូល']"
+                            :rules="[
+                              ...(field.required !== false ? [requiredRule] : []),
+                              noSpecialCharactersRule
+                            ]"
                           ></v-text-field>
                       </template>
                     </v-col>
@@ -286,7 +298,10 @@
                         <v-text-field
                           v-model="field.value"
                           :label="field.label"
-                          :rules="[v => !!v || 'ទិន្នន័យត្រូវបញ្ចូល']"
+                          :rules="[
+                            ...(field.required !== false ? [requiredRule] : []),
+                            noSpecialCharactersRule
+                          ]"
                         ></v-text-field>
                       </template>
                     </v-col>
@@ -463,6 +478,9 @@
   export default {
     data: () => ({
 
+      requiredRule: v => !!v || 'ទិន្នន័យត្រូវបញ្ចូល',
+      noSpecialCharactersRule: v => /^[a-zA-Z0-9_ \u1780-\u17FF]*$/.test(v) || 'អក្សរពិសេសមិនត្រូវបានអនុញ្ញាត',
+
       errorDialog: false,
       errorMessage: 'មានបញ្ហាបច្ចេកទេសកើតឡើង',
       successDialog: false,
@@ -514,23 +532,6 @@
           { title: 'កែដោយ', key: 'updated_by', sortable: false },
           { title: '', key: 'actions', sortable: false }, 
         ],
-      editedIndex: -1,
-      editedItem: {
-        name: '',
-        id: 0,
-        book_id: "",
-        nationality: "",
-        address: "",
-        book_id: ""
-      },
-      defaultItem: {
-        name: '',
-        id: 0,
-        nationality: "",
-        address: "",
-        book_id: ""
-      },
-
       formName: 'សលាកប័ត្រឯកកត្តជន',
       inputFields: [
         { key: "number",        label: "លេខ *",       type: "text",            value: "" },
@@ -612,10 +613,6 @@
     }),
 
     computed: {
-      formTitle () {
-        return this.editedIndex === -1 ? 'ពត័មានអ្នកប្រេីប្រាស់ថ្មី' : 'កែពត័មានអ្នកប្រេីប្រាស់'
-      },
-
       formSubmitable() {
         const isFieldValid = (field) => field?.required === false || field.value;
         
@@ -997,18 +994,10 @@
 
       close () {
         this.dialog = false
-        this.$nextTick(() => {
-          this.editedItem = Object.assign({}, this.defaultItem) //
-          this.editedIndex = -1
-        })
       },
 
       closeDelete () {
         this.dialogDelete = false
-        this.$nextTick(() => {
-          this.editedItem = Object.assign({}, this.defaultItem) //
-          this.editedIndex = -1
-        })
       },
 
       viewRecord (item) {

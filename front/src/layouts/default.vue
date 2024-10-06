@@ -45,9 +45,7 @@
   }
 
   if (!isLoggedIn.value) {
-    console.log('isLoggedIn', isLoggedIn.value);
-    
-    // router.push({ path: '/login' })
+    router.push({ path: '/login' })
   }
 
   const displayAsideMenu = computed(() => {
