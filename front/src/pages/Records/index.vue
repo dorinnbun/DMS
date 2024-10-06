@@ -349,11 +349,11 @@
                       <a v-else :href="formTemplate.value" target="_blank">{{ formTemplate.label }}</a>
                     </template>
                     <v-file-input 
-                      v-model="formTemplate.value" 
-                      :label="formTemplate.label" 
-                      accept=".jpg,.png,.pdf,.jpeg"
-                      @change="handleFileChange($event, 'formTemplate')"
-                    ></v-file-input>
+                        v-model="formTemplate.value" 
+                        :label="formTemplate.label" 
+                        accept=".jpg,.png,.pdf,.jpeg"
+                        @change="handleFileChange($event, field)"
+                      ></v-file-input>
                     </v-col>
                     
                   </v-row>
