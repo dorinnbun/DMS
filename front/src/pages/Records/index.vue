@@ -167,6 +167,17 @@
                             ></v-select>
 
                             <v-text-field
+                              v-else-if="field.type === 'date'"
+                              v-model="field.value"
+                              :label="field.label"
+                              :type="field.type"
+                              :rules="[
+                                ...(field.required !== false ? [requiredRule] : [])
+                              ]"
+                            ></v-text-field>
+                            
+
+                            <v-text-field
                               v-else
                               v-model="field.value"
                               :label="field.label"
@@ -479,7 +490,7 @@
     data: () => ({
 
       requiredRule: v => !!v || 'ទិន្នន័យត្រូវបញ្ចូល',
-      noSpecialCharactersRule: v => /^[a-zA-Z0-9_ \u1780-\u17FF]*$/.test(v) || 'អក្សរពិសេសមិនត្រូវបានអនុញ្ញាត',
+      noSpecialCharactersRule: v => /^[a-zA-Z0-9._ \u1780-\u17FF]*$/.test(v) || 'អក្សរពិសេសមិនត្រូវបានអនុញ្ញាត',
 
       errorDialog: false,
       errorMessage: 'មានបញ្ហាបច្ចេកទេសកើតឡើង',
