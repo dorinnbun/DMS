@@ -48,16 +48,17 @@
                   <v-row>
                     <template v-for="key in isEditMode ? editObject : createObject">
                       <v-col cols="12" md="4" sm="6">
+                        <label for="email" class="mb-2">{{ key.label }}</label>
                         <v-text-field
                           v-if="key.type === 'text'"
                           v-model="key.value"
-                          :label="key.label"
                           persistent-hint="false"
                           :rules="[
                             v => !!v || 'ទិន្នន័យត្រូវបញ្ចូល', 
                             key.key === 'email' ? v => /.+@.+\..+/.test(v) || 'ទិន្នន័យអ៊ីម៉ែលមិនត្រឹមត្រូវ' : null,
                             key.key === 'phone_number' ? v => /^(\+855|0)\d{8,9}$/.test(v) || 'ទិន្នន័យលេខទូរស័ព្ទមិនត្រឹមត្រូវ' : null
                           ]"
+                          placeholder=" "
                         ></v-text-field>
 
                         <v-text-field
@@ -65,7 +66,6 @@
                           v-model="key.value"
                           :type="showPassword ? 'text' : 'password'"
                           :name="key.label"
-                          :label="key.label"
                           :rules="[v => !!v || 'ទិន្នន័យត្រូវបញ្ចូល', v => /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,}$/.test(v) || 'ត្រូវតែមានយ៉ាងហោចណាស់8តួ, អក្សរពិសេស1តួ និង លេខ1តួ']"
                           @click:append-inner="togglePasswordVisibility"
                         >
@@ -79,7 +79,6 @@
                         <v-select
                           v-else-if="key.type === 'select'"
                           v-model="key.value"
-                          :label="key.label"
                           :items="key.items"
                           :item-title="item => item.name"
                           :item-value="item => item.id"

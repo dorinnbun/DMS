@@ -119,11 +119,10 @@
                     <!-- form detail -->
                     <v-col cols="12" sm="2">
                       <template v-for="field in inputFields">
-
+                        <label class="mb-2">{{ field.label }}<span style="color: red" v-if="field.required"> *</span></label>
                         <v-text-field
                           v-if="field.type === 'text'"
                           v-model="field.value"
-                          :label="field.label"
                           :rules="[
                             ...(field.required !== false ? [requiredRule] : []),
                             noSpecialCharactersRule
@@ -134,7 +133,6 @@
                           <img v-if="isEditingMode && field.value && typeof field.value === 'string'" :src="field.value" alt="ស្នាមម្រាមដៃ" style="width: 100px; height: auto;">
                           <v-file-input
                             v-model="field.value"
-                            :label="field.label" 
                             :rules="field.required !== false ? [v => !!v || 'ទិន្នន័យត្រូវបញ្ចូល'] : []"
                             accept=".jpg,.jpeg,.pdf,.png,.gif"
                             @change="handleFileChange($event, field)"
@@ -152,10 +150,10 @@
                         <template v-for="field in personalInfoInputFields.slice(0, 21)" >
                           <v-col cols="12" :sm="field.col" :offset-md="field.offset || 0">
                     
+                            <label class="mb-2">{{ field.label }}<span style="color: red" v-if="field.required"> *</span></label>
                             <v-select
                               v-if="field.type === 'select'"
                               v-model="field.value"
-                              :label="field.label"
                               :items="field.options"
                               :item-title="item => item.name"
                               :item-value="item => item.id"
@@ -169,7 +167,6 @@
                             <v-text-field
                               v-else-if="field.type === 'date'"
                               v-model="field.value"
-                              :label="field.label"
                               :type="field.type"
                               :rules="[
                                 ...(field.required !== false ? [requiredRule] : [])
@@ -180,7 +177,6 @@
                             <v-text-field
                               v-else
                               v-model="field.value"
-                              :label="field.label"
                               :type="field.type"
                               :rules="[
                                 ...(field.required !== false ? [requiredRule] : []),
@@ -195,25 +191,25 @@
 
 
                     <!-- page 1 files input -->
-                      <v-col class="column-5" cols="12" sm="6" v-for="field in fingerPrintsFileInput">
-                        <img v-if="isEditingMode && field.value && typeof field.value === 'string'" :src="field.value" alt="ស្នាមម្រាមដៃ" style="width: 100px; height: 100px;">
-                        <v-file-input 
-                          v-model="field.value" 
-                          :label="field.label" 
-                          accept=".jpg,.png,.pdf,.jpeg"
-                          :rules="field.required !== false ? [v => !!v || 'ទិន្នន័យត្រូវបញ្ចូល'] : []"
-                          @change="handleFileChange($event, field)"
-                        ></v-file-input>
-                      </v-col>
+                    <v-col class="column-5" cols="12" sm="6" v-for="field in fingerPrintsFileInput">
+                      <label class="mb-2">{{ field.label }}<span style="color: red" v-if="field.required"> *</span></label>
+                      <img v-if="isEditingMode && field.value && typeof field.value === 'string'" :src="field.value" alt="ស្នាមម្រាមដៃ" style="width: 100px; height: 100px;">
+                      <v-file-input 
+                        v-model="field.value" 
+                        accept=".jpg,.png,.pdf,.jpeg"
+                        :rules="field.required !== false ? [v => !!v || 'ទិន្នន័យត្រូវបញ្ចូល'] : []"
+                        @change="handleFileChange($event, field)"
+                      ></v-file-input>
+                    </v-col>
 
 
                     <!-- Full fingers prints file input -->
                     <!-- to follow the original template ==> use statically -->
                     <v-col cols="12" sm="4">
+                      <label class="mb-2">{{ fullFingersPrintFileInput[0].label }}<span style="color: red" v-if="fullFingersPrintFileInput[0].required"> *</span></label>
                       <img v-if="isEditingMode && fullFingersPrintFileInput[0].value && typeof fullFingersPrintFileInput[0].value === 'string'" :src="fullFingersPrintFileInput[0].value" alt="ស្នាមម្រាមដៃ" style="width: 100px; height: 100px;">
                       <v-file-input 
                         v-model="fullFingersPrintFileInput[0].value" 
-                        :label="fullFingersPrintFileInput[0].label" 
                         accept=".jpg,.png,.pdf,.jpeg"
                         :rules="fullFingersPrintFileInput[0].required !== false ? [v => !!v || 'ទិន្នន័យត្រូវបញ្ចូល'] : []"
                         @change="handleFileChange($event, field)"
@@ -227,24 +223,23 @@
                       <v-row>
 
                         <v-col cols="12" sm="6">
+                          <label class="mb-2">{{ fullFingersPrintFileInput[1].label }}<span style="color: red" v-if="fullFingersPrintFileInput[1].required"> *</span></label>
                           <img 
                             v-if="isEditingMode && fullFingersPrintFileInput[1].value && typeof fullFingersPrintFileInput[1].value === 'string'" 
                             :src="fullFingersPrintFileInput[1].value" 
                             alt="ស្នាមម្រាមដៃ" style="width: 100px; height: 100px;"
                           >
                           <v-file-input 
-                            v-model="fullFingersPrintFileInput[1].value" 
-                            :label="fullFingersPrintFileInput[1].label" 
                             accept=".jpg,.png,.pdf,.jpeg"
                             :rules="[v => !!v || 'ឯកសារត្រូវបញ្ចូល']"
                           ></v-file-input>
                         </v-col>
 
                         <v-col cols="12" sm="6">
+                          <label class="mb-2">{{ fullFingersPrintFileInput[2].label }}<span style="color: red" v-if="fullFingersPrintFileInput[2].required"> *</span></label>
                           <img v-if="isEditingMode && fullFingersPrintFileInput[2].value && typeof fullFingersPrintFileInput[2].value === 'string'" :src="fullFingersPrintFileInput[2].value" alt="ស្នាមម្រាមដៃ" style="width: 100px; height: 100px;">
                           <v-file-input 
                             v-model="fullFingersPrintFileInput[2].value" 
-                            :label="fullFingersPrintFileInput[2].label" 
                             accept=".jpg,.png,.pdf,.jpeg"
                             :rules="[v => !!v || 'ឯកសារត្រូវបញ្ចូល']"
                             @change="handleFileChange($event, field)"
@@ -255,12 +250,12 @@
                     </v-col>
 
                     <v-col cols="12" sm="4">
+                      <label class="mb-2">{{ fullFingersPrintFileInput[3].label }}<span style="color: red" v-if="fullFingersPrintFileInput[3].required"> *</span></label>
                       <img 
                         v-if="isEditingMode && fullFingersPrintFileInput[3].value && typeof fullFingersPrintFileInput[3].value === 'string'" :src="fullFingersPrintFileInput[3].value" alt="ស្នាមម្រាមដៃ" style="width: 100px; height: 100px;"
                       >
                       <v-file-input 
                         v-model="fullFingersPrintFileInput[3].value" 
-                        :label="fullFingersPrintFileInput[3].label" 
                         accept=".jpg,.png,.pdf,.jpeg"
                         :rules="[v => !!v || 'ឯកសារត្រូវបញ្ចូល']"
                         @change="handleFileChange($event, field)"
@@ -271,10 +266,10 @@
                     <!-- Full body pictures -->
                     <template v-for="field in fullBodyPhotoFileInput">
                       <v-col cols="12" sm="4">
+                        <label class="mb-2">{{ field.label }}<span style="color: red" v-if="field.required"> *</span></label>
                         <img v-if="isEditingMode && field.value && typeof field.value === 'string'" :src="field.value" alt="full profile" style="width: 100px; height: 100px;">
                         <v-file-input 
                           v-model="field.value" 
-                          :label="field.label" 
                           accept=".jpg,.png,.pdf,.jpeg"
                           :rules="[v => !!v || 'ឯកសារត្រូវបញ្ចូល']"
                           @change="handleFileChange($event, field)"
@@ -290,9 +285,9 @@
                     <!-- parents info -->
                     <v-col cols="12" sm="6">
                       <template v-for="field in personalInfoInputFields.slice(21, 25)">
+                        <label class="mb-2">{{ field.label }}<span style="color: red" v-if="field.required"> *</span></label>
                           <v-text-field
                             v-model="field.value"
-                            :label="field.label"
                             :type="field.type"
                             :rules="[
                               ...(field.required !== false ? [requiredRule] : []),
@@ -306,9 +301,9 @@
                     <!-- officers in charge -->
                     <v-col cols="12" sm="6">
                       <template v-for="field in personalInfoInputFields.slice(25, 30)" >
+                        <label class="mb-2">{{ field.label }}<span style="color: red" v-if="field.required"> *</span></label>
                         <v-text-field
                           v-model="field.value"
-                          :label="field.label"
                           :rules="[
                             ...(field.required !== false ? [requiredRule] : []),
                             noSpecialCharactersRule
@@ -318,10 +313,10 @@
                     </v-col>
 
                     <v-col cols="12" sm="6" v-for="field in palmPrintFileInput">
+                      <label class="mb-2">{{ field.label }}<span style="color: red" v-if="field.required"> *</span></label>
                       <img v-if="isEditingMode && field.value && typeof field.value === 'string'" :src="field.value" alt="officers" style="width: 100px; height: 100px;">
                       <v-file-input 
                         v-model="field.value" 
-                        :label="field.label" 
                         accept=".jpg,.png,.pdf,.jpeg"
                         :rules="[v => !!v || 'ឯកសារត្រូវបញ្ចូល']"
                         @change="handleFileChange($event, field)"
@@ -338,9 +333,9 @@
                       class="special-mark-item"
                     >
                     <img v-if="isEditingMode && field.value && typeof field.value === 'string'" :src="field.value" alt="special mark" style="width: 100px; height: 100px;">
+                      <label class="mb-2">{{ field.label }}<span style="color: red" v-if="field.required"> *</span></label>
                       <v-file-input 
                         v-model="field.value" 
-                        :label="field.label" 
                         accept=".jpg,.png,.pdf,.jpeg"
                         :rules="field.required !== false ? [v => !!v || 'ទិន្នន័យត្រូវបញ្ចូល'] : []"
                         @change="handleFileChange($event, field)"
@@ -359,12 +354,12 @@
                       <img v-if="isImage(formTemplate.value) || isGif(formTemplate.value)" :src="formTemplate.value" alt="form scan" style="width: 100px; height: 100px;">
                       <a v-else :href="formTemplate.value" target="_blank">{{ formTemplate.label }}</a>
                     </template>
+                    <label class="mb-2">{{ formTemplate.label }}<span style="color: red" v-if="formTemplate.required"> *</span></label>
                     <v-file-input 
-                        v-model="formTemplate.value" 
-                        :label="formTemplate.label" 
-                        accept=".jpg,.png,.pdf,.jpeg"
-                        @change="handleFileChange($event, field)"
-                      ></v-file-input>
+                      v-model="formTemplate.value" 
+                      accept=".jpg,.png,.pdf,.jpeg"
+                      @change="handleFileChange($event, field)"
+                    ></v-file-input>
                     </v-col>
                     
                   </v-row>
@@ -545,81 +540,81 @@
         ],
       formName: 'សលាកប័ត្រឯកកត្តជន',
       inputFields: [
-        { key: "number",        label: "លេខ *",       type: "text",            value: "" },
-        { key: "identityPhoto", label: "រូបថត ៤x៦ *",   name: "identity_photo", type: "file",  value: "" },
-        { key: "book_id",       label: "លេខសៀវភៅ *",  name: "book_id",        type: "text",  value: "" },
-        { key: "madeAt",        label: "ធ្វេីនៅ *",       type: "text",           value: "" }
+        { key: "number",        label: "លេខ",       type: "text",            value: "", required: false },
+        { key: "identityPhoto", label: "រូបថត ៤x៦",   name: "identity_photo", type: "file",  value: "", required: false },
+        { key: "book_id",       label: "លេខសៀវភៅ",  name: "book_id",        type: "text",  value: "", required: false },
+        { key: "madeAt",        label: "ធ្វេីនៅ",       type: "text",           value: "", required: false }
       ],
 
       personalInfoInputFields: [
-        { key: "formula",                     label: "រូបមន្ត *",              type: "text",   value: "", col: 6,  offset: 6 },
-        { key: "last_name",                   label: "គោត្តនាម *",            type: "text",   value: "", col: 4 },
-        { key: "first_name",                  label: "នាម *",               type: "text",   value: "", col: 4 },
-        { key: "nickname",                    label: "ឈ្មោះហៅក្រៅ *",        type: "text",   value: "", col: 4 },
-        { key: "dob",                         label: "ថ្ងៃខែឆ្នាំកំណេីត *",        type: "date",   value: "", col: 12 },
-        { key: "pob_province",                label: "ខេត្ត/ក្រុងកំណេីត *",       type: "select", value: "", col: 4, options: [] },
-        { key: "pob_district",                label: "ស្រុក/ខណ្ឌកំណេីត *",      type: "select", value: "", col: 4, options: [] },
-        { key: "pob_commune",                 label: "ភូមិ/សង្កាត់កំណេីត *",      type: "select", value: "", col: 4, options: [] },
-        { key: "ethnicity",                   label: "ជនជាតិ *",              type: "text",   value: "", col: 4 },
-        { key: "nationality",                 label: "សញ្ជាតិ *",              type: "text",   value: "", col: 4 },
-        { key: "religion",                    label: "សាសនា *",             type: "text",   value: "", col: 4 },
-        { key: "previous_occupation",         label: "មុខរបរធ្លាប់ធ្វេីពីមុន *",       type: "text",   value: "", col: 6 },
-        { key: "occupation",                  label: "មុខរបរបច្ចុប្បន្ន *",          type: "text",   value: "", col: 6 },
-        { key: "current_address",             label: "អាស័យដ្ឋានបច្ចុប្បន្ន *",       type: "text",   value: "", col: 12 },
-        { key: "province",                    label: "ខេត្ត/ក្រុង *",            type: "select", value: "",  col: 4, options: [] },
-        { key: "district",                    label: "ស្រុក/ខណ្ឌ *",           type: "select", value: "",  col: 4, options: [] },
-        { key: "commune",                     label: "ភូមិ/សង្កាត់ *",           type: "select", value: "",  col: 4, options: []},
-        { key: "identity",                    label: "ភិនភាគ *",              type: "text",   value: "", col: 10 },
-        { key: "height",                      label: "កម្ពស់ (ម៉ែត្រ) *",        type: "number", value: "", col: 2 },
+        { key: "formula",                     label: "រូបមន្ត",              type: "text",   value: "", col: 6,  offset: 6, required: false },
+        { key: "last_name",                   label: "គោត្តនាម",            type: "text",   value: "", col: 4 , required: true },
+        { key: "first_name",                  label: "នាម",               type: "text",   value: "", col: 4 , required: true },
+        { key: "nickname",                    label: "ឈ្មោះហៅក្រៅ",        type: "text",   value: "", col: 4, required: false},
+        { key: "dob",                         label: "ថ្ងៃខែឆ្នាំកំណេីត",        type: "date",   value: "", col: 12 , required: true },
+        { key: "pob_province",                label: "ខេត្ត/ក្រុងកំណេីត",       type: "select", value: "", col: 4, options: [], required: false },
+        { key: "pob_district",                label: "ស្រុក/ខណ្ឌកំណេីត",      type: "select", value: "", col: 4, options: [], required: false },
+        { key: "pob_commune",                 label: "ភូមិ/សង្កាត់កំណេីត",      type: "select", value: "", col: 4, options: [], required: false },
+        { key: "ethnicity",                   label: "ជនជាតិ",              type: "text",   value: "", col: 4, required: false },
+        { key: "nationality",                 label: "សញ្ជាតិ",              type: "text",   value: "", col: 4, required: false },
+        { key: "religion",                    label: "សាសនា",             type: "text",   value: "", col: 4, required: false },
+        { key: "previous_occupation",         label: "មុខរបរធ្លាប់ធ្វេីពីមុន",       type: "text",   value: "", col: 6, required: false },
+        { key: "occupation",                  label: "មុខរបរបច្ចុប្បន្ន",          type: "text",   value: "", col: 6, required: false },
+        { key: "current_address",             label: "អាស័យដ្ឋានបច្ចុប្បន្ន",       type: "text",   value: "", col: 12, required: false },
+        { key: "province",                    label: "ខេត្ត/ក្រុង",            type: "select", value: "",  col: 4, options: [], required: false },
+        { key: "district",                    label: "ស្រុក/ខណ្ឌ",           type: "select", value: "",  col: 4, options: [], required: false },
+        { key: "commune",                     label: "ភូមិ/សង្កាត់",           type: "select", value: "",  col: 4, options: [], required: false },
+        { key: "identity",                    label: "ភិនភាគ",              type: "text",   value: "", col: 10, required: false },
+        { key: "height",                      label: "កម្ពស់ (ម៉ែត្រ)",        type: "number", value: "", col: 2, required: false },
         { key: "spouse",                      label: "ប្តី ឬ ប្រពន្ធ (បេីមាន)",     type: "text",   value: "", col: 6, required: false },
         { key: "spouse_address",              label: "នៅ (បេីមាន)",          type: "text",   value: "", col: 6, required: false },
-        { key: "father_name",                 label: "ឪពុកឈ្មោះ *",           type: "text",   value: "", col: 12 },
-        { key: "father_address",              label: "នៅ *",                type: "text",   value: "", col: 12 },
-        { key: "mother_name",                 label: "ម្តាយឈ្មោះ *",           type: "text",   value: "", col: 12 },
-        { key: "mother_address",              label: "នៅ *",                type: "text",   value: "", col: 12 },
-        { key: "private_certificate_officer", label: "មន្ត្រីធ្វេីឯកសារ *",         type: "text",   value: "", col: 12 },
-        { key: "supervision_officer",         label: "មន្ត្រីបែងចែកត្រួតពិនិត្យ *",   type: "text",   value: "", col: 12 },
-        { key: "scheduling_research_officer", label: "មន្ត្រីស្រាវជ្រាវ រៀបតារាង *", type: "text",   value: "", col: 12 }
+        { key: "father_name",                 label: "ឪពុកឈ្មោះ",           type: "text",   value: "", col: 12, required: false },
+        { key: "father_address",              label: "នៅ",                type: "text",   value: "", col: 12, required: false },
+        { key: "mother_name",                 label: "ម្តាយឈ្មោះ",           type: "text",   value: "", col: 12, required: false },
+        { key: "mother_address",              label: "នៅ",                type: "text",   value: "", col: 12, required: false },
+        { key: "private_certificate_officer", label: "មន្ត្រីធ្វេីឯកសារ",         type: "text",   value: "", col: 12, required: false },
+        { key: "supervision_officer",         label: "មន្ត្រីបែងចែកត្រួតពិនិត្យ",   type: "text",   value: "", col: 12, required: false },
+        { key: "scheduling_research_officer", label: "មន្ត្រីស្រាវជ្រាវ រៀបតារាង", type: "text",   value: "", col: 12, required: false }
       ],
 
-        fingerPrintsFileInput: [
-          { key: "leftThumbPrint",  label : "មេដៃឆ្វេង *",      type  : "file", value: "", name: "left_thumb_print" },
-          { key: "leftIndexPrint",  label : "ចង្អុលដៃឆ្វេង *",    type: "file",   value: "", name: "left_index_print" },
-          { key: "leftMiddlePrint", label : "ដៃកណ្តាលឆ្វេង *",  type  : "file", value: "", name: "left_middle_print" },
-          { key: "leftRingPrint",   label : "នាងដៃឆ្វេង *",     type  : "file", value: "", name: "left_ring_print" },
-          { key: "leftPinkyPrint",  label : "កូនដៃឆ្វេង *",      type : "file", value: "", name: "left_pinky_print" },
-          { key: "rightThumbPrint",  label: "មេដៃស្តាំ *",      type  : "file", value: "", name: "right_thumb_print" },
-          { key: "rightIndexPrint",  label: "ចង្អុលដៃស្តាំ *",    type: "file",   value: "", name: "right_index_print" },
-          { key: "rightMiddlePrint", label: "ដៃកណ្តាលស្តាំ *",  type  : "file", value: "", name: "right_middle_print" },
-          { key: "rightRingPrint",   label: "នាងដៃស្តាំ *",     type  : "file", value: "", name: "right_ring_print" },
-          { key: "rightPinkyPrint",  label: "កូនដៃស្តាំ *",     type : "file",   value: "", name: "right_pinky_print" },
+      fingerPrintsFileInput: [
+        { key: "leftThumbPrint",  label : "មេដៃឆ្វេង",      type  : "file", value: "", name: "left_thumb_print", required: false },
+        { key: "leftIndexPrint",  label : "ចង្អុលដៃឆ្វេង",    type: "file",   value: "", name: "left_index_print", required: false },
+        { key: "leftMiddlePrint", label : "ដៃកណ្តាលឆ្វេង",  type  : "file", value: "", name: "left_middle_print", required: false },
+        { key: "leftRingPrint",   label : "នាងដៃឆ្វេង",     type  : "file", value: "", name: "left_ring_print", required: false },
+        { key: "leftPinkyPrint",  label : "កូនដៃឆ្វេង",      type : "file", value: "", name: "left_pinky_print", required: false },
+        { key: "rightThumbPrint",  label: "មេដៃស្តាំ",      type  : "file", value: "", name: "right_thumb_print", required: false },
+        { key: "rightIndexPrint",  label: "ចង្អុលដៃស្តាំ",    type: "file",   value: "", name: "right_index_print", required: false },
+        { key: "rightMiddlePrint", label: "ដៃកណ្តាលស្តាំ",  type  : "file", value: "", name: "right_middle_print", required: false },
+        { key: "rightRingPrint",   label: "នាងដៃស្តាំ",     type  : "file", value: "", name: "right_ring_print", required: false },
+        { key: "rightPinkyPrint",  label: "កូនដៃស្តាំ",     type : "file",   value: "", name: "right_pinky_print", required: false },
+      ],
+
+        fullFingersPrintFileInput: [
+          { key: "fourLeftFingersPrint",  label: "ផ្តិតម្រាមដៃឆ្វេងទាំងបួន", type: "file", value: "", name: "four_left_fingers_print", required: false  },
+          { key: "leftThumbPrint01",      label: "មេដៃឆ្វេង",         type: "file", value: "", name: "left_thumb_print01", required: false       },
+          { key: "rightThumbPrint01",     label: "មេដៃស្តាំ",          type: "file", value: "", name: "right_thumb_print01", required: false      },
+          { key: "fourRightFingersPrint", label: "ផ្តិតម្រាមដៃស្តាំទាំងបួន",  type: "file", value: "", name: "four_right_fingers_print", required: false },
         ],
 
-          fullFingersPrintFileInput: [
-            { key: "fourLeftFingersPrint",  label: "ផ្តិតម្រាមដៃឆ្វេងទាំងបួន *", type: "file", value: "", name: "four_left_fingers_print"  },
-            { key: "leftThumbPrint01",      label: "មេដៃឆ្វេង *",         type: "file", value: "", name: "left_thumb_print01"       },
-            { key: "rightThumbPrint01",     label: "មេដៃស្តាំ *",          type: "file", value: "", name: "right_thumb_print01"      },
-            { key: "fourRightFingersPrint", label: "ផ្តិតម្រាមដៃស្តាំទាំងបួន *",  type: "file", value: "", name: "four_right_fingers_print" },
-          ],
-
-          fullBodyPhotoFileInput: [
-            { key: "frontBodyPhoto",    label: "រូបមួយជំហរ *",   type: "file", value: "", name: "front_body_photo" },
-            { key: "rightProfilePhoto", label: "រូបចំហៀងស្តាំ *",  type: "file", value: "", name: "right_profile_photo" },
-            { key: "leftProfilePhoto",  label: "រូបចំហៀងឆ្វេង *",  type: "file", value: "", name: "left_profile_photo" },
-          ],
-
-          palmPrintFileInput: [
-            { key: "leftPalmPrint",   label: "បាតដៃឆ្វេង *",  type: "file", value: "", name: "left_palm_print" },
-            { key: "rightPalmPrint",  label: "បាតដៃស្តាំ *",  type: "file", value: "", name: "right_palm_print" },
-          ],
-
-          specialMark: [
-            { key: "specialMark1", label: "ស្លាកសញ្ញាពិសេស *", type: "file", value: "", name: "special_mark1" },
-            { key: "specialMark2", label: "ស្លាកសញ្ញាពិសេស (បេីមាន)", type: "file", value: "", name: "special_mark2", required: false },
-            { key: "specialMark3", label: "ស្លាកសញ្ញាពិសេស (បេីមាន)", type: "file", value: "", name: "special_mark3", required: false },
+        fullBodyPhotoFileInput: [
+          { key: "frontBodyPhoto",    label: "រូបមួយជំហរ",   type: "file", value: "", name: "front_body_photo", required: false },
+          { key: "rightProfilePhoto", label: "រូបចំហៀងស្តាំ",  type: "file", value: "", name: "right_profile_photo", required: false },
+          { key: "leftProfilePhoto",  label: "រូបចំហៀងឆ្វេង",  type: "file", value: "", name: "left_profile_photo", required: false },
         ],
 
-        formTemplate: { key: "formTemplate", label: 'រូបភាពឯកសារ (បេីមាន)', type: 'file', value: "", name: "form_template" },
+        palmPrintFileInput: [
+          { key: "leftPalmPrint",   label: "បាតដៃឆ្វេង",  type: "file", value: "", name: "left_palm_print", required: false },
+          { key: "rightPalmPrint",  label: "បាតដៃស្តាំ",  type: "file", value: "", name: "right_palm_print", required: false },
+        ],
+
+        specialMark: [
+          { key: "specialMark1", label: "ស្លាកសញ្ញាពិសេស", type: "file", value: "", name: "special_mark1", required: false },
+          { key: "specialMark2", label: "ស្លាកសញ្ញាពិសេស (បេីមាន)", type: "file", value: "", name: "special_mark2", required: false },
+          { key: "specialMark3", label: "ស្លាកសញ្ញាពិសេស (បេីមាន)", type: "file", value: "", name: "special_mark3", required: false },
+      ],
+
+      formTemplate: { key: "formTemplate", label: 'រូបភាពឯកសារ', type: 'file', value: "", name: "form_template", required: true }
 
     }),
 
@@ -663,6 +658,9 @@
     watch: {
       dialog (val) {
         val || this.close()
+        if (!val) {
+          this.resetFieldValue()
+        }
       },
       dialogDelete (val) {
         val || this.closeDelete()

@@ -7,21 +7,22 @@
       v-model="form"
       @submit.prevent="login"
     >
+      <label for="email" class="mb-2">អ៊ីមែល ឬ ឈ្មោះអ្នកប្រើប្រាស់</label>
       <v-text-field
+        id="email"
         v-model="email"
         :readonly="loading"
         :rules="[required]"
         class="mb-4"
-        label="អ៊ីមែល ឬ ឈ្មោះអ្នកប្រើប្រាស់"
       ></v-text-field>
 
+      <label for="password" class="mb-2">ពាក្យសម្ងាត់</label>
       <v-text-field
+        id="password"
         v-model="password"
         :readonly="loading"
         :rules="[required]"
         type="password"
-        label="ពាក្យសម្ងាត់"
-        placeholder="បញ្ចូលពាក្យសម្ងាត់របស់អ្នក"
       ></v-text-field>
 
       <v-alert
