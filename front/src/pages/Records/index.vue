@@ -405,22 +405,26 @@
       <template v-slot:item="{ item, index }">
         <tr @click="viewRecord(item)" style="cursor: pointer;">
 
-          <td v-for="header in headers" :key="index">
+            <td v-for="header in headers" :key="index">
             <template v-if="header.key === 'full_name'">
               {{ item.last_name + ' ' + item.first_name }}
             </template>
 
-            <template v-if="['created_by', 'updated_by'].includes(header.key)">
+            <template v-else-if="header.key === 'id'">
+              {{ (currentParams.page - 1) * itemsPerPage + index + 1 }}
+            </template>
+
+            <template v-else-if="['created_by', 'updated_by'].includes(header.key)">
               <div v-if="item [ header.key ].name && item [ header.key ].role">
-                {{ item [ header.key ].name }} ({{ item [ header.key ].role }})
+              {{ item [ header.key ].name }} ({{ item [ header.key ].role }})
               </div>
               <p v-else>គ្មាន</p>
             </template>
             
             <template v-else>
-              {{ item [header.key] }}
+              {{ item [ header.key ] }}
             </template>
-          </td>
+            </td>
 
           <td>
             <v-icon small color="blue" @click.stop="editItem(item)" v-if="userRole !== 'user'">mdi-pencil</v-icon>
