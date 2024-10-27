@@ -105,12 +105,20 @@
             </template>
 
             <v-card>
-              <v-card-title class="form-title">
+              <div class="form-title">
+                <div style="flex: 1"></div>
+
                 <v-text-field
                   v-model="formName"
-                  style="text-align: center; width: 250px; font-size: 20px; font-weight: bold; margin: auto;"
+                  style="text-align: center; width: 250px !important; font-size: 20px; font-weight: bold;"
                 ></v-text-field>
-              </v-card-title>
+
+                <div style="flex: 1; text-align: right;">
+                  <v-btn icon @click="close" style="color: red; font-weight: bold;">
+                    <v-icon>mdi-close</v-icon>
+                  </v-btn>
+                </div>
+              </div>
   
               <v-card-text>
                 <v-container style="margin: 0; max-width: 100% !important;">
