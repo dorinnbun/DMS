@@ -9,3 +9,9 @@
 .v-list-item__content a {
   color: $white;
 }
+
+
+.active-menu-item {
+  font-weight: bold;
+  background-color: rgb(75, 74, 74) !important;
+}

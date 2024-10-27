@@ -15,16 +15,28 @@
 
     <v-divider></v-divider>
     
+
     <v-list color="transparent">
-      <v-list-item prepend-icon="mdi-account-multiple" v-if="user.role !== 'user'">
+      <v-list-item
+        prepend-icon="mdi-account-multiple"
+        v-if="user.role !== 'user'"
+        :class="{ 'active-menu-item': $route.path === '/' }"
+      >
         <RouterLink to="/">អ្នកប្រេីប្រាស់</RouterLink>
       </v-list-item>
 
-      <v-list-item prepend-icon="mdi-text-box-multiple">
+      <v-list-item
+        prepend-icon="mdi-text-box-multiple"
+        :class="{ 'active-menu-item': $route.path === '/records' }"
+      >
         <RouterLink to="/records">ឯកសារ</RouterLink>
       </v-list-item>
 
-      <v-list-item prepend-icon="mdi-delete-outline" v-if="user.role !== 'user'">
+      <v-list-item
+        prepend-icon="mdi-delete-outline"
+        v-if="user.role !== 'user'"
+        :class="{ 'active-menu-item': $route.path === '/trashbin' }"
+      >
         <RouterLink to="/trashbin">ធុងសម្រាម</RouterLink>
       </v-list-item>
     </v-list>
