@@ -3,6 +3,7 @@
   <v-navigation-drawer
     theme="dark"
     permanent
+    width="216"
   >
 
     <template v-slot:prepend>

@@ -350,6 +350,7 @@
                       ></v-file-input>
                     </v-col>
 
+                    <v-divider></v-divider>
 
                     <v-col
                       :key="formTemplate.key"
@@ -357,17 +358,18 @@
                       sm="3"
                       class="special-mark-item"
                     >
-                    <!-- form template -->
-                    <template v-if="isEditingMode && formTemplate.value && typeof formTemplate.value === 'string'">
-                      <img v-if="isImage(formTemplate.value) || isGif(formTemplate.value)" :src="formTemplate.value" alt="form scan" style="width: 100px; height: 100px;">
-                      <a v-else :href="formTemplate.value" target="_blank">{{ formTemplate.label }}</a>
-                    </template>
-                    <label class="mb-2">{{ formTemplate.label }}<span style="color: red" v-if="formTemplate.required"> *</span></label>
-                    <v-file-input 
-                      v-model="formTemplate.value" 
-                      accept=".jpg,.png,.pdf,.jpeg"
-                      @change="handleFileChange($event, field)"
-                    ></v-file-input>
+                      <!-- form template -->
+                      <template v-if="isEditingMode && formTemplate.value && typeof formTemplate.value === 'string'">
+                        <img v-if="isImage(formTemplate.value) || isGif(formTemplate.value)" :src="formTemplate.value" alt="form scan" style="width: 100px; height: 100px;">
+                        <a v-else :href="formTemplate.value" target="_blank">{{ formTemplate.label }}</a>
+                      </template>
+                      <label class="mb-2">{{ formTemplate.label }}<span style="color: red" v-if="formTemplate.required"> *</span></label>
+                      <input 
+                        type="file" 
+                        v-on:change="formTemplate.value"
+                        @change="handleFileChange($event, field)" 
+                        accept=".jpg,.png,.pdf,.jpeg"
+                      >
                     </v-col>
                     
                   </v-row>

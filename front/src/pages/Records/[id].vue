@@ -158,7 +158,7 @@ export default defineComponent({
 <template>
 
   <div class="form-container">
-    <h1 class="form-title">{{ formName }}</h1>
+    <h1 class="form-view-title">{{ formName }}</h1>
 
     <v-container fluid>
       <v-row>
