@@ -9,6 +9,7 @@ import { createRouter, createWebHistory } from 'vue-router/auto'
 import { setupLayouts } from 'virtual:generated-layouts'
 import { routes } from 'vue-router/auto-routes'
 import NotFound from '@/pages/NotFound.vue'
+import { useAuthStore } from '@/stores/auth'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -20,6 +21,19 @@ const router = createRouter({
       component: NotFound
     }
   ]),
+})
+
+// Add a global navigation guard to handle initial load
+router.beforeResolve((to, from, next) => {
+  const authStore = useAuthStore()
+  const isAuthenticated = authStore.isLoggedIn
+  const token = localStorage.getItem('dms-token')
+  
+  if (!isAuthenticated && !token && to.name !== '/login') {
+    next({ path: 'login' })
+  } else {
+    next()
+  }
 })
 
 // Workaround for https://github.com/vitejs/vite/issues/11804
