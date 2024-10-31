@@ -121,12 +121,12 @@
 
             <!-- Success Dialog -->
             <v-dialog v-model="successDialog" max-width="400px">
-            <v-card style="font-weight: bold; text-align: center;">
-              <v-card-text>
-                <v-icon left color="green" style="margin-right: 12px;">mdi-check-circle</v-icon>
-                {{ successMessage }}
-              </v-card-text>
-            </v-card>
+              <v-card style="font-weight: bold; text-align: center;">
+                <v-card-text>
+                  <v-icon left color="green" style="margin-right: 12px;">mdi-check-circle</v-icon>
+                  {{ successMessage }}
+                </v-card-text>
+              </v-card>
             </v-dialog>
 
           <!-- Dialog reset password -->
@@ -199,6 +199,32 @@
               </v-card-actions>
             </v-card>
           </v-dialog>
+
+          <!-- User detail -->
+          <v-dialog v-model="dialogDetail" max-width="80%">
+            <v-card>
+              <v-card-title style="padding: 30px !important;" class="text-h5">ពត័មានអ្នកប្រេីប្រាស់</v-card-title>
+
+              <v-card-text>
+                <v-container>
+                  <v-row>
+                    <template v-for="field in createObject">
+                      <v-col cols="12" md="4" sm="6">
+                        <div v-if="field.key !== 'password'">
+                          {{ field.label }}: {{ field.value }}
+                        </div>
+                      </v-col>
+                    </template>
+                  </v-row>
+                </v-container>
+              </v-card-text>
+
+              <v-card-actions style="padding: 0 30px 30px 0 !important;">
+                <v-spacer></v-spacer>
+                <v-btn class="danger-btn" @click="closeDetail">បិទ</v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
           
         </v-toolbar>
       </template>
@@ -222,31 +248,6 @@
             <v-icon small color="orange" @click.stop="resetPassword(item)" :disabled="item.role === 'user' && userRole === 'manager'">mdi-lock-reset</v-icon>
           </td>
         </tr>
-
-        <v-dialog v-model="dialogDetail" max-width="80%">
-          <v-card>
-            <v-card-title style="padding: 30px !important;" class="text-h5">ពត័មានអ្នកប្រេីប្រាស់</v-card-title>
-
-            <v-card-text>
-              <v-container>
-                <v-row>
-                  <template v-for="field in createObject">
-                    <v-col cols="12" md="4" sm="6">
-                      <div v-if="field.key !== 'password'">
-                        {{ field.label }}: {{ field.value }}
-                      </div>
-                    </v-col>
-                  </template>
-                </v-row>
-              </v-container>
-            </v-card-text>
-
-            <v-card-actions style="padding: 0 30px 30px 0 !important;">
-              <v-spacer></v-spacer>
-              <v-btn class="danger-btn" @click="dialogDetail = false">បិទ</v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
 
       </template>
   
@@ -463,6 +464,13 @@
         setTimeout(() => {
           this.errorDialog = false;
         }, 5000);
+      },
+
+      closeDetail () {
+        this.dialogDetail = false
+        this.createObject.forEach(field => {
+          field.value = "";
+        });
       },
 
       async viewUser (item) {
