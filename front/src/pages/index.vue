@@ -237,6 +237,10 @@
               {{ item.first_name + ' ' + item.last_name }}
             </template>
             
+            <template v-else-if="header.key === 'id'">
+              {{ (currentParams.page - 1) * itemsPerPage + index + 1 }}
+            </template>
+            
             <template v-else>
               {{ item [ header.key ] }}
             </template>
