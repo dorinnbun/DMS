@@ -21,7 +21,15 @@ const router = createRouter({
       component: NotFound
     }
   ]),
-})
+  scrollBehavior(to, from, savedPosition) {
+    if (savedPosition) {
+      return savedPosition; // restores scroll position when navigating back
+    } else {
+      return { left: 0, top: 0 }; // scrolls to the top for new pages
+    }
+  }
+});
+
 
 // Add a global navigation guard to handle initial load
 router.beforeResolve((to, from, next) => {

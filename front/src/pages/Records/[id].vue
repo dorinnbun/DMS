@@ -151,6 +151,7 @@ export default defineComponent({
     if (this.docId) {
       this.getRecord()
     }
+    window.scrollTo(0, 0);
   },
 })
 </script>
@@ -397,7 +398,6 @@ export default defineComponent({
 </template>
 
 
-<style scoped src="../../styles/records.scss"></style>
 <style scoped src="../../styles/details.scss"></style>
 
 <style lang="css" scoped>
