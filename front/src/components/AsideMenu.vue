@@ -59,18 +59,24 @@
   import { useAuthStore } from '@/stores/auth'
   import { useUserStore } from '@/stores/user'
   import { storeToRefs } from 'pinia'
+  import { logout as logoutAPI } from '@/_api/auth'
 
   const router = useRouter()
   const authStore = useAuthStore()
   const userStore = useUserStore()
   const { user } = storeToRefs(userStore)
 
-  const logout = () => {
-    authStore.$patch({
-      isLoggedIn: false
-    })
-    router.push({ path: '/login' })
-    localStorage.removeItem('dms-token')
+  const logout = async () => {
+    try {
+      await logoutAPI()
+      authStore.$patch({
+        isLoggedIn: false
+      })
+      router.push({ path: '/login' })
+      localStorage.removeItem('dms-token')
+    } catch (error) {
+      console.error(error)
+    }
   }
 
 </script>
