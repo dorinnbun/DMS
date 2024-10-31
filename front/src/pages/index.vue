@@ -236,7 +236,7 @@
             <template v-if="header.key === 'full_name'">
               {{ item.first_name + ' ' + item.last_name }}
             </template>
-            
+
             <template v-else-if="header.key === 'id'">
               {{ (currentParams.page - 1) * itemsPerPage + index + 1 }}
             </template>
@@ -316,7 +316,7 @@
       itemsPerPage: 10, //
 
       headers: [
-        { title: 'លេខ', key: 'id', sortable: false  },
+        { title: 'លេខរៀង', key: 'id', sortable: false  },
         {
           title: 'គោត្តនាមនាម',
           align: 'start',

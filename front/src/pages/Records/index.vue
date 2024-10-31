@@ -544,7 +544,7 @@
       dialog: false,
       dialogDelete: false,
       headers: [
-          { title: 'លេខរៀង', key: 'id', sortable: true },
+          { title: 'លេខរៀង', key: 'id', sortable: false },
           { title: 'លេខសៀវភៅ', key: 'book_id', sortable: true },
           { title: 'នាមគោត្តនាម', align: 'start', key: 'full_name', sortable: true },
           { title: 'អាសយដ្ឋាន', key: 'current_address', sortable: false },
