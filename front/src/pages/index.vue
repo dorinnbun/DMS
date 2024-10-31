@@ -148,9 +148,9 @@
                     </p>
                     <template v-for="field in resetPasswordFields">
                       <v-col cols="12" md="6" sm="12">
+                        <label  class="mb-2">{{ field.label }}</label>
                         <v-text-field
                           v-model="field.value"
-                          :label="field.label"
                           :type="showPassword ? 'text' : 'password'"
                           persistent-hint="false"
                           :rules="[v => !!v || 'ទិន្នន័យត្រូវបញ្ចូល', v => /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,}$/.test(v) || 'លេខសម្ងាត់ត្រូវតែមានយ៉ាងហោចណាស់ 8 តួអក្សរ, យ៉ាងហោចណាស់ អក្សរពិសេស1តួ និង លេខ1តួ']"
