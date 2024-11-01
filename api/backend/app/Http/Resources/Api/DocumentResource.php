@@ -2,10 +2,11 @@
 
 namespace App\Http\Resources\Api;
 
+use Exception;
+use App\Models\User;
 use App\Models\Communce;
 use App\Models\District;
 use App\Models\Province;
-use App\Models\User;
 use PHPOpenSourceSaver\JWTAuth\Token;
 use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -94,41 +95,48 @@ class DocumentResource extends JsonResource
       "updated_by"                  => $this->updated_by
     ];
 
-    $doc_list['created_by'] = User::find($this->upload_by)->only("id","name");
-    $doc_list['created_by']['role'] = User::find($this->upload_by)->roles->first()->value('name');
-    
-    $doc_list['updated_by'] = User::find($this->updated_by)?->only("id","name") ?? ["id" => null, "name" => null];
-    $doc_list['updated_by']['role'] = User::find($this->updated_by)?->roles->first()->value('name') ?? null;
+    try {
 
-    if ( isset($this->pob_province) ){
-      $doc_list['pob_province'] = Province::find($this->pob_province)?->only('id', 'name');
-    }
-    if ( isset($this->pob_district) ){
-      $doc_list['pob_district'] = District::find($this->pob_district)->only("id","name");
-    }
-    if ( isset($this->pob_commune) ){
-      $doc_list['pob_commune'] = Communce::find($this->pob_commune)->only("id","name");
-    }
-    if ( isset($this->province) ){
-      $doc_list['province'] = Province::find($this->province)?->only('id', 'name');
-    }
-    if ( isset($this->district) ){
-      $doc_list['district'] = District::find($this->district)->only("id","name");
-    }
-    if ( isset($this->commune) ){
-      $doc_list['commune'] = Communce::find($this->commune)->only("id","name");
-    }
-    if ( isset($this->deleted_by) ){
-      $doc_list['deleted_by'] = User::find($this->deleted_by)->only("id","name");
-      $doc_list['deleted_by']['role'] = User::find($this->deleted_by)->roles->first()->value('name');
+      $doc_list['created_by'] = User::find($this->upload_by)->only("id","name");
+      $doc_list['created_by']['role'] = User::find($this->upload_by)->roles->first()->value('name');
+      
+      $doc_list['updated_by'] = User::find($this->updated_by)?->only("id","name") ?? ["id" => null, "name" => null];
+      $doc_list['updated_by']['role'] = User::find($this->updated_by)?->roles->first()->value('name') ?? null;
+  
+      if ( isset($this->pob_province) ){
+        $doc_list['pob_province'] = Province::find($this->pob_province)?->only('id', 'name');
+      }
+      if ( isset($this->pob_district) ){
+        $doc_list['pob_district'] = District::find($this->pob_district)->only("id","name");
+      }
+      if ( isset($this->pob_commune) ){
+        $doc_list['pob_commune'] = Communce::find($this->pob_commune)->only("id","name") ?? "";
+      }
+      if ( isset($this->province) ){
+        $doc_list['province'] = Province::find($this->province)?->only('id', 'name');
+      }
+      if ( isset($this->district) ){
+        $doc_list['district'] = District::find($this->district)->only("id","name");
+      }
+      if ( isset($this->commune) ){
+        $doc_list['commune'] = Communce::find($this->commune)->only("id","name");
+      }
+      if ( isset($this->deleted_by) ){
+        $doc_list['deleted_by'] = User::find($this->deleted_by)->only("id","name");
+        $doc_list['deleted_by']['role'] = User::find($this->deleted_by)->roles->first()->value('name');
+      }
+      // if ( isset($this->getMedias) ){
+      //   $doc_list['medias'] = $this->getMedias->map(function ($media) {
+      //     return env("APP_URL")."/storage/".$media->model_id."/".$media->file_name;
+      //   });
+      // }
+      return $doc_list;
+      
+    } catch (\Throwable $th) {
+      log_error("DocumentResource --> ", ["message"=>$th->getMessage(),"line"=> $th->getLine(), "doc_id"=>$this->id]);
+      throw new Exception($th->getMessage(), 403);
     }
 
 
-    // if ( isset($this->getMedias) ){
-    //   $doc_list['medias'] = $this->getMedias->map(function ($media) {
-    //     return env("APP_URL")."/storage/".$media->model_id."/".$media->file_name;
-    //   });
-    // }
-    return $doc_list;
   }
 }
