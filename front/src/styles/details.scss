@@ -1,6 +1,7 @@
-@import "_colors.scss";
 
-/* General Layout Styles */
+strong {
+  margin-right: 12px;
+}
 .form-container {
   padding: 0 15px;
 }
@@ -20,6 +21,13 @@
 
 .field-value {
   font-style: italic;
+}
+
+.field-image {
+  width: 120px;
+  height: auto;
+  // margin-top: 10px;
+  // margin-left: 30px;
 }
 
 .center-align {
@@ -42,7 +50,8 @@
   margin-left: 20px;
 }
 
-.full-body-container {
+
+.full-body-container{
   text-align: center;
 }
 
@@ -62,11 +71,88 @@
   background-color: #424242;
 }
 
+// .special-mark-container {
+//   margin-bottom: 20px;
+//   margin-top: 20px;
+// }
+
 .special-mark-item {
   border: 1px solid lightgray;
 }
 
+
+
+
+@media print {
+  .form-container {
+    padding: 0;
+  }
+
+  .form-title {
+    text-align: center;
+    margin-bottom: 10px;
+  }
+
+  .field-container {
+    margin-bottom: 5px;
+  }
+
+  .field-label {
+    font-style: normal;
+    margin-right: 8px;
+  }
+
+  .field-value {
+    font-style: normal;
+  }
+
+  .field-image {
+    width: 90px;
+    height: auto;
+    // margin: 5px auto;
+  }
+
+  .center-align {
+    text-align: center;
+  }
+
+  .fingerprint-container {
+    border: 1px solid black;
+  }
+
+  .palm-print-container {
+    margin-top: 20px;
+  }
+
+  .non-printable {
+    display: none;
+  }
+}
+
+
+
+@media print {
+  .field-container {
+    page-break-inside: avoid;
+  }
+}
+
+
 .column-5 {
+  // @media (min-width: 576px) {
+  //   flex-basis: 50%;
+  //   max-width: 50%;
+  // }
+  
+  // @media (min-width: 768px) {
+  //   flex-basis: 33%;
+  //   max-width: 33%;
+  // }
+
+  // @media (min-width: 1200px) {
+  //   flex-basis: 20%;
+  //   max-width: 20%;
+  // }
   flex-basis: 20%;
   max-width: 20%;
 
@@ -77,84 +163,49 @@
   }
 }
 
-/* Print Styles */
 @media print {
-  /* Main Form Container */
-  .form-container {
-    padding: 0;
-    page-break-inside: avoid;
-  }
-
-  /* Page Breaks for Major Sections */
-  .form-title,
-  .personal-info-section,
-  .fingerprint-section,
-  .full-body-photo-section,
-  .palm-print-section,
-  .special-mark-section {
-    page-break-after: always;
-  }
-
-  /* Avoid page breaks within containers */
-  .field-container {
-    page-break-inside: avoid;
-  }
-
   .column-5 {
     flex: 1 1 20%;
     max-width: 20%;
-    box-sizing: border-box;
-    page-break-inside: avoid;
+    box-sizing: border-box; 
   }
 
   .palm-print-container {
-    margin-bottom: 20px;
-    page-break-inside: avoid;
+    margin-bottom: 100px;
   }
-
   .palm-print-image {
     width: 250px;
   }
 
-  /* Hide Interactive/Non-Printable Elements */
-  .non-printable, .form-image-container {
-    display: none;
-  }
-
-  /* Field Image Print Settings */
-  .field-image {
-    width: 90px;
-    height: auto;
-  }
-
-  /* Center Align for Print */
-  .center-align {
-    text-align: center;
-  }
-
-  /* Fingerprint Print Settings */
-  .fingerprint-container {
-    border: 1px solid black;
-  }
-
-  /* Special Mark Item Settings */
-  .special-mark-item {
-    page-break-inside: avoid;
-    page-break-after: avoid;
-  }
-
-  /* Adjustments for Page Breaks Inside Columns */
-  .column-5, .field-container, .fingerprint-container, .special-mark-item {
-    page-break-inside: avoid;
-  }
-
-  /* Hide dynamic elements during print */
   .form-image-container {
     display: none;
   }
+}
 
-  /* Custom Styles for Print Page Layout */
-  @page {
-    margin: 1cm;
+
+
+// 
+.form-view-title {
+  text-align: center; 
+  margin-left: auto; 
+  margin-right: auto; 
+  margin-top: 20px
+}
+
+.column-5 {
+
+  @media (min-width: 576px ) {
+    flex-basis: 50%;
+    max-width: 50%;
+  }
+  
+  @media (min-width: 768px ) {
+    flex-basis: 33%;
+    max-width: 33%;
+  }
+
+  @media (min-width: 1200px ) {
+    flex-basis: 20%;
+    max-width: 20%;
   }
 }

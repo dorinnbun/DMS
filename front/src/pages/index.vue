@@ -479,6 +479,9 @@
 
       async viewUser (item) {
         this.dialogDetail = true
+        this.createObject.forEach(field => {
+          field.value = '';
+        });
         const user = await this.getSelectedUser(item.id);
         this.createObject.forEach(field => {
           field.value = user[field.key] || '';
