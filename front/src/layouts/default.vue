@@ -44,13 +44,23 @@
     authStore.$patch({ isLoggedIn: true })
   }
 
-  if (!isLoggedIn.value) {
-    router.push({ path: '/login' })
-  }
-
   const displayAsideMenu = computed(() => {
     return route.fullPath !== '/login' 
       && route.name !== '/Records/[id]' 
+      && route.name !== '/Verify-OTP/[uuid]' 
       && route.name !== 'NotFound'
+      && route.fullPath !== '/forgot-password'
+      && route.fullPath !== '/reset-password'
+      && route.fullPath !== '/verify-otp'
+      && route.fullPath !== '/verify-login-otp'
   })
+
+
+  if (displayAsideMenu.value) {
+    if (!isLoggedIn.value) {
+      router.push({ path: '/login' })
+    }
+  }
+
+
 </script>

@@ -37,11 +37,19 @@ router.beforeResolve((to, from, next) => {
   const isAuthenticated = authStore.isLoggedIn
   const token = localStorage.getItem('dms-token')
   
-  if (!isAuthenticated && !token && to.name !== '/login') {
-    next({ path: 'login' })
-  } else {
-    next()
-  }
+  if (!isAuthenticated && !token && to.name !== '/login' 
+    && to.name !== '/Verify-OTP/[uuid]' 
+    && to.fullPath !== '/forgot-password'
+    && to.fullPath !== '/reset-password'
+    && to.fullPath !== '/verify-otp'
+    && to.name !== '/forgot-password'
+    && to.name !== '/reset-password'
+    && to.name !== '/verify-otp'
+  ) {
+  next({ path: 'login' })
+} else {
+  next()
+}
 })
 
 // Workaround for https://github.com/vitejs/vite/issues/11804

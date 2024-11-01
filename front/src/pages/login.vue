@@ -36,6 +36,12 @@
 
       <br>
 
+      <v-row class="mb-4">
+        <v-col cols="12" class="text-right">
+          <router-link to="/forgot-password">ភ្លេចពាក្យសម្ងាត់?</router-link>
+        </v-col>
+      </v-row>
+
       <v-btn
         :disabled="!form"
         :loading="loading"

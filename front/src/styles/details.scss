@@ -100,7 +100,6 @@
     page-break-inside: avoid;
   }
 
-  /* Consistent Column Layouts for Print */
   .column-5 {
     flex: 1 1 20%;
     max-width: 20%;
@@ -108,7 +107,6 @@
     page-break-inside: avoid;
   }
 
-  /* Palm Print Styling */
   .palm-print-container {
     margin-bottom: 20px;
     page-break-inside: avoid;
