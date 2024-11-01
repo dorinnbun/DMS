@@ -32,7 +32,7 @@ class DocumentsTableSeeder extends Seeder
                 
                 $district_random = $faker->randomElement($addresses[$province]['district']);
                 $district=$district_random['id'];
-                $commune=$faker->randomElement($district_random['communes'])['id'] ?? 0;
+                $commune=$faker->randomElement($district_random['communes'])['id'] ?? 1;
 
                 $first_name=$faker->randomElement($list_name);
                 $last_name=$faker->randomElement($list_name);

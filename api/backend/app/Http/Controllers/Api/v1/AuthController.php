@@ -45,20 +45,21 @@ class AuthController extends ParentApiController
       
       if ( !$user ) throw_exception(__('messages.not_found', ['attribute' => 'USER']), Response::HTTP_NOT_FOUND);
 
-      // $this->otp->setUser($user);
-      // $otp = $this->otp->sendOtp();
-      // $enrollmentData = [
-      //   "body" => "You received OTP for recovery",
-      //   "enrollmentText" => $otp,
-      //   "url" => url('/'),
-      //   "thankyou" => "You have 5 minutes."
-      // ];
-      // log_debug("enrollmentData", $enrollmentData);
-      // $user->notify(new OtpNotify($enrollmentData));
+      $this->otp->setUser($user);
+      $otp = $this->otp->sendOtp();
+      $enrollmentData = [
+        "body" => "You received OTP for recovery",
+        "enrollmentText" => $otp,
+        "url" => url('/'),
+        "thankyou" => "You have 5 minutes."
+      ];
+      log_debug("enrollmentData", $enrollmentData);
+      $user->notify(new OtpNotify($enrollmentData));
 
       if (!$token) return $this->errorResponse(__('messages.unauthorized'), Response::HTTP_UNAUTHORIZED);
 
-      $user = AuthResource::make($this->auth_service->auth_user(), $token);
+      // $user = AuthResource::make($this->auth_service->auth_user(), $token);
+      $user = AuthResource::make($this->auth_service->auth_user(), []);
 
       return $this->response_json($user, __('messages.successfully_otp'));
 
