@@ -351,25 +351,23 @@
                     </v-col>
 
                     <v-divider></v-divider>
+                    <div style="height: 50px;"></div>
 
                     <v-col
-                      :key="formTemplate.key"
+                      v-for="field in formTemplates"
+                      :key="field.key"
                       cols="12"
-                      sm="3"
+                      sm="4"
                       class="special-mark-item"
                     >
-                      <!-- form template -->
-                      <template v-if="isEditingMode && formTemplate.value && typeof formTemplate.value === 'string'">
-                        <img v-if="isImage(formTemplate.value) || isGif(formTemplate.value)" :src="formTemplate.value" alt="form scan" style="width: 100px; height: 100px;">
-                        <a v-else :href="formTemplate.value" target="_blank">{{ formTemplate.label }}</a>
-                      </template>
-                      <label class="mb-2">{{ formTemplate.label }}<span style="color: red" v-if="formTemplate.required"> *</span></label>
-                      <input 
-                        type="file" 
-                        v-on:change="formTemplate.value"
-                        @change="handleFileChange($event, field)" 
+                    <img v-if="isEditingMode && field.value && typeof field.value === 'string'" :src="field.value" alt="special mark" style="width: 100px; height: 100px;">
+                      <label class="mb-2 block">{{ field.label }}<span style="color: red" v-if="field.required"> *</span></label>
+                      <v-file-input 
+                        v-model="field.value" 
                         accept=".jpg,.png,.pdf,.jpeg"
-                      >
+                        :rules="field.required !== false ? [v => !!v || 'ទិន្នន័យត្រូវបញ្ចូល'] : []"
+                        @change="handleFileChange($event, field)"
+                      ></v-file-input>
                     </v-col>
                     
                   </v-row>
@@ -432,7 +430,7 @@
             </template>
             
             <template v-else>
-              {{ item [ header.key ] }}
+              {{ item [ header.key ] ?? 'N/A' }}
             </template>
             </td>
 
@@ -550,7 +548,7 @@
           { title: 'អាសយដ្ឋាន', key: 'current_address', sortable: false },
           { title: 'បង្កេីតដោយ', key: 'created_by', sortable: false },
           { title: 'កែដោយ', key: 'updated_by', sortable: false },
-          { title: '', key: 'actions', sortable: false }, 
+          // { title: '', key: 'actions', sortable: false }, 
         ],
       formName: 'សលាកប័ត្រឯកកត្តជន',
       inputFields: [
@@ -628,7 +626,11 @@
           { key: "specialMark3", label: "ស្លាកសញ្ញាពិសេស (បេីមាន)", type: "file", value: "", name: "special_mark3", required: false },
       ],
 
-      formTemplate: { key: "formTemplate", label: 'រូបភាពឯកសារ', type: 'file', value: "", name: "form_template", required: true }
+      formTemplates: [
+        { key: "formTemplate", label: 'រូបភាពឯកសារ (1)', type: 'file', value: "", name: "form_template", required: true },
+        { key: "formTemplate1", label: 'រូបភាពឯកសារ (2)', type: 'file', value: "", name: "form_template1", required: false },
+        { key: "formTemplate2", label: 'រូបភាពឯកសារ (3)', type: 'file', value: "", name: "form_template2", required: false }
+      ],
 
     }),
 
@@ -643,7 +645,8 @@
           ...this.fullFingersPrintFileInput,
           ...this.fullBodyPhotoFileInput,
           ...this.palmPrintFileInput,
-          ...this.specialMark
+          ...this.specialMark,
+          ...this.formTemplates
         ].every(isFieldValid);
       },
 
@@ -955,6 +958,8 @@
         
         this.fetchRecordData(this.currentParams).then(({ items, meta }) => {
           this.fetchedData = items;
+          console.log("items", items);
+          
           this.totalItems = meta.total;
           this.itemsPerPage = meta.per_page;
           this.loading = false;
@@ -978,7 +983,7 @@
             ...this.fullBodyPhotoFileInput,
             ...this.palmPrintFileInput,
             ...this.specialMark,
-            this.formTemplate
+            ...this.formTemplates
           ];
 
           fieldsToUpdate.forEach(field => {
@@ -1043,7 +1048,7 @@
             ...this.fullBodyPhotoFileInput,
             ...this.palmPrintFileInput,
             ...this.specialMark,
-            this.formTemplate
+            ...this.formTemplates
           ];
 
         try {
@@ -1099,7 +1104,7 @@
           ...this.fullBodyPhotoFileInput, 
           ...this.palmPrintFileInput, 
           ...this.specialMark,
-          this.formTemplate
+          ...this.formTemplates
         ]
 
         createObject.forEach(item => {
@@ -1107,6 +1112,8 @@
         });
 
 
+        console.log("createObject", createObject);
+        console.log("formData", formData);
 
         try {
 
@@ -1146,11 +1153,11 @@
           ...this.fullFingersPrintFileInput,
           ...this.fullBodyPhotoFileInput,
           ...this.palmPrintFileInput,
-          ...this.specialMark
+          ...this.specialMark,
+          ...this.formTemplates
         ];
 
         resetFields(allFields);
-        this.formTemplate.value = ""
       }
     },
   }
