@@ -82,6 +82,12 @@ export default defineComponent({
       { key: "special_mark1", label: "ស្លាកសញ្ញាពិសេស", type: "file", value: "" },
       { key: "special_mark2", label: "ស្លាកសញ្ញាពិសេស", type: "file", value: "" },
       { key: "special_mark3", label: "ស្លាកសញ្ញាពិសេស", type: "file", value: "" },
+    ],
+
+    formTemplates: [
+      { key: "form_template1", label: "ឯកសារ (1)", type: "file", value: "" },
+      { key: "form_template2", label: "ឯកសារ (2)", type: "file", value: "" },
+      { key: "form_template3", label: "ឯកសារ (3)", type: "file", value: "" },
     ]
   }),
 
@@ -129,7 +135,8 @@ export default defineComponent({
             this.fullBodyPhotoFileInput, 
             this.fullFingersPrintFileInput, 
             this.palmPrintFileInput, 
-            this.specialMark
+            this.specialMark,
+            this.formTemplates
           ].forEach(field => {
             field.forEach(f => {
               f.value = record?.[f.key] ?? f.value
@@ -364,32 +371,31 @@ export default defineComponent({
           </v-col>
         </v-row>
         
+        <!-- tmp -->
         <v-container v-if="record?.form_template" class="form-image-container">
           <p>ឯកសារ</p>
-          
-            <template v-if="isPdf(record?.form_template)">
-              <v-btn @click="openFormTemplatePreview = true" style="margin-top: 6px;">មេីលឯកសារ</v-btn>
-            </template>
+        
+          <template v-if="isPdf(record?.form_template)">
+            <iframe :src="record.form_template" width="100%" height="1000px" class="pdfPreview"></iframe>
+          </template>
 
-            <template v-else>
-              <v-img
-                :src="record?.form_template ?? ''"
-                @click="openFormTemplatePreview = true"
-                max-width="50"
-                class="my-2 cursor-pointer"
-              ></v-img>
-            </template>
+          <template v-else>
+            <v-img :src="record?.form_template ?? ''" class="imgFormTemplatePreview"></v-img>
+          </template>
+        </v-container>
 
-          <v-dialog v-model="openFormTemplatePreview" :class="isPdf(record.form_template) ? 'pdfPreview' : 'imgFormTemplatePreview'">
-            <v-card>
-              <template v-if="isPdf(record.form_template)">
-                <iframe :src="record.form_template" width="100%" height="1000px"></iframe>
+        <v-container v-if="record?.form_templates?.length" class="form-image-container">
+          <p>ឯកសារ</p>
+          <v-row>
+            <v-col v-for="(template, index) in record.form_templates" :key="index" cols="12" sm="4">
+              <template v-if="isPdf(template)">
+                <iframe :src="template" width="100%" height="300px" class="pdfPreview"></iframe>
               </template>
               <template v-else>
-                <v-img :src="record.form_template ?? ''"></v-img>
+                <v-img :src="template" class="imgFormTemplatePreview"></v-img>
               </template>
-            </v-card>
-          </v-dialog>
+            </v-col>
+          </v-row>
         </v-container>
 
       </v-row>
@@ -407,6 +413,7 @@ export default defineComponent({
   }
 
   .imgFormTemplatePreview {
+    /* max-width: 33%; */
     max-width: 100%;
   }
 </style>
