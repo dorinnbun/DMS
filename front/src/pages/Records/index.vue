@@ -352,13 +352,12 @@
 
                     <v-divider></v-divider>
 
-                    <v-col
+                    <!-- <v-col
                       :key="formTemplate.key"
                       cols="12"
                       sm="3"
                       class="special-mark-item"
                     >
-                      <!-- form template -->
                       <template v-if="isEditingMode && formTemplate.value && typeof formTemplate.value === 'string'">
                         <img v-if="isImage(formTemplate.value) || isGif(formTemplate.value)" :src="formTemplate.value" alt="form scan" style="width: 100px; height: 100px;">
                         <a v-else :href="formTemplate.value" target="_blank">{{ formTemplate.label }}</a>
@@ -367,6 +366,28 @@
                       <input 
                         type="file" 
                         v-on:change="formTemplate.value"
+                        @change="handleFileChange($event, field)" 
+                        accept=".jpg,.png,.pdf,.jpeg"
+                      >
+                    </v-col> -->
+                    <v-col
+                      v-for="field in formTemplates"
+                      :key="field.key"
+                      cols="12"
+                      sm="4"
+                      class="special-mark-item"
+                    >
+                    <img v-if="isEditingMode && field.value && typeof field.value === 'string'" :src="field.value" alt="special mark" style="width: 100px; height: 100px;">
+                      <label class="mb-2 block">{{ field.label }}<span style="color: red" v-if="field.required"> *</span></label>
+                      <!-- <v-file-input 
+                        v-model="field.value" 
+                        accept=".jpg,.png,.pdf,.jpeg"
+                        :rules="field.required !== false ? [v => !!v || 'ទិន្នន័យត្រូវបញ្ចូល'] : []"
+                        @change="handleFileChange($event, field)"
+                      ></v-file-input> -->
+                      <input 
+                        type="file" 
+                        v-on:change="field.value"
                         @change="handleFileChange($event, field)" 
                         accept=".jpg,.png,.pdf,.jpeg"
                       >
@@ -628,7 +649,12 @@
           { key: "specialMark3", label: "ស្លាកសញ្ញាពិសេស (បេីមាន)", type: "file", value: "", name: "special_mark3", required: false },
       ],
 
-      formTemplate: { key: "formTemplate", label: 'រូបភាពឯកសារ', type: 'file', value: "", name: "form_template", required: true }
+      formTemplates: [
+        { key: "formTemplate1", label: 'រូបភាពឯកសារ (1)', type: 'file', value: "", name: "form_template1", required: true },
+        { key: "formTemplate2", label: 'រូបភាពឯកសារ (2)', type: 'file', value: "", name: "form_template2", required: true },
+        { key: "formTemplate3", label: 'រូបភាពឯកសារ (3)', type: 'file', value: "", name: "form_template3", required: true }
+      ],
+
 
     }),
 
@@ -978,7 +1004,7 @@
             ...this.fullBodyPhotoFileInput,
             ...this.palmPrintFileInput,
             ...this.specialMark,
-            this.formTemplate
+            ...this.formTemplates
           ];
 
           fieldsToUpdate.forEach(field => {
@@ -1043,7 +1069,7 @@
             ...this.fullBodyPhotoFileInput,
             ...this.palmPrintFileInput,
             ...this.specialMark,
-            this.formTemplate
+            ...this.formTemplates
           ];
 
         try {
@@ -1099,7 +1125,7 @@
           ...this.fullBodyPhotoFileInput, 
           ...this.palmPrintFileInput, 
           ...this.specialMark,
-          this.formTemplate
+          ...this.formTemplates
         ]
 
         createObject.forEach(item => {
@@ -1146,11 +1172,11 @@
           ...this.fullFingersPrintFileInput,
           ...this.fullBodyPhotoFileInput,
           ...this.palmPrintFileInput,
-          ...this.specialMark
+          ...this.specialMark,
+          ...this.formTemplates
         ];
 
         resetFields(allFields);
-        this.formTemplate.value = ""
       }
     },
   }
