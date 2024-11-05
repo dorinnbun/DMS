@@ -8,8 +8,5 @@ services:
     volumes:
       - .:/var/www
       - ./node_modules:/var/www/node_modules
-    # environment:
-    #   NODE_ENV: production
-    # Uncomment if your app needs to run on a specific port
-    # ports:
-    #   - "3000:3000"
+    ports:
+      - "3000:3000"
