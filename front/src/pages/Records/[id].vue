@@ -7,6 +7,7 @@ import {
     getDistricts as getDistrictsAPI,
     getCommunes as getCommunesAPI
   } from '@/_api/address'
+import { useRouteStore } from '@/stores/route'
 
 export default defineComponent({
   name: 'RecordDetail',
@@ -155,11 +156,17 @@ export default defineComponent({
   async created() {
     const route = useRoute()
     this.docId = route.params.id
+    
     if (this.docId) {
       this.getRecord()
     }
     window.scrollTo(0, 0);
-  },
+    if (!sessionStorage.getItem('hasReloaded')) {
+      sessionStorage.setItem('hasReloaded', 'true');
+      window.location.reload();
+    }
+    useRouteStore().$patch({ previous: route.name })
+  }
 })
 </script>
 
