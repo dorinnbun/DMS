@@ -717,6 +717,7 @@
     },
 
     created () {
+      window.location.reload()
       this.initialize()
       this.getAllProvinces
     },
