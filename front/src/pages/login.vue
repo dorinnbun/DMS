@@ -128,6 +128,9 @@
         isLoginError.value = true
         if (error?.response?.data?.code == 401) {
           errorMessage.value = 'អ៊ីមែល ឬ ពាក្យសម្ងាត់ មិនត្រឹមត្រូវ'
+        } else if (error?.response?.status == 404) {
+          isLoginError.value = true
+          errorMessage.value = 'User មិនមាននៅក្នុងប្រព័ន្ធទេ'
         } else {
           errorMessage.value = errorMsg ?? 'សូមព្យាយាមម្តងទៀត។'
         }
