@@ -86,9 +86,9 @@ export default defineComponent({
     ],
 
     formTemplates: [
-      { key: "form_template1", label: "ឯកសារ (1)", type: "file", value: "" },
-      { key: "form_template2", label: "ឯកសារ (2)", type: "file", value: "" },
-      { key: "form_template3", label: "ឯកសារ (3)", type: "file", value: "" },
+      { key: "form_template", label: "ឯកសារ (1)", type: "file", value: "" },
+      { key: "form_template1", label: "ឯកសារ (2)", type: "file", value: "" },
+      { key: "form_template2", label: "ឯកសារ (3)", type: "file", value: "" },
     ]
   }),
 
@@ -357,7 +357,7 @@ export default defineComponent({
         </v-col>
 
         <!-- Special Mark Files -->
-        <v-row justify="center" class="special-mark-container">
+        <v-row justify="center" class="special-mark-container mb-12">
           <v-col
             v-for="field in specialMark"
             :key="field.key"
@@ -377,34 +377,33 @@ export default defineComponent({
             </div>
           </v-col>
         </v-row>
-        
-        <!-- tmp -->
-        <v-container v-if="record?.form_template" class="form-image-container">
-          <p>ឯកសារ</p>
-        
-          <template v-if="isPdf(record?.form_template)">
-            <iframe :src="record.form_template" width="100%" height="1000px" class="pdfPreview"></iframe>
-          </template>
 
-          <template v-else>
-            <v-img :src="record?.form_template ?? ''" class="imgFormTemplatePreview"></v-img>
-          </template>
-        </v-container>
-
-        <v-container v-if="record?.form_templates?.length" class="form-image-container">
-          <p>ឯកសារ</p>
+        <!-- Physical form scan upload -->
+        <v-col cols="12">
           <v-row>
-            <v-col v-for="(template, index) in record.form_templates" :key="index" cols="12" sm="4">
-              <template v-if="isPdf(template)">
-                <iframe :src="template" width="100%" height="300px" class="pdfPreview"></iframe>
-              </template>
-              <template v-else>
-                <v-img :src="template" class="imgFormTemplatePreview"></v-img>
-              </template>
-            </v-col>
+              <v-col
+                v-for="field in formTemplates"
+                :key="field.key"
+                cols="12"
+                sm="6"
+              >
+                <div class="center-align">
+                  <strong>{{ field.label }}</strong>
+                  <div>
+                    <img v-if="isImage(field.value)" :src="field.value" alt="file" class="palm-print-container form-scan-image">
+                    <iframe 
+                      v-else-if="isPdf(field.value)" 
+                      :src="`${field.value}#toolbar=0`" 
+                      class="form-scan-file-viewer-pdf palm-print-container"
+                    ></iframe>
+                    <div v-else-if="isGif(field.value)">
+                      <v-img :src="field.value" class="file-viewer-image"></v-img>
+                    </div>
+                  </div>
+                </div>
+              </v-col>
           </v-row>
-        </v-container>
-
+        </v-col>
       </v-row>
     </v-container>
   </div>
@@ -414,13 +413,19 @@ export default defineComponent({
 <style scoped src="../../styles/details.scss"></style>
 
 <style lang="css" scoped>
+
   .pdfPreview {
     max-width: 100%;
     height: 100%;
   }
 
-  .imgFormTemplatePreview {
-    /* max-width: 33%; */
-    max-width: 100%;
+  .form-scan-image {
+    width: 100%;
+  }
+
+  .form-scan-file-viewer-pdf {
+    width: 100%;
+    min-height: 1000px;
+    border: none;
   }
 </style>
