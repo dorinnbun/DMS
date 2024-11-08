@@ -58,6 +58,7 @@
   import { useRouter } from 'vue-router'
   import { useAuthStore } from '@/stores/auth'
   import { useUserStore } from '@/stores/user'
+  import { useRouteStore } from '@/stores/route'
   import { storeToRefs } from 'pinia'
   import { logout as logoutAPI } from '@/_api/auth'
 
@@ -74,6 +75,7 @@
       })
       router.push({ path: '/login' })
       localStorage.removeItem('dms-token')
+      useRouteStore().$reset()
     } catch (error) {
       console.error(error)
     }

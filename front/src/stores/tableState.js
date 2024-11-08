@@ -7,8 +7,7 @@ export const useTableStateStore = defineStore('tableState', {
       page: 1,
       itemsPerPage: 10,
       sortBy: [],
-      // keySearch: '',
-      sortBy: [],
+      keySearch: ''
     }
   }),
   persist: true,

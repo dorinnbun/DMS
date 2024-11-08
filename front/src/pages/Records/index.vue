@@ -492,6 +492,8 @@
   } from '@/_api/document'
   import { getAllUsers as getAllUsersAPI } from '@/_api/user'
   import { useUserStore } from '@/stores/user'
+  import { useTableStateStore } from '@/stores/tableState'
+  import { useRouteStore } from '@/stores/route'
 
   export default {
     data: () => ({
@@ -949,17 +951,39 @@
       async loadItems(params = {}) {
         
         this.loading = true;
-        
-        this.currentParams = {
-          ...this.currentParams,
-          ...params,
-          limit: this.itemsPerPage
-        };
-        
+        const previousRoute = useRouteStore().previous
+        const state = useTableStateStore().$state.state
+
+        if (previousRoute === '/Records/[id]') {
+          this.currentParams = {
+            ...this.currentParams, 
+            page: state.page,
+            itemsPerPage: state.itemsPerPage,
+            keySearch: state.keySearch
+          }
+          useRouteStore().$patch({
+            previous: this.$route.name
+          })
+        } 
+        else {
+          this.currentParams = {
+            ...this.currentParams,
+            ...params,
+            limit: this.itemsPerPage
+          };
+        }
+
+        useTableStateStore().$patch({
+          state: {
+            page: this.currentParams.page,
+            itemsPerPage: this.currentParams.itemsPerPage,
+            keySearch: this.currentParams.keySearch,
+            sortBy: this.currentParams.sortBy
+          }
+        });
+
         this.fetchRecordData(this.currentParams).then(({ items, meta }) => {
           this.fetchedData = items;
-          console.log("items", items);
-          
           this.totalItems = meta.total;
           this.itemsPerPage = meta.per_page;
           this.loading = false;
@@ -1160,6 +1184,10 @@
         resetFields(allFields);
       }
     },
+
+    unmounted() {
+      useRouteStore().$reset()
+    }
   }
 </script>
 
