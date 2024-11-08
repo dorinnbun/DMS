@@ -238,7 +238,7 @@
             </template>
 
             <template v-else-if="header.key === 'id'">
-              {{ (currentParams.page - 1) * itemsPerPage + index + 1 }}
+              {{ (currentPage - 1) * itemsPerPage + index + 1 }}
             </template>
             
             <template v-else>
@@ -310,9 +310,7 @@
       dialogDelete: false,
       resetPasswordDialog: false,
 
-      currentParams: {
-        page: 1
-      },
+      currentPage: 1, //
       itemsPerPage: 10, //
 
       headers: [
@@ -538,6 +536,7 @@
       },
 
       async fetchUserData ({ page, itemsPerPage, sortBy }) {
+        this.currentPage = page
         
         const { data: { data } } = await getAllUsers({ 
           page, 
