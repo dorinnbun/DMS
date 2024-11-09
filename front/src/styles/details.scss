@@ -50,13 +50,11 @@ strong {
   margin-left: 20px;
 }
 
-
-.full-body-container{
-  text-align: center;
-}
-
 .full-body-image {
   width: 130px;
+  @media print {
+    page-break-inside: avoid;
+  }
 }
 
 .divider-container {
@@ -80,6 +78,10 @@ strong {
   border: 1px solid lightgray;
 }
 
+
+.fullBodySectionNotDisplayed {
+  visibility: hidden;
+}
 
 
 
@@ -126,6 +128,15 @@ strong {
 
   .non-printable {
     display: none;
+  }
+
+  .form-image-container {
+    page-break-before: always;
+    page-break-inside: avoid;
+  }
+
+  .fullBodySectionNotDisplayed {
+    visibility: visible;
   }
 }
 
@@ -175,10 +186,6 @@ strong {
   }
   .palm-print-image {
     width: 250px;
-  }
-
-  .form-image-container {
-    display: none;
   }
 }
 

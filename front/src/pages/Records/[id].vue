@@ -288,7 +288,7 @@ export default defineComponent({
 
 
         <!-- Full body photo file input -->
-        <v-row justify="center" style="margin: 1px 0">
+        <v-row justify="center" style="margin: 1px 0" class="fullBodySection">
           <v-col
             v-for="field in fullBodyPhotoFileInput"
             :key="field.key"
@@ -379,7 +379,7 @@ export default defineComponent({
         </v-row>
 
         <!-- Physical form scan upload -->
-        <v-col cols="12">
+        <v-col cols="12" class="form-image-container">
           <v-row>
               <v-col
                 v-for="field in formTemplates"
@@ -404,6 +404,28 @@ export default defineComponent({
               </v-col>
           </v-row>
         </v-col>
+
+        <v-row justify="center" style="margin: 1px 0" class="fullBodySectionNotDisplayed">
+          <v-col
+            v-for="field in fullBodyPhotoFileInput"
+            :key="field.key"
+            cols="12" sm="3"
+            style="border: 1px solid lightgray;"
+            class="full-body-image"
+          >
+            <div class="center-align">
+              <strong>{{ field.label }}</strong>
+              <div>
+                <img v-if="isImage(field.value)" :src="field.value" alt="file" class="full-body-image">
+                <iframe v-else-if="isPdf(field.value)" :src="field.value" class="file-viewer-pdf"></iframe>
+                <div v-else-if="isGif">
+                  <v-img :src="field.value" class="file-viewer-image"></v-img>
+                </div>
+              </div>
+            </div>
+          </v-col>
+        </v-row>
+        
       </v-row>
     </v-container>
   </div>
@@ -428,4 +450,5 @@ export default defineComponent({
     min-height: 1000px;
     border: none;
   }
+
 </style>
