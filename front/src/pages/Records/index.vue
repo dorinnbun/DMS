@@ -436,7 +436,7 @@
 
           <td>
             <v-icon small color="blue" @click.stop="editItem(item)" v-if="userRole !== 'user'">mdi-pencil</v-icon>
-            <v-icon small color="red" @click.stop="deleteItem(item)">mdi-delete</v-icon>
+            <v-icon small color="red" @click.stop="deleteItem(item)" v-if="userRole !== 'user'">mdi-delete</v-icon>
           </td>
 
         </tr>
