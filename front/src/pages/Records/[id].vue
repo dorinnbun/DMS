@@ -385,7 +385,6 @@ export default defineComponent({
                 v-for="field in formTemplates"
                 :key="field.key"
                 cols="12"
-                sm="6"
               >
                 <div class="center-align">
                   <strong>{{ field.label }}</strong>
