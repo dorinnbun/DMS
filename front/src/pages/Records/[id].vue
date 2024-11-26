@@ -404,27 +404,16 @@ export default defineComponent({
           </v-row>
         </v-col>
 
-        <v-row justify="center" style="margin: 1px 0" class="fullBodySectionNotDisplayed">
+        <v-row justify="center" style="margin: 1px 0; height: 400px;" class="fullBodySectionNotDisplayed">
+          
           <v-col
-            v-for="field in fullBodyPhotoFileInput"
-            :key="field.key"
             cols="12" sm="3"
             style="border: 1px solid lightgray;"
             class="full-body-image"
           >
-            <div class="center-align">
-              <strong>{{ field.label }}</strong>
-              <div>
-                <img v-if="isImage(field.value)" :src="field.value" alt="file" class="full-body-image">
-                <iframe v-else-if="isPdf(field.value)" :src="field.value" class="file-viewer-pdf"></iframe>
-                <div v-else-if="isGif">
-                  <v-img :src="field.value" class="file-viewer-image"></v-img>
-                </div>
-              </div>
-            </div>
+          <div style="height: 400px;"></div>
           </v-col>
         </v-row>
-        
       </v-row>
     </v-container>
   </div>
