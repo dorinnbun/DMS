@@ -41,18 +41,18 @@ class DocumentResource extends JsonResource
       'first_name'                  => $this->first_name,
       'nickname'                    => $this->nickname,
       'dob'                         => $this->dob,
-      'pob_province'                => $this->pob_province,
-      'pob_district'                => $this->pob_district,
-      'pob_commune'                 => $this->pob_commune,
+      'pob_province'                => $this->pob_province ?? 0,
+      'pob_district'                => $this->pob_district ?? 0,
+      'pob_commune'                 => $this->pob_commune ?? 0,
       'ethnicity'                   => $this->ethnicity,
       'nationality'                 => $this->nationality,
       'religion'                    => $this->religion,
       'previous_occupation'         => $this->previous_occupation,
       'occupation'                  => $this->occupation,
       'current_address'             => $this->current_address,
-      'province'                    => $this->province,
-      'district'                    => $this->district,
-      'commune'                     => $this->commune,
+      'province'                    => $this->province ?? 0,
+      'district'                    => $this->district ?? 0,
+      'commune'                     => $this->commune ?? 0,
       'identity'                    => $this->identity,
       'height'                      => $this->height,
       'spouse'                      => $this->spouse,
@@ -88,6 +88,8 @@ class DocumentResource extends JsonResource
       "special_mark2"               => $this->prefix_image($this->special_mark2),
       "special_mark3"               => $this->prefix_image($this->special_mark3),
       "form_template"               => $this->prefix_image($this->form_template),
+      "form_template1"               => $this->prefix_image($this->form_template_1),
+      "form_template2"               => $this->prefix_image($this->form_template_2),
       "number"                      => $this->number,
       "created_at"                  => $this->created_at,
       "updated_at"                  => $this->updated_at,
@@ -97,32 +99,32 @@ class DocumentResource extends JsonResource
 
     try {
 
-      $doc_list['created_by'] = User::find($this->upload_by)->only("id","name");
+      $doc_list['created_by'] = User::find($this->upload_by)?->only("id","name");
       $doc_list['created_by']['role'] = User::find($this->upload_by)->roles->first()->value('name');
       
       $doc_list['updated_by'] = User::find($this->updated_by)?->only("id","name") ?? ["id" => null, "name" => null];
       $doc_list['updated_by']['role'] = User::find($this->updated_by)?->roles->first()->value('name') ?? null;
   
-      if ( isset($this->pob_province) ){
+      if ( isset($this->pob_province) || $this->pob_province != 0  ){
         $doc_list['pob_province'] = Province::find($this->pob_province)?->only('id', 'name');
       }
-      if ( isset($this->pob_district) ){
-        $doc_list['pob_district'] = District::find($this->pob_district)->only("id","name");
+      if ( isset($this->pob_district) || $this->pob_district != 0  ){
+        $doc_list['pob_district'] = District::find($this->pob_district)?->only("id","name");
       }
-      if ( isset($this->pob_commune) ){
-        $doc_list['pob_commune'] = Communce::find($this->pob_commune)->only("id","name") ?? "";
+      if ( isset($this->pob_commune) || $this->pob_commune != 0  ){
+        $doc_list['pob_commune'] = Communce::find($this->pob_commune)?->only("id","name") ?? "";
       }
-      if ( isset($this->province) ){
+      if ( isset($this->province) || $this->province != 0  ){
         $doc_list['province'] = Province::find($this->province)?->only('id', 'name');
       }
-      if ( isset($this->district) ){
-        $doc_list['district'] = District::find($this->district)->only("id","name");
+      if ( isset($this->district) || $this->district != 0  ){
+        $doc_list['district'] = District::find($this->district)?->only("id","name");
       }
-      if ( isset($this->commune) ){
-        $doc_list['commune'] = Communce::find($this->commune)->only("id","name");
+      if ( isset($this->commune) || $this->commune != 0  ){
+        $doc_list['commune'] = Communce::find($this->commune)?->only("id","name");
       }
       if ( isset($this->deleted_by) ){
-        $doc_list['deleted_by'] = User::find($this->deleted_by)->only("id","name");
+        $doc_list['deleted_by'] = User::find($this->deleted_by)?->only("id","name");
         $doc_list['deleted_by']['role'] = User::find($this->deleted_by)->roles->first()->value('name');
       }
       // if ( isset($this->getMedias) ){

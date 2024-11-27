@@ -53,7 +53,7 @@ class DocumentRequest extends BaseRequest // FormRequest
       'private_certificate_officer' => 'nullable|string',
       'supervision_officer'         => 'nullable|string',
       'scheduling_research_officer' => 'nullable|string',
-      "identityPhoto"               => "mimes:jpeg,png,jpg,pdf|max:2048",
+      "identityPhoto"               => "nullable|mimes:jpeg,png,jpg,pdf|max:2048",
       "rightThumbPrint"             => "nullable|mimes:jpeg,png,jpg,pdf|max:2048",
       "rightIndexPrint"             => "nullable|mimes:jpeg,png,jpg,pdf|max:2048",
       "rightMiddlePrint"            => "nullable|mimes:jpeg,png,jpg,pdf|max:2048",

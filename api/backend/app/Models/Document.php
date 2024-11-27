@@ -73,6 +73,8 @@ class Document extends Model
     "special_mark3",
     "number",
     "form_template",
+    "form_template_1",
+    "form_template_2",
     "dir_name",
     "dir_name_updated",
     "deleted_by",

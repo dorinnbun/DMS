@@ -226,7 +226,7 @@ class BaseService
     $between = $attributes['between'] ?? '';
     $query   = $dbq ?? $this->model;
     // Check if get limit
-    $this->limit = $attributes['limit'] ?? env('LIMIT', 15);
+    $this->limit = $attributes['limit'] ?? env('LIMIT', 10);
     // Check if get filters
     $filters = $attributes['filters'] ?? [];
     // Check if get keySearch
