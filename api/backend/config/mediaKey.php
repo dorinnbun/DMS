@@ -25,6 +25,6 @@ return [
   "special_mark2"            => "specialMark2",
   "special_mark3"            => "specialMark3",
   "form_template"            => "formTemplate",
-  "form_template1"            => "formTemplate1",
-  "form_template2"            => "formTemplate2"
+  "form_template_1"            => "formTemplate1",
+  "form_template_2"            => "formTemplate2"
 ];

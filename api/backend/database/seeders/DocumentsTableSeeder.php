@@ -2,10 +2,11 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Exception;
+use Faker\Factory as Faker;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use Faker\Factory as Faker;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class DocumentsTableSeeder extends Seeder
 {
@@ -15,7 +16,7 @@ class DocumentsTableSeeder extends Seeder
     public function run(): void
     {
         try {
-            
+            log_info("Document Seed ------ ");
             $faker = Faker::create();
             $list_name = ["សុខា","ប៊ុនធឿន","រឿទ្ធី","សំណាង","វុទ្ធី","ស្រីនាង","ចន្ទថូ","សុខុនធី","ដាវី","សុខជា"];
             $list_occupation = ["គ្រូ","វេជ្ជបណ្ឌិត","វិស្វករ","អ្នកចាត់ការរដ្ឋបាល","ជាងសំណង់","អ្នកចម្រៀង","នាយករដ្ឋបាល","ស្ត្រីចុងភៅ","ប៉ូលិស","យោធា","អ្នកកាសែត","អ្នកស្រាវជ្រាវ","គិលានុបដ្ឋាយិកា","អ្នកលក់","អ្នកបកប្រែ","អ្នកទេសចរណ៍","ជាងថតរូប","អ្នកអភិវឌ្ឍន៍កម្មវិធី"];
@@ -30,9 +31,14 @@ class DocumentsTableSeeder extends Seeder
                 $province_random=$faker->randomElement($addresses);
                 $province = (int)$province_random['id'];
                 
-                $district_random = $faker->randomElement($addresses[$province]['district']);
-                $district=$district_random['id'];
-                $commune=$faker->randomElement($district_random['communes'])['id'] ?? 1;
+                do
+                {
+                    $step=0;
+                    $district_random = $faker->randomElement($addresses[$province]['district']);
+                    $district=$district_random['id'];
+                    $commune=$faker->randomElement($district_random['communes'])['id'] ?? [];
+                    if ( is_array($commune) ) log_error("District --> ".$district, $addresses[$province]['district']);
+                }while ( is_array($commune) && $step<3 );
 
                 $first_name=$faker->randomElement($list_name);
                 $last_name=$faker->randomElement($list_name);
@@ -100,8 +106,10 @@ class DocumentsTableSeeder extends Seeder
                     'dir_name_updated'            => $i."_".$first_name . '_' . $last_name,
                 ];
             }
+
     
             DB::table('documents')->insert($records);
+            log_info("Document End Seed ------ ");
         } catch (\Throwable $th) {
             log_error($th->getMessage());
         }
