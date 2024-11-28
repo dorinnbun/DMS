@@ -812,6 +812,7 @@
           this.districtsFiltering = [];
           this.communesFiltering = [];
           this.currentParams.filters = {};
+          this.currentParams.others = {};
           this.loadItems()
         },
 
@@ -966,6 +967,10 @@
           })
         } 
         else {
+        console.log("here??", this.currentParams);
+        console.log("params---", params);
+        
+        
           this.currentParams = {
             ...this.currentParams,
             ...params,
