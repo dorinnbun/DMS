@@ -18,6 +18,7 @@ Make sure the following are installed on your system:
 ```bash
 git clone <repository_url> project-name
 cd project-name
+```
 
 ### 1. Clone the Repository
 ```bash
@@ -72,5 +73,32 @@ php artisan serve
 ### 1. Start the Queue Worker
 ```bash
 php artisan queue:work
+```
+
+# Mysql Server Command
+
+### dump database
+```bash
+mysqldump -u root -p upload_image_backend_db > /upload_image_backend_db.sql
+```
+
+### copy file from container to host machine
+```bash
+docker cp dms_mysql:/upload_image_backend_db.sql .
+```
+
+### Copy file from server to local host machine (Run command in local host machine)
+```bash
+scp root@000.000.000.000:/var/www/dms/upload_image_backend_db.sql ~/Documents/
+```
+
+### Copy file from localhost to container
+```bash
+docker cp ./upload_image_backend_db.sql dms_mysql:/tmp/upload_image_backend_db.sql
+```
+
+### Mysql execute file
+```bash
+mysql -u root -p upload_image_backend_db < /tmp/upload_image_backend_db.sql
 ```
 
