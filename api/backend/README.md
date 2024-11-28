@@ -4,9 +4,9 @@
 
 Make sure the following are installed on your system:
 
-- **PHP**: `>=8.0`  
-- **Composer**: `>=2.x`
-- **Node.js**: `>=16.x`
+- **PHP**: `>=8.2.22`  
+- **Composer**: `>=2.7.7`
+- **Node.js**: `>=18.19.0`
 - **npm/yarn**: To manage frontend assets  
 - **MySQL**: Or any other supported database server
 - **Git**: Version control system  
