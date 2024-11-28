@@ -37,30 +37,30 @@ DB_PASSWORD=secure_password
 ### 3.Install PHP dependencies using Composer:
 ```bash
 composer install
-``
+```
 ### 4.Install Javascript dependencies:
 ```bash
 npm install
-``
+```
 ### 5.Generate Application Key:
 ```bash
 php artisan key:generate
-``
+```
 ### 6.Run Migration (Optional) Can directly run migrations using mysql files:
 ```bash
 php artisan migrate
-``
+```
 #### Seed the database
 ```bash
 php artisan db:seed # all seeder
 php artisan db:seed --class=DocumentsTableSeeder #specific seeder
-``
+```
 
 ### 7.Set Directory Permissions:
 ```bash
 chmod -R 775 storage bootstrap/cache
 chown -R www-data:www-data storage bootstrap/cache
-``
+```
 
 ## Command run in project
 
@@ -68,9 +68,9 @@ chown -R www-data:www-data storage bootstrap/cache
 ```bash
 php artisan serve
 #http://127.0.0.1:8000.
-``
+```
 ### 1. Start the Queue Worker
 ```bash
 php artisan queue:work
-``
+```
 
