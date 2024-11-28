@@ -387,7 +387,7 @@ export default defineComponent({
                 cols="12"
               >
                 <div class="center-align">
-                  <strong>{{ field.label }}</strong>
+                  <strong style="visibility: hidden">{{ field.label }}</strong>
                   <div>
                     <img v-if="isImage(field.value)" :src="field.value" alt="file" class="palm-print-container form-scan-image">
                     <iframe 
