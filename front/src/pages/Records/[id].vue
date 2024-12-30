@@ -241,7 +241,7 @@ export default defineComponent({
 
         <!-- each thumbs -->
         <v-col cols="12" sm="4" style="border: 1px solid grey; border-top: 0;">
-          <p style="text-align: center; margin-bottom: 12px;">
+          <p style="text-align: center; margin-bottom: 12px; font-weight: bold;" class="field-label">
             ផ្តិតមេដៃទាំងពីរ
           </p>
           <v-row>
@@ -404,16 +404,15 @@ export default defineComponent({
           </v-row>
         </v-col>
 
-        <v-row justify="center" style="margin: 1px 0; height: 400px;" class="fullBodySectionNotDisplayed">
-          
-          <v-col
-            cols="12" sm="3"
-            style="border: 1px solid lightgray;"
-            class="full-body-image"
-          >
-          <div style="height: 400px;"></div>
-          </v-col>
-        </v-row>
+        <!-- to avoid content being cut off -->
+        <div class="print-no-display">
+          <div v-for="field in [1,2,3]" :key="field" class="print-section">
+            <div class="center-align" style="color: white;">
+              no content
+            </div>
+          </div>
+        </div>
+
       </v-row>
     </v-container>
   </div>
@@ -423,6 +422,14 @@ export default defineComponent({
 <style scoped src="../../styles/details.scss"></style>
 
 <style lang="css" scoped>
+
+  .print-no-display {
+    visibility: hidden;
+
+    @media print {
+      height: 1200px;
+    }
+  }
 
   .pdfPreview {
     max-width: 100%;
