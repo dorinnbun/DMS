@@ -238,8 +238,10 @@
                             alt="ស្នាមម្រាមដៃ" style="width: 100px; height: 100px;"
                           >
                           <v-file-input 
+                            v-model="fullFingersPrintFileInput[1].value" 
                             accept=".jpg,.png,.pdf,.jpeg"
                             :rules="[v => !!v || 'ឯកសារត្រូវបញ្ចូល']"
+                            @change="handleFileChange($event, field)"
                           ></v-file-input>
                         </v-col>
 
