@@ -78,6 +78,15 @@ class DocumentService extends BaseService
       $list_to_remove = [];
       
       foreach ($img_list as $key => $value) {
+        if ( isset($attribute[$value]) ){
+          if ( empty($attribute[$value]) || $attribute[$value] === "undefined"  ){
+            log_info("media ==>", [$attribute[$value]]);
+            log_info("Key removal without uploading ==>" . $key);
+            $list_to_remove[] = $key;
+            $created_media[$key] = null;
+            continue;
+          }
+        }
         if ($media->file($value)) {
           log_info("key ==>" . $key);
           $created_media[$key] = $this->media_service->uploadImage($media->file($value), $doc->id, $new_name);
