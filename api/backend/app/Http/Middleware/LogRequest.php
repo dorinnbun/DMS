@@ -14,6 +14,7 @@ class LogRequest
             $user_id = $request->user()->id;
         }
         App::setLocale($request->lang ?? 'kh');
+        log_error("================================================");
         log_infos("Request ==> ", [
             "url"     => $request->fullUrl(),
             "method"  => $request->method(),

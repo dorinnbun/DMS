@@ -125,6 +125,7 @@ class ApiHttpResponse extends Response implements Responsable
 
   public function toResponse($request): JsonResponse|RedirectResponse
   {
+    log_error("================================================");
     log_error(" toResponse Log => ", [
       'status'             => $this->status,
       'status_description' => $this->status_description,

@@ -24,6 +24,11 @@ class DocumentResource extends JsonResource
     if ( $img == null ) return asset('img/default.jpg');
     return env("APP_URL") . "/storage/" .$this->dir_name_updated. "/" .$img;
   }
+  protected function prefix_image_null($img)
+  {
+    if ( $img == null ) return null;
+    return env("APP_URL") . "/storage/" .$this->dir_name_updated. "/" .$img;
+  }
   /**
    * Transform the resource into an array.
    * @param  \Illuminate\Http\Request  $request
@@ -88,8 +93,8 @@ class DocumentResource extends JsonResource
       "special_mark2"               => $this->prefix_image($this->special_mark2),
       "special_mark3"               => $this->prefix_image($this->special_mark3),
       "form_template"               => $this->prefix_image($this->form_template),
-      "form_template1"               => $this->prefix_image($this->form_template_1),
-      "form_template2"               => $this->prefix_image($this->form_template_2),
+      "form_template1"              => $this->prefix_image_null($this->form_template_1),
+      "form_template2"              => $this->prefix_image_null($this->form_template_2),
       "number"                      => $this->number,
       "created_at"                  => $this->created_at,
       "updated_at"                  => $this->updated_at,

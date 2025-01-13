@@ -42,6 +42,11 @@ class UploadImageJob implements ShouldQueue
     
             $url=[];
             foreach ($this->images as $key => $imgs) {
+                log_debug("imgs -->", $imgs, "queue_log");
+                if ( empty($imgs) ) {
+                    $url[$key] = null;
+                    continue;
+                }
                 $file_content     = Storage::disk('public')->get($imgs);
                 $url[$key]        = $media_service->upload_to_do($imgs, $file_content);
                 // Remove tmp img store in local

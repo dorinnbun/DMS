@@ -23,7 +23,7 @@ class MediaService
     $file_content      = file_get_contents($file);
     $original_filename = $file->getClientOriginalName();
     $extension         = $file->getClientOriginalExtension();
-    $do_file_dir       = $name."/".$original_filename;
+    $do_file_dir       = $name."/".mt_rand(100000, 999999)."_".$original_filename;
 
     log_info("img directory ==>" . $do_file_dir);
     log_info("img extension ==>" . $extension);
