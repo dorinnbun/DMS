@@ -231,7 +231,7 @@ export default defineComponent({
         <v-col cols="12" sm="4">
           <div class="field-container center-align">
             <p><strong class="field-label">{{ fullFingersPrintFileInput[0].label }}:</strong></p>
-            <img v-if="isImage(fullFingersPrintFileInput[0].value)" :src="fullFingersPrintFileInput[0].value" alt="file" class="field-image">
+            <img v-if="isImage(fullFingersPrintFileInput[0].value)" :src="fullFingersPrintFileInput[0].value" alt="file" class="field-image" style="width: 100% !important;">
             <iframe v-else-if="isPdf(fullFingersPrintFileInput[0].value)" :src="fullFingersPrintFileInput[0].value" class="file-viewer-pdf"></iframe>
             <div v-else-if="isGif(fullFingersPrintFileInput[0].value)">
               <v-img :src="fullFingersPrintFileInput[0].value" class="file-viewer-image"></v-img>
@@ -251,7 +251,7 @@ export default defineComponent({
                 <p>
                   <strong class="field-label">{{ fullFingersPrintFileInput[1].label }}:</strong>
                 </p>
-                <img v-if="isImage(fullFingersPrintFileInput[1].value)" :src="fullFingersPrintFileInput[1].value" alt="file" class="field-image">
+                <img v-if="isImage(fullFingersPrintFileInput[1].value)" :src="fullFingersPrintFileInput[1].value" alt="file" class="field-image" style="width: 100% !important;">
                 <iframe v-else-if="isPdf(fullFingersPrintFileInput[1].value)" :src="fullFingersPrintFileInput[1].value" class="file-viewer-pdf"></iframe>
                 <div v-else-if="isGif(fullFingersPrintFileInput[1].value)">
                   <v-img :src="fullFingersPrintFileInput[1].value" class="file-viewer-image"></v-img>
@@ -264,7 +264,7 @@ export default defineComponent({
                 <p>
                   <strong class="field-label">{{ fullFingersPrintFileInput[2].label }}:</strong>
                 </p>
-                <img v-if="isImage(fullFingersPrintFileInput[2].value)" :src="fullFingersPrintFileInput[2].value" alt="file" class="field-image">
+                <img v-if="isImage(fullFingersPrintFileInput[2].value)" :src="fullFingersPrintFileInput[2].value" alt="file" class="field-image" style="width: 100% !important;">
                 <iframe v-else-if="isPdf(fullFingersPrintFileInput[2].value)" :src="fullFingersPrintFileInput[2].value" class="file-viewer-pdf"></iframe>
                 <div v-else-if="isGif(fullFingersPrintFileInput[2].value)">
                   <v-img :src="fullFingersPrintFileInput[2].value" class="file-viewer-image"></v-img>
@@ -278,7 +278,7 @@ export default defineComponent({
         <v-col cols="12" sm="4">
           <div class="field-container center-align">
             <p><strong class="field-label">{{ fullFingersPrintFileInput[3].label }}:</strong></p>
-            <img v-if="isImage(fullFingersPrintFileInput[3].value)" :src="fullFingersPrintFileInput[3].value" alt="file" class="field-image">
+            <img v-if="isImage(fullFingersPrintFileInput[3].value)" :src="fullFingersPrintFileInput[3].value" alt="file" class="field-image" style="width: 100% !important;">
             <iframe v-else-if="isPdf(fullFingersPrintFileInput[3].value)" :src="fullFingersPrintFileInput[3].value" class="file-viewer-pdf"></iframe>
             <div v-else-if="isGif(fullFingersPrintFileInput[3].value)">
               <v-img :src="fullFingersPrintFileInput[3].value" class="file-viewer-image"></v-img>
