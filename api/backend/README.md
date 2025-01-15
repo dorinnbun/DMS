@@ -81,28 +81,8 @@ php artisan queue:work
 
 # Mysql Server Command
 
-### dump database
-```bash
-mysqldump -u root -p upload_image_backend_db > /upload_image_backend_db.sql
-```
-
-### copy file from container to host machine
-```bash
-docker cp dms_mysql:/upload_image_backend_db.sql .
-```
-
-### Copy file from server to local host machine (Run command in local host machine)
-```bash
-scp root@000.000.000.000:/var/www/dms/upload_image_backend_db.sql ~/Documents/
-```
-
-### Copy file from localhost to container
-```bash
-docker cp ./upload_image_backend_db.sql dms_mysql:/tmp/upload_image_backend_db.sql
-```
-
 ### Mysql execute file
 ```bash
-mysql -u root -p upload_image_backend_db < /tmp/upload_image_backend_db.sql
+mysql -u root -p upload_image_backend_db < .upload_image_backend_db.sql
 ```
 
