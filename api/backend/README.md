@@ -12,8 +12,9 @@ Make sure the following are installed on your system:
 
 - **PHP**: `>=8.2.27`  
 - **Composer**: `>= 2.8.4`
-- **MySQL**: `8.0.37 for Linux on x86_64`
-- **Nginx**: `1.18.0`
+- **MySQL**: `>= 8.0.37 for Linux on x86_64`
+- **Nginx**: `>= 1.18.0`
+- **Supervisored**: `>= 4.2.2`
 
 ## Installation Steps
 
