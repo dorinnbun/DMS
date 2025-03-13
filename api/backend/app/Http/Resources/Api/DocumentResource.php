@@ -22,12 +22,28 @@ class DocumentResource extends JsonResource
   protected function prefix_image($img)
   {
     if ( $img == null ) return asset('img/default.jpg');
-    return env("APP_URL") . "/storage/" .$this->dir_name_updated. "/" .$img;
+    // Check if the directory exists
+    $localDirectory = storage_path("app/public/{$this->dir_name_updated}");
+
+    // If the directory exists, return the local URL; otherwise, return the Digital Ocean Spaces URL
+    if (file_exists($localDirectory)) {
+      return env("APP_URL") . "/storage/" . $this->dir_name_updated . "/" . $img;
+    } else {
+      return env("DO_SPACES_ENDPOINT") . "/" . $this->dir_name_updated . "/" . $img;
+    }
   }
   protected function prefix_image_null($img)
   {
     if ( $img == null ) return null;
-    return env("APP_URL") . "/storage/" .$this->dir_name_updated. "/" .$img;
+    // Check if the directory exists
+    $localDirectory = storage_path("app/public/{$this->dir_name_updated}");
+
+    // If the directory exists, return the local URL; otherwise, return the Digital Ocean Spaces URL
+    if (file_exists($localDirectory)) {
+      return env("APP_URL") . "/storage/" . $this->dir_name_updated . "/" . $img;
+    } else {
+      return env("DO_SPACES_ENDPOINT") . "/" . $this->dir_name_updated . "/" . $img;
+    }return env("APP_URL") . "/storage/" .$this->dir_name_updated. "/" .$img ?? env("DO_SPACES_ENDPOINT")."/".$this->dir_name_updated. "/" .$img;
   }
   /**
    * Transform the resource into an array.
