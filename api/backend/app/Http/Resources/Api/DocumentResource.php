@@ -23,7 +23,7 @@ class DocumentResource extends JsonResource
   {
     if ( $img == null ) return asset('img/default.jpg');
     // Check if the directory exists
-    $localDirectory = storage_path("app/public/{$this->dir_name_updated}");
+    $localDirectory = storage_path("app/public/{$this->dir_name_updated}/{$img}");
 
     // If the directory exists, return the local URL; otherwise, return the Digital Ocean Spaces URL
     if (file_exists($localDirectory)) {
@@ -36,7 +36,7 @@ class DocumentResource extends JsonResource
   {
     if ( $img == null ) return null;
     // Check if the directory exists
-    $localDirectory = storage_path("app/public/{$this->dir_name_updated}");
+    $localDirectory = storage_path("app/public/{$this->dir_name_updated}/{$img}");
 
     // If the directory exists, return the local URL; otherwise, return the Digital Ocean Spaces URL
     if (file_exists($localDirectory)) {
