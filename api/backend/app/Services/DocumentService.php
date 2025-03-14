@@ -40,7 +40,7 @@ class DocumentService extends BaseService
         log_debug("media file",[$media->file($value)]);
         if ($media->file($value)) {
           log_info("key ==>" . $key);
-          $created_media[$key] = $this->media_service->uploadImage($media->file($value), $created->id, $name);
+          $created_media[$key] = $this->media_service->uploadImage($media->file($value), $created->id, $name,$key);
           // $created_media[$value] = $this->media->addMediaReturnUrl($media->file($value), "1234");
         }
       }

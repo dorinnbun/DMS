@@ -19,12 +19,18 @@ class MediaService
     return basename($url_img);
   }
 
-  public function uploadImage($file, $id, $name)
+  public function uploadImage($file, $id, $name, $field_name = null)
   {
     $file_content      = file_get_contents($file);
     $original_filename = $file->getClientOriginalName();
     $extension         = $file->getClientOriginalExtension();
-    $do_file_dir       = $name."/".mt_rand(100000, 999999)."_".$original_filename;
+    // $do_file_dir       = $name."/".mt_rand(100000, 999999)."_".$original_filename;
+    $random = mt_rand(100000, 999999);
+    if ( $field_name ) {
+      $do_file_dir       = "{$name}/{$random}_{$field_name}_{$original_filename}";
+    }else{
+      $do_file_dir = "{$name}/{$random}_{$original_filename}";
+    }
 
     log_info("img directory ==>" . $do_file_dir);
     log_info("img extension ==>" . $extension);
