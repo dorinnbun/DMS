@@ -18,13 +18,15 @@ class UploadImageJob implements ShouldQueue
 
     protected $images;
     protected $id;
+    protected $status;
     /**
      * Create a new job instance.
      */
-    public function __construct($id, $images)
+    public function __construct($id, $images, $status="create")
     {
         $this->images = $images;
         $this->id = $id;
+        $this->status = $status;
     }
 
     /**
@@ -35,6 +37,7 @@ class UploadImageJob implements ShouldQueue
 
         try {
 
+            log_debug("Start UploadImageJob", "queue_log");
             $media_service       = new MediaService();
             $media_service->disk = "space";
             // $media_service->disk = "public";
@@ -48,9 +51,12 @@ class UploadImageJob implements ShouldQueue
                     continue;
                 }
                 $file_content     = Storage::disk('public')->get($imgs);
-                $url[$key]        = $media_service->upload_to_do($imgs, $file_content);
-                // Remove tmp img store in local
-                $delete_local_img = Storage::disk('public')->delete($imgs);
+                $url[$key] = $media_service->upload_to_do($imgs, $file_content);
+                if ($this->status=='update') {
+                    // Remove updated image (Replace image)
+                    $delete_local_img = Storage::disk($media_service->disk)->delete($document_model->{$key});
+                    log_debug("delete_local_img -->", $delete_local_img, "queue_log");
+                }
             }
             log_debug("url list -->", $url, "queue_log");
             if ( empty($url) ) throw new \Exception("Unable to upload image");
@@ -60,6 +66,7 @@ class UploadImageJob implements ShouldQueue
         } catch (\Throwable $th) {
             log_error($th->getMessage(),[],"queue_log");
         }
-
+        // 833471_linux.png
     }
 }
+// 527761_linux.png

@@ -68,9 +68,10 @@ class DocumentService extends BaseService
       
       $doc      = $this->getById($id);
       // generate updated_directory
-      $new_name = $this->media_service->getDirectory($doc->dir_name).'_'.$doc->updated_at->format("Y-m-d:His");
+      // $new_name = $this->media_service->getDirectory($doc->dir_name).'_'.$doc->updated_at->format("Y-m-d:His");
+      $new_name = $doc->dir_name;
       // Rename current directory to updated_directory
-      $updated_directory = $this->media_service->renameFile($doc->dir_name_updated, $new_name);
+      // $updated_directory = $this->media_service->renameFile($doc->dir_name_updated, $new_name);
       
       // Create Media
       $img_list = config("mediaKey");
@@ -106,7 +107,7 @@ class DocumentService extends BaseService
       }
       // $is_delete = $this->media_service->deleteDirectory(file_dir($delete_dir));// Delete DIRECTORY
 
-      UploadImageJob::dispatch($doc->id, $created_media);
+      UploadImageJob::dispatch($doc->id, $created_media, "update");
       $this->updateById($id, ['dir_name_updated' => $new_name]); // update dir_name_update
       DB::commit();
       return $doc;
@@ -115,6 +116,28 @@ class DocumentService extends BaseService
 
       DB::rollBack();
       return $th->getMessage();
+    }
+  }
+
+  public function bulkImageDelete($id)
+  {
+    $this->media_service->disk = "space";
+
+    $will_delete_document = $this->getIncludeSoftDeleteById($id)->toArray();
+    log_debug("Document will be delete -->", $will_delete_document);
+    $img_list = config("mediaKey");
+    
+    $dir_name = $will_delete_document['dir_name'];
+    // Delete Old Document folder
+    foreach ($img_list as $key => $img) {
+      if ( !$will_delete_document[$key] ){
+        continue;
+      }
+      $path = "{$dir_name}/{$will_delete_document[$key]}";
+      log_debug("path --> ", $path);
+      
+      $is_delete = $this->media_service->deleteImage($path);// Delete file
+      log_debug("is_delete --> ", $is_delete);
     }
   }
 

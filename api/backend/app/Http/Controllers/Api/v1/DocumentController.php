@@ -139,13 +139,22 @@ class DocumentController extends ParentApiController
   {
     try {
 
+      DB::beginTransaction();
+
       $user = auth()->user();
       if ( $user->can("delete document") ){
+        
+        $this->service->bulkImageDelete($id);
         $permanentDelete = $this->service->hardDelete($id);
+        
+        if ( $permanentDelete ) {
+          DB::commit();
+        }
         return $this->response_json($permanentDelete, __('messages.successfully_delete', ['attribute' => 'document']));
       }
       
     } catch (\Throwable $th) {
+      DB::rollBack();
       return $this->errorResponse($th->getMessage(), $th->getCode());
       // return $this->errorResponse(__('messages.internal_server_error'), $th->getCode());
     }

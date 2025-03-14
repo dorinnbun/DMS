@@ -40,19 +40,27 @@ class MediaService
     return $this->file_response("", false);
   }
 
+  public function check_file_not_exists($file)
+  {
+    return !Storage::disk($this->disk)->exists($file);
+  }
+
   public function deleteImage($file)
   {
     // $file = 1_juju/hello_world.jpg : Storage::disk($this->disk) --> will return storage/app/public/1_juju/hello_world.jpg
+    if ( $this->check_file_not_exists($file) ){
+      return false;
+    }
     return Storage::disk($this->disk)->delete($file);
   }
 
   public function deleteDirectory($dir)
   {
     if ( File::exists($dir) ){
-      return File::deleteDirectory($dir);
+      // return File::deleteDirectory($dir);
+      return Storage::disk($this->disk)->deleteDirectory($dir);
     }
 
-    // return Storage::disk($this->disk)->deleteDirectory($dir);
   }
 
   public function getDirectory($dir)
@@ -89,6 +97,7 @@ class MediaService
   public function file_response($directory_file, $status)
   {
     return $directory_file;
+    // Example :
     // return [
     //   "status"    => $status,
     //   "directory" => $directory_file
