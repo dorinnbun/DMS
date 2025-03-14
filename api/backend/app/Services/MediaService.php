@@ -13,6 +13,7 @@ class MediaService
   public function upload_to_do($do_file_dir, $file_content)
   {
     $do_path = Storage::disk($this->disk)->put($do_file_dir, $file_content);
+    log_debug("do_path -->", $do_path, "queue_log");
     if (!$do_path) return false;
     $url_img = Storage::disk($this->disk)->url($do_file_dir) ?? false;
     return basename($url_img);
