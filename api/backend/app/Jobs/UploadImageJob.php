@@ -52,10 +52,18 @@ class UploadImageJob implements ShouldQueue
                 }
                 $file_content     = Storage::disk('public')->get($imgs);
                 $url[$key] = $media_service->upload_to_do($imgs, $file_content);
+
+                // if ($this->status=='create') {
+                //     // Remove local image (Temporary stored image)
+                //     $delete_local_img = Storage::disk("public")->delete($imgs);
+                //     log_debug("delete_local_img -->", $delete_local_img, "queue_log");
+                // }
+
                 if ($this->status=='update') {
                     // Remove updated image (Replace image)
-                    $delete_local_img = Storage::disk($media_service->disk)->delete($document_model->{$key});
-                    log_debug("delete_local_img -->", $delete_local_img, "queue_log");
+                    $delete_local_img = $media_service->deleteImage("{$document_model->dir_name}/{$document_model->{$key}}");
+                    // $delete_local_img = Storage::disk($media_service->disk)->delete($document_model->{$key});
+                    log_debug("delete_updated_img_dir {$document_model->{$key}} -->", $delete_local_img, "queue_log");
                 }
             }
             log_debug("url list -->", $url, "queue_log");
