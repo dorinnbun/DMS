@@ -37,11 +37,12 @@ class UploadImageJob implements ShouldQueue
 
         try {
 
-            log_debug("Start UploadImageJob", "queue_log");
+            log_debug("Start UploadImageJob",[], "queue_log");
             $media_service       = new MediaService();
             $media_service->disk = "space";
             // $media_service->disk = "public";
             $document_model      = Document::find($this->id);
+            log_debug("Document -> ", $document_model->id, "queue_log");
     
             $url=[];
             foreach ($this->images as $key => $imgs) {
@@ -51,25 +52,30 @@ class UploadImageJob implements ShouldQueue
                     continue;
                 }
                 $file_content     = Storage::disk('public')->get($imgs);
-                $url[$key] = $media_service->upload_to_do($imgs, $file_content);
-
-                // if ($this->status=='create') {
-                //     // Remove local image (Temporary stored image)
-                //     $delete_local_img = Storage::disk("public")->delete($imgs);
-                //     log_debug("delete_local_img -->", $delete_local_img, "queue_log");
-                // }
-
+                $url[$key] = $imgs;
+                $sos_dir = $media_service->upload_to_do($imgs, $file_content);
                 if ($this->status=='update') {
                     // Remove updated image (Replace image)
-                    $delete_local_img = $media_service->deleteImage("{$document_model->dir_name}/{$document_model->{$key}}");
-                    // $delete_local_img = Storage::disk($media_service->disk)->delete($document_model->{$key});
-                    log_debug("delete_updated_img_dir {$document_model->{$key}} -->", $delete_local_img, "queue_log");
+                    $delete_sos_img = $media_service->deleteImage($document_model->{$key});
+                    $delete_local_current_img = Storage::disk("public")->delete($imgs);
+                    log_debug("delete_sos_img {$document_model->{$key}} -->", $delete_sos_img, "queue_log");
+                    log_debug("delete_local_current_img {$imgs} -->", $delete_local_current_img, "queue_log");
                 }
             }
             log_debug("url list -->", $url, "queue_log");
             if ( empty($url) ) throw new \Exception("Unable to upload image");
             $result = $document_model->fill($url);
             $result = $result->update();
+
+            if ( $result ) {
+                foreach ($this->images as $key => $imgs) {
+                    if ($this->status=='create') {
+                        // Remove local image (Temporary stored image)
+                        $delete_local_img = Storage::disk("public")->delete($imgs);
+                        log_debug("delete_local_img -->", $delete_local_img, "queue_log");
+                    }
+                }
+            }
             
         } catch (\Throwable $th) {
             log_error($th->getMessage(),[],"queue_log");

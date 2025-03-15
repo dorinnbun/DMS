@@ -90,7 +90,7 @@ class DocumentService extends BaseService
         }
         if ($media->file($value)) {
           log_info("key ==>" . $key);
-          $created_media[$key] = $this->media_service->uploadImage($media->file($value), $doc->id, $new_name);
+          $created_media[$key] = $this->media_service->uploadImage($media->file($value), $doc->id, $new_name, $key);
           $list_to_remove[] = $key;
         }
       }
@@ -133,7 +133,7 @@ class DocumentService extends BaseService
       if ( !$will_delete_document[$key] ){
         continue;
       }
-      $path = "{$dir_name}/{$will_delete_document[$key]}";
+      $path = $will_delete_document[$key];
       log_debug("path --> ", $path);
       
       $is_delete = $this->media_service->deleteImage($path);// Delete file
