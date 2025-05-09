@@ -172,6 +172,7 @@ class DocumentService extends BaseService
 
       // if ( count($deleted) > 0 ) DB::commit();
       DB::commit();
+      return true;
       
     } catch (\Throwable $th) {
 
