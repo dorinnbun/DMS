@@ -29,7 +29,8 @@ class DocumentResource extends JsonResource
     if (file_exists($localDirectory)) {
       return env("APP_URL") . "/storage/" . $this->dir_name_updated . "/" . $img;
     } else {
-      return env("DO_SPACES_ENDPOINT") . "/" . $this->dir_name_updated . "/" . $img;
+      // return env("DO_SPACES_ENDPOINT") . "/" . $this->dir_name_updated . "/" . $img;
+      return env("DO_SPACES_ENDPOINT") . "/" . $img;
     }
   }
   protected function prefix_image_null($img)
