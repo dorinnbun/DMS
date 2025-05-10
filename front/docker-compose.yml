@@ -1,12 +1,19 @@
 version: "3.8"
 
 services:
-  node:
+  front-node:
     build:
       context: .
       dockerfile: Dockerfile
-    volumes:
-      - .:/var/www
-      - ./node_modules:/var/www/node_modules
     ports:
       - "3000:3000"
+    volumes:
+      - .:/var/www
+      - node_modules:/var/www/node_modules
+    environment:
+      - NODE_ENV=development
+    stdin_open: true
+    tty: true
+
+volumes:
+  node_modules:

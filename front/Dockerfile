@@ -1,34 +1,24 @@
-# Use a lightweight Node.js image based on Alpine Linux
-FROM node:20
+# Use official Node image with Alpine for smaller size
+FROM node:20-alpine
 
-# Set the working directory
+# Set working directory
 WORKDIR /var/www
 
-# Copy both package.json and package-lock.json (if available)
+# Copy package files first to leverage Docker layer caching
 COPY package*.json ./
 
-# Remove node_modules and package-lock.json if they exist (to clean up)
-RUN rm -rf node_modules package-lock.json
-RUN rm -rf node_modules
-RUN npm cache clean --force
+# Remove any existing modules or lockfiles (if copied accidentally)
+RUN rm -rf node_modules package-lock.json || true && \
+    npm cache clean --force
 
-
-RUN npm install vuetify
-
-# Install dependencies
+# Install all dependencies including vite
 RUN npm install
 
-# Copy the rest of the application code
+# Copy the rest of the app source code
 COPY . .
 
-# Set the environment variable
-# ENV NODE_ENV=production
-
-# Run any build scripts if necessary (e.g., if using a frontend build tool)
-RUN npm run build
-
-# Expose the appropriate port if your app runs on a specific port
+# Expose port that Vite uses
 EXPOSE 3000
 
-# Command to run your application (adjust based on your app's entry point)
-CMD ["npm","run","dev"]
+# Start the dev server
+CMD ["npm", "run", "dev"]
