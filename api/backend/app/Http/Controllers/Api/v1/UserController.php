@@ -63,6 +63,20 @@ class UserController extends ParentApiController
     }
   }
 
+  protected function canUpdateRole($currentUserRole, $targetUserCurrentRole, $newRoleRequested) {
+    if ($targetUserCurrentRole < $currentUserRole) {
+        return false;
+    }
+    
+    // Can't promote users to equal or higher role (lower number) than current user
+    if ($newRoleRequested < $currentUserRole) {
+        return false;
+    }
+    
+    // All checks passed
+    return true;
+  }
+
   public function update(Request $request, $id)
   {
     try {
@@ -70,8 +84,8 @@ class UserController extends ParentApiController
       $user = auth()->user();
       if ( $user->can("edit user") ){
         // User update
-        $user = $this->service->getById($id);
-        if ( !$user ) throw_exception(__("messages.not_found", ["attribute" => "user" ]), Response::HTTP_UNAUTHORIZED);
+        $get_user = $this->service->getById($id);
+        if ( !$get_user ) throw_exception(__("messages.not_found", ["attribute" => "user" ]), Response::HTTP_UNAUTHORIZED);
 
         $user_arr = [];
         if ( $request->filled('name') ) $user_arr['name'] = $request->name;
@@ -79,21 +93,26 @@ class UserController extends ParentApiController
         if ( $request->filled('phone_number') ) $user_arr['phone_number'] = $request->phone_number;
         if ( $request->filled('password') ) $user_arr['password'] = Hash::make($request->password);
         if ( $request->filled('role') ) {
-          if ( $user->role_id < $user_arr['role_id'] ){
+          $currentUserRole = $user->role_id; // who update the role
+          $targetUserCurrentRole = $get_user->role_id; // current person role will promote
+          $newRoleRequested = $request->role; // promote role (manager can't promote to admin)
+          
+          if ($this->canUpdateRole($currentUserRole, $targetUserCurrentRole,$newRoleRequested)) {
+            $user_arr['role_id'] = $request->role ?? 3;
+          } else {
             throw_exception(__("messages.not_able", ["attribute" => "role" ]), Response::HTTP_UNAUTHORIZED);
           }
-          $user_arr['role_id'] = $request->role ?? 3;
         }
         
-        $user->fill($user_arr);
-        $updated_user = $user->update();
+        $get_user->fill($user_arr);
+        $updated_user = $get_user->update();
         if ( !$updated_user ) throw_exception(__("messages.not_able", ["attribute" => "user" ]), Response::HTTP_UNAUTHORIZED);
 
         // Role update
         if (  $request->role ){
           $this->userRoleService->model=new Role();
-          $role_remove = $this->userRoleService->remove_role($user);
-          $role_assign = $this->userRoleService->assign_role($user,$request->all()['role']);
+          $role_remove = $this->userRoleService->remove_role($get_user);
+          $role_assign = $this->userRoleService->assign_role($get_user,$request->all()['role']);
         }
         DB::commit();
         return $this->response_json([], __("messages.successfully_updated", ["attribute" => "user" ]));
