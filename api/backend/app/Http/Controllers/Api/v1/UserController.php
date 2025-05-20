@@ -78,7 +78,13 @@ class UserController extends ParentApiController
         if ( $request->filled('email') ) $user_arr['email'] = $request->email;
         if ( $request->filled('phone_number') ) $user_arr['phone_number'] = $request->phone_number;
         if ( $request->filled('password') ) $user_arr['password'] = Hash::make($request->password);
-        if ( $request->filled('role') ) $user_arr['role_id'] = $request->role ?? 3;
+        if ( $request->filled('role') ) {
+          if ( $user->role_id < $user_arr['role_id'] ){
+            throw_exception(__("messages.not_able", ["attribute" => "role" ]), Response::HTTP_UNAUTHORIZED);
+          }
+          $user_arr['role_id'] = $request->role ?? 3;
+        }
+        
         $user->fill($user_arr);
         $updated_user = $user->update();
         if ( !$updated_user ) throw_exception(__("messages.not_able", ["attribute" => "user" ]), Response::HTTP_UNAUTHORIZED);
