@@ -100,7 +100,7 @@ class UserController extends ParentApiController
           if ($this->canUpdateRole($currentUserRole, $targetUserCurrentRole,$newRoleRequested)) {
             $user_arr['role_id'] = $request->role ?? 3;
           } else {
-            throw_exception(__("messages.not_able", ["attribute" => "role" ]), Response::HTTP_UNAUTHORIZED);
+            throw_exception(__("messages.not_able", ["attribute" => "role" ]), Response::HTTP_NOT_FOUND);
           }
         }
         
